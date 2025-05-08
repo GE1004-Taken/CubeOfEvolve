@@ -2,6 +2,7 @@ using R3;
 using MVRP.Sample.Models;
 using MVRP.Sample.Views;
 using UnityEngine;
+using TMPro;
 
 namespace MVRP.Sample.Presenters
 {
@@ -15,18 +16,17 @@ namespace MVRP.Sample.Presenters
 
         // View
         [SerializeField] private Sample_View _views;
+        [SerializeField] private TextMeshProUGUI _text;
 
         private void Start()
         {
-            _views.MaxHealth = _models.MaxHealth;
-
-
             // Player‚ÌHealth‚ðŠÄŽ‹
             _models.Health
                 .Subscribe(x =>
                 {
                     // View‚É”½‰f
                     _views.SetValue(x);
+                    _text.text = $"{x} / {_models.MaxHealth}";
                     Debug.Log(x);
                 }).AddTo(this);
         }
