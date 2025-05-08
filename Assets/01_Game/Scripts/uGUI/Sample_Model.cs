@@ -6,20 +6,14 @@ namespace MVRP.Sample.Models
     public sealed class Sample_Model : MonoBehaviour
     {
         /// <summary>
-        /// お金
+        /// 体力
         /// ReactivePropertyとして外部に状態をReadOnlyで公開
         /// </summary>
         public ReadOnlyReactiveProperty<int> Health => _health;
         // 体力の最大値
         public readonly int MaxHealth = 100;
-        public readonly int InitialHealth = 80;
 
         private readonly ReactiveProperty<int> _health = new ReactiveProperty<int>(100);
-
-        private void Start()
-        {
-            _health.Value = InitialHealth;
-        }
 
         /// <summary>
         /// 衝突イベント

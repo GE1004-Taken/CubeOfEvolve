@@ -12,9 +12,6 @@ namespace MVRP.Sample.Views
         /// </summary>
         [SerializeField] private Slider _slider;
 
-        [SerializeField] private TextMeshProUGUI _text;
-        public int MaxHealth = 200;
-
         public void SetValue(float value)
         {
             // アニメーションしながらSliderを動かす
@@ -22,7 +19,6 @@ namespace MVRP.Sample.Views
                 n => _slider.value = n,
                 value,
                 duration: 1.0f);
-            _text.text = ($"{value} / {MaxHealth}");
         }
     }
 }
