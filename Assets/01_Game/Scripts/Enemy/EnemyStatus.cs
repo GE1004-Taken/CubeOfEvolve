@@ -20,7 +20,7 @@ public class EnemyStatus : MonoBehaviour
         AVOID,          // 回避
     }
 
-    private ReactiveProperty<ActionPattern> _currentAct;    // 現在の行動
+    private ReactiveProperty<ActionPattern> _currentAct = new();    // 現在の行動
 
     private ReactiveProperty<float> _hp = new();            // 体力
 
@@ -52,9 +52,9 @@ public class EnemyStatus : MonoBehaviour
 
     // ---------------------------- PublicMethod
     /// <summary>
-    /// エネミーのスタート処理
+    /// エネミーが生成される処理
     /// </summary>
-    public void EnemyStart()
+    public void EnemySpawn()
     {
         _currentAct.Value = ActionPattern.MOVE;
     }
