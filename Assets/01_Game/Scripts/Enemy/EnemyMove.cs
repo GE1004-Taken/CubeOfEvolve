@@ -3,66 +3,49 @@ using UnityEngine;
 public class EnemyMove : MonoBehaviour
 {
     // ---------------------------- SerializeField
-    [SerializeField] private float _speed;
+    [Header("ステータス")]
+    [SerializeField] private EnemyStatus _status;
 
 
     // ---------------------------- Field
-    /// <summary>
-    /// 行動パターン
-    /// </summary>
-    private enum ActionPattern
-    {
-        IDLE,           // 待機
-        MOVE,           // 移動
-        WAIT,           // 行動を一旦停止
-        ATTACK,         // 停止して攻撃
-        MOVEANDATTACK,  // 移動しながら攻撃
-        AVOID,          // 回避
-    }
+    private Rigidbody _rb;                          // RigidBody保存
 
-    private ActionPattern _currentAct;  // 現在の行動
+    private GameObject _targetObj;                  // 攻撃対象
 
-    [SerializeField] private GameObject _targetObj;      // 攻撃対象
-
-    private Rigidbody _rb;              // Rigidbody保存
 
     // ---------------------------- UnityMessage
+    private void Start()
+    {
+        _rb = GetComponent<Rigidbody>();
+
+        _targetObj = EnemyManager.Instance.PlayerObj;
+    }
+
     private void FixedUpdate()
     {
-        switch (_currentAct)
+        switch (_status.CurrentAct.CurrentValue)
         {
-            case ActionPattern.IDLE:
+            case EnemyStatus.ActionPattern.IDLE:
                 break;
 
-            case ActionPattern.MOVE:
+            case EnemyStatus.ActionPattern.MOVE:
                 // 移動処理
                 Move();
                 break;
 
-            case ActionPattern.WAIT:
-                // 待機処理
-                Wait();
+            case EnemyStatus.ActionPattern.WAIT:
                 break;
 
-            case ActionPattern.ATTACK:
+            case EnemyStatus.ActionPattern.ATTACK:
                 break;
 
-            case ActionPattern.MOVEANDATTACK:
+            case EnemyStatus.ActionPattern.MOVEANDATTACK:
                 break;
 
-            case ActionPattern.AVOID:
+            case EnemyStatus.ActionPattern.AVOID:
                 break;
         }
     }
-
-    private void OnEnable()
-    {
-        _rb = GetComponent<Rigidbody>();
-        _currentAct = ActionPattern.MOVE;
-    }
-
-
-    // ---------------------------- PublicMethod
 
 
     // ---------------------------- PrivateMethod
@@ -71,17 +54,16 @@ public class EnemyMove : MonoBehaviour
     /// </summary>
     private void Move()
     {
-        // 追尾対象がいない時
-        if (_targetObj == null)
-        {
-            _currentAct = ActionPattern.WAIT;
-        }
+        if (_targetObj == null) return;
 
         // 敵から対象へのベクトルを取得
         Vector3 moveForward = _targetObj.transform.position - transform.position;
 
+        // 高さは追わない
+        moveForward.y = 0;
+
         // 移動方向にスピードを掛ける
-        _rb.linearVelocity = moveForward.normalized * _speed * Time.deltaTime + new Vector3(0, _rb.linearVelocity.y, 0);
+        _rb.linearVelocity = _status.Speed * Time.deltaTime * moveForward.normalized + new Vector3(0, _rb.linearVelocity.y, 0);
 
         // キャラクターの向きを進行方向に向ける
         if (moveForward != Vector3.zero)
@@ -94,10 +76,4 @@ public class EnemyMove : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);
         }
     }
-
-    private void Wait()
-    {
-
-    }
-
 }
