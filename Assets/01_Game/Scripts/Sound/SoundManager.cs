@@ -11,75 +11,16 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
-
-// サウンドデータの基底クラス（ScriptableObject）。
-// 各サウンドデータはこのクラスを継承して具体的なデータを持つ。
-public abstract class SoundData : ScriptableObject
-{
-    // サウンドの名前（識別子）。
-    public string name;
-
-    // サウンドのオーディオクリップを取得する抽象メソッド。
-    public abstract AudioClip GetAudioClip();
-
-    // サウンドの名前を取得する抽象メソッド。
-    public abstract string GetName();
-}
-
-// 単一のオーディオクリップを持つサウンドデータ。
-[CreateAssetMenu(fileName = "AudioClipData", menuName = "Sound/AudioClipData")]
-public class AudioClipData : SoundData
-{
-    // 再生するオーディオクリップ。
-    public AudioClip audioClip;
-
-    // オーディオクリップを返す実装。
-    public override AudioClip GetAudioClip()
-    {
-        return audioClip;
-    }
-
-    // サウンドの名前を返す実装。
-    public override string GetName()
-    {
-        return name;
-    }
-}
-
-// ループ再生に対応したサウンドデータ。
-[CreateAssetMenu(fileName = "SoundLoopData", menuName = "Sound/SoundLoopData")]
-public class LoopSoundData : SoundData
-{
-    // 再生するオーディオクリップ。
-    public AudioClip audioClip;
-
-    // ループ開始位置（サンプル単位）。
-    public int loopStart;
-
-    // ループ終了位置（サンプル単位）。
-    public int loopEnd;
-
-    // オーディオクリップのサンプリング周波数。
-    public int frequency = 44100;
-
-    // オーディオクリップを返す実装。
-    public override AudioClip GetAudioClip()
-    {
-        return audioClip;
-    }
-
-    // サウンドの名前を返す実装。
-    public override string GetName()
-    {
-        return name;
-    }
-}
+using R3;
+using R3.Triggers;
 
 // ゲーム全体のサウンド管理を行うシングルトンクラス。
 public class SoundManager : MonoBehaviour
 {
     // SoundManager のシングルトンインスタンス。
     public static SoundManager Instance { get; private set; }
+
+    // ---------------------------- Serializable
 
     // シリアライズ可能なサウンドデータのラッパークラス。
     // インスペクター上で名前と SoundData アセットを紐付けるために使用。
@@ -94,12 +35,6 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private SoundDataWrapper[] soundDatas;
 
-    // 再生に使用する AudioSource のリスト。
-    private AudioSource[] audioSourceList = new AudioSource[20];
-
-    // サウンド名と SoundData の対応を保持する辞書。
-    private Dictionary<string, SoundData> soundDictionary = new Dictionary<string, SoundData>();
-
     // シリアライズ可能なシーンごとの BGM 設定クラス。
     [System.Serializable]
     public class SceneBGM
@@ -107,16 +42,24 @@ public class SoundManager : MonoBehaviour
         public string sceneName;
         public string bgmName;
     }
-
     // インスペクターから設定されるシーンごとの BGM 設定の配列。
     [SerializeField]
     private SceneBGM[] inScenePlay;
 
+    // ---------------------------- Field
+
+    // 再生に使用する AudioSource のリスト。
+    private AudioSource[] audioSourceList = new AudioSource[20];
+    // サウンド名と SoundData の対応を保持する辞書。
+    private Dictionary<string, SoundData> soundDictionary = new Dictionary<string, SoundData>();
     // シーン名と BGM 名の対応を保持する辞書。
     private Dictionary<string, string> sceneBGMMapping = new Dictionary<string, string>();
-
     // 現在再生中の BGM の AudioSource。
     private AudioSource currentBGMSource;
+    // 現在再生中の BGM の SoundData。
+    private SoundData currentSoundData;
+
+    // ---------------------------- UnityMessage
 
     // Awake メソッド：インスタンスの初期化、シングルトンの設定、AudioSource の作成、サウンドデータの登録などを行う。
     private void Awake()
@@ -162,6 +105,17 @@ public class SoundManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void Start()
+    {
+        this.UpdateAsObservable()
+            .Where(x => (currentBGMSource != null && currentBGMSource.isPlaying && currentSoundData is LoopSoundData))
+            .Subscribe(_ =>
+            {
+                LoopCheck(currentBGMSource, currentSoundData);
+            }
+            );
+    }
+
     // OnDestroy メソッド：インスタンスが破棄される際の処理。シーンロードイベントの解除を行う。
     private void OnDestroy()
     {
@@ -171,41 +125,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    // OnSceneLoaded メソッド：シーンがロードされた際に呼び出され、シーンに対応する BGM を再生する。
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        PlayBGMForScene(scene.name);
-    }
-
-    // Update メソッド：毎フレーム呼び出され、現在再生中の BGM のループ処理を行う。
-    private void Update()
-    {
-        if (currentBGMSource != null && currentBGMSource.isPlaying)
-        {
-            LoopCheck(currentBGMSource);
-        }
-    }
-
-    // LoopCheck メソッド：AudioSource の再生位置を監視し、LoopSoundData に基づいてループ処理を行う。
-    private void LoopCheck(AudioSource audioSource)
-    {
-        if (soundDictionary.TryGetValue(audioSource.clip.name, out var soundData))
-        {
-            if (soundData is LoopSoundData soundLoopData)
-            {
-                // サンプリング周波数を考慮した正しい頻度を計算するローカル関数。
-                int CorrectFrequency(long n)
-                {
-                    return (int)(n * audioSource.clip.frequency / soundLoopData.frequency);
-                }
-                // 再生位置がループ終了位置を超えた場合、ループ開始位置に戻す。
-                if (audioSource.timeSamples >= CorrectFrequency(soundLoopData.loopEnd))
-                {
-                    audioSource.timeSamples -= CorrectFrequency(soundLoopData.loopEnd - soundLoopData.loopStart);
-                }
-            }
-        }
-    }
+    // ---------------------------- Public
 
     // Play メソッド：指定された名前のサウンドを再生する。ミキサーグループを指定することも可能。
     public void Play(string name, string mixerGroupName = null)
@@ -250,6 +170,7 @@ public class SoundManager : MonoBehaviour
     {
         if (sceneBGMMapping.TryGetValue(sceneName, out var bgmName))
         {
+            Debug.Log($"sceneName/{sceneName}\n bgmName/{bgmName}");
             PlayBGM(bgmName, "BGM");
         }
         else
@@ -269,6 +190,9 @@ public class SoundManager : MonoBehaviour
 
         if (soundDictionary.TryGetValue(bgmName, out var soundData))
         {
+            Debug.Log($"bgmName/{bgmName}\n soundData/{soundData}");
+
+            currentSoundData = soundData;
             currentBGMSource = GetUnusedAudioSource();
             if (currentBGMSource != null)
             {
@@ -295,6 +219,14 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    // ---------------------------- Private
+
+    // OnSceneLoaded メソッド：シーンがロードされた際に呼び出され、シーンに対応する BGM を再生する。
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PlayBGMForScene(scene.name);
+    }
+
     // GetUnusedAudioSource メソッド：現在再生中でない AudioSource を取得する。
     private AudioSource GetUnusedAudioSource()
     {
@@ -303,5 +235,23 @@ public class SoundManager : MonoBehaviour
             if (!audioSourceList[i].isPlaying) return audioSourceList[i];
         }
         return null; // 全ての AudioSource が使用中の場合は null を返す。
+    }
+
+    // LoopCheck メソッド：AudioSource の再生位置を監視し、LoopSoundData に基づいてループ処理を行う。
+    private void LoopCheck(AudioSource audioSource, SoundData soundData)
+    {
+        if (soundData is LoopSoundData soundLoopData)
+        {
+            // サンプリング周波数を考慮した正しい頻度を計算するローカル関数。
+            int CorrectFrequency(long n)
+            {
+                return (int)(n * audioSource.clip.frequency / soundLoopData.frequency);
+            }
+            // 再生位置がループ終了位置を超えた場合、ループ開始位置に戻す。
+            if (audioSource.timeSamples >= CorrectFrequency(soundLoopData.loopEnd))
+            {
+                audioSource.timeSamples -= CorrectFrequency(soundLoopData.loopEnd - soundLoopData.loopStart);
+            }
+        }
     }
 }
