@@ -1,10 +1,8 @@
 using R3;
-using MVRP.Sample.Models;
-using MVRP.Sample.Views;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
-namespace MVRP.Sample.Presenters
+namespace MVRP.Sample
 {
     /// <summary>
     /// Player‚Ì‘Ì—Í‚ðView‚É”½‰f‚·‚éPresenter
@@ -27,7 +25,6 @@ namespace MVRP.Sample.Presenters
                     // View‚É”½‰f
                     _views.SetValue(x);
                     _text.text = $"{x} / {_models.MaxHealth}";
-                    Debug.Log(x);
                 }).AddTo(this);
         }
     }
