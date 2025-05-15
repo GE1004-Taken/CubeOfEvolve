@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace uGUI.Ctrl
+namespace AT.uGUI
 {
     public class CanvasCtrl : MonoBehaviour
     {

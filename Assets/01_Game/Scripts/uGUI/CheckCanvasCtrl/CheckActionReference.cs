@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class CheckActionReference
 {
-    public ScriptableObject actionObject;
+    private ScriptableObject actionObject;
 
     public ICheckAction GetAction()
     {

@@ -1,7 +1,7 @@
 using R3;
 using UnityEngine;
 
-namespace MVRP.Sample.Models
+namespace MVRP.Sample
 {
     public sealed class Sample_Model : MonoBehaviour
     {

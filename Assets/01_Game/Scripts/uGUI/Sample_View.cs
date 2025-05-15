@@ -1,9 +1,8 @@
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.Sample.Views
+namespace MVRP.Sample
 {
     public sealed class Sample_View : MonoBehaviour
     {
