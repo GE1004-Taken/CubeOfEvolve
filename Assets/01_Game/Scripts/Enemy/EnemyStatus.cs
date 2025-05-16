@@ -1,13 +1,15 @@
 using R3;
 using UnityEngine;
 
-public class EnemyStatus : MonoBehaviour
+public class EnemyStatus : MonoBehaviour, IDamageble
 {
     // ---------------------------- SerializeField
     [Header("ステータス")]
-    [SerializeField, Tooltip("体力")] private float _maxHp;
     [SerializeField, Tooltip("移動速度")] private float _speed;
+    [SerializeField, Tooltip("体力")] private float _maxHp;
 
+    [Header("ドロップ処理")]
+    [SerializeField] private ItemDrop _itemDrop;
 
     // ---------------------------- Field
     public enum ActionPattern                              // 行動パターン
@@ -38,17 +40,25 @@ public class EnemyStatus : MonoBehaviour
         _currentAct.Value = ActionPattern.WAIT;
 
         _hp.Value = _maxHp;
+
+        // 死の判定
+        _hp.Where(value => value <= 0)
+            .Subscribe(value =>
+            {
+                _itemDrop.Drop(transform.position);
+
+                Destroy(gameObject);
+            })
+            .AddTo(this);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void Update()
     {
-        // ダメージ処理
-        if (other.CompareTag("PlayerAttack"))
+        if (Input.GetKeyUp(KeyCode.D))
         {
-            _hp.Value--;
+            TakeDamage(1);
         }
     }
-
 
     // ---------------------------- PublicMethod
     /// <summary>
@@ -57,5 +67,12 @@ public class EnemyStatus : MonoBehaviour
     public void EnemySpawn()
     {
         _currentAct.Value = ActionPattern.MOVE;
+    }
+
+
+    // ---------------------------- Interface
+    public void TakeDamage(float damage)
+    {
+        _hp.Value -= damage;
     }
 }
