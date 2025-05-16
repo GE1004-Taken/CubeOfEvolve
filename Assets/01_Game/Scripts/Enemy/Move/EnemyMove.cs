@@ -1,23 +1,21 @@
 using UnityEngine;
 
-public class EnemyMove : MonoBehaviour
+public abstract class EnemyMove : MonoBehaviour
 {
     // ---------------------------- SerializeField
     [Header("ステータス")]
     [SerializeField] private EnemyStatus _status;
 
+    [Header("Rigidbody")]
+    [SerializeField] private Rigidbody _rb;                          // RigidBody保存
 
     // ---------------------------- Field
-    private Rigidbody _rb;                          // RigidBody保存
-
-    private GameObject _targetObj;                  // 攻撃対象
+    protected GameObject _targetObj;                  // 攻撃対象
 
 
     // ---------------------------- UnityMessage
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
-
         _targetObj = EnemyManager.Instance.PlayerObj;
     }
 
@@ -50,9 +48,9 @@ public class EnemyMove : MonoBehaviour
 
     // ---------------------------- PrivateMethod
     /// <summary>
-    /// 移動処理
+    /// 直線移動処理
     /// </summary>
-    private void Move()
+    protected void LinearMovement()
     {
         if (_targetObj == null) return;
 
@@ -76,4 +74,8 @@ public class EnemyMove : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);
         }
     }
+
+
+    // ---------------------------- VirtualMethod
+    public abstract void Move();
 }
