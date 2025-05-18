@@ -7,9 +7,8 @@ public class EnemyStatus : MonoBehaviour, IDamageble
     [Header("ステータス")]
     [SerializeField, Tooltip("移動速度")] private float _speed;
     [SerializeField, Tooltip("体力")] private float _maxHp;
-
-    [Header("ドロップ処理")]
-    [SerializeField] private ItemDrop _itemDrop;
+    [SerializeField, Tooltip("経験値")] private int _dropExp;
+    [SerializeField, Tooltip("お金")] private int _dropMoney;
 
     // ---------------------------- Field
     public enum ActionPattern                              // 行動パターン
@@ -45,7 +44,8 @@ public class EnemyStatus : MonoBehaviour, IDamageble
         _hp.Where(value => value <= 0)
             .Subscribe(value =>
             {
-                _itemDrop.Drop(transform.position);
+                ItemDrop.Instance.DropExp(transform.position, _dropExp);
+                ItemDrop.Instance.DropMoney(transform.position, _dropMoney);
 
                 Destroy(gameObject);
             })
