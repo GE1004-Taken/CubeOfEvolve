@@ -11,8 +11,7 @@ GameObject:
   - component: {fileID: 7554446048943423277}
   - component: {fileID: 9083148481948566112}
   - component: {fileID: 2812298798557937631}
-  - component: {fileID: 4230033306146079776}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Eenmy
   m_Icon: {fileID: 0}
@@ -76,20 +75,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 100
   _maxHp: 3
-  _itemDrop: {fileID: 4230033306146079776}
---- !u!114 &4230033306146079776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7493165143647539368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4976d5b2ffba9f44a8b3b478e5be3e28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemDropPrefab: {fileID: 6441449084104599601, guid: f8cf0038ce15ad6449bd45ed65a34a30, type: 3}
+  _dropExp: 4
+  _itemDrop: {fileID: 0}
 --- !u!1 &7824150715302907780
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +89,7 @@ GameObject:
   - component: {fileID: 1987851823028845546}
   - component: {fileID: 2553037985103322948}
   - component: {fileID: 8193168326287687321}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Body
   m_TagString: Eenmy
   m_Icon: {fileID: 0}
