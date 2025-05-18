@@ -17,7 +17,7 @@ public class EnemyManager : MonoBehaviour
 
 
     // ---------------------------- Property
-    public GameObject PlayerObj { get { return _playerObj; } }
+    public GameObject PlayerObj => _playerObj;
 
 
     // ---------------------------- UnityMessage
