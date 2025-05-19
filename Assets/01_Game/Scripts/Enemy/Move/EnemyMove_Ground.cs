@@ -1,4 +1,4 @@
-public class EnemyMove_Ground : EnemyMove
+public class EnemyMove_Ground : EnemyMoveBase
 {
     public override void Move()
     {

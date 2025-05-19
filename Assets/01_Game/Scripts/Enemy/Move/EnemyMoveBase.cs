@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class EnemyMove : MonoBehaviour
+public abstract class EnemyMoveBase : MonoBehaviour
 {
     // ---------------------------- SerializeField
     [Header("ステータス")]
