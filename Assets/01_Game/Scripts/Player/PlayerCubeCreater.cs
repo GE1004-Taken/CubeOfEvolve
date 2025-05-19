@@ -17,7 +17,7 @@ public class PlayerCubeCreater : BasePlayerComponent
     private bool _canCreated = new();
 
     // ---------- Field
-    public Cube _predictCube = null;
+    private Cube _predictCube = null;
     private MeshRenderer _predictCubeMeshRenderer;
     private Vector3 _createPos;
 
