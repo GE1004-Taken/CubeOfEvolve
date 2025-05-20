@@ -7,7 +7,7 @@ using UnityEngine;
 public class WeaponCreatePrediction : MonoBehaviour
 {
     // ---------- SerializeField
-    [SerializeField] private List<GameObject> _cubes = new List<GameObject>();
+    [SerializeField] private List<Cube> _cubes = new List<Cube>();
 
     [SerializeField] private Material _normalMaterial;
     [SerializeField] private Material _trueMaterial;
@@ -95,7 +95,7 @@ public class WeaponCreatePrediction : MonoBehaviour
     /// <param name="cubeScale">ƒLƒ…[ƒu‚Ìˆê•Ó‚Ì’·‚³</param>
     /// <returns></returns>
     private bool CheckNeighboringCube(
-    GameObject cube,
+    Cube cube,
     float cubeScale)
     {
         foreach (var direction in _directions)
