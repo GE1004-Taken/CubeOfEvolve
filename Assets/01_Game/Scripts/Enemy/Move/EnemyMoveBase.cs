@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class EnemyMove : MonoBehaviour
+public abstract class EnemyMoveBase : MonoBehaviour
 {
     // ---------------------------- SerializeField
     [Header("ステータス")]
@@ -16,7 +16,7 @@ public abstract class EnemyMove : MonoBehaviour
     // ---------------------------- UnityMessage
     private void Start()
     {
-        _targetObj = EnemyManager.Instance.PlayerObj;
+        _targetObj = PlayerMonitoring.Instance.PlayerObj;
     }
 
     private void FixedUpdate()

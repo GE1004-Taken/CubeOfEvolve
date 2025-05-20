@@ -1,4 +1,4 @@
-public class EnemyMove_Flying : EnemyMove
+public class EnemyMove_Flying : EnemyMoveBase
 {
     public override void Move()
     {

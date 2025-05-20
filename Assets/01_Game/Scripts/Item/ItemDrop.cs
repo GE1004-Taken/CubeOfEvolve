@@ -1,60 +1,57 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ItemDrop : MonoBehaviour
 {
-    // シングルトン
-    public static ItemDrop Instance;
-
+    [Serializable]
+    private class DropItem
+    {
+        public int value;
+        public GameObject obj;
+    }
     // ---------------------------- SerializeField
-    [Header("プレイヤー")]
-    [SerializeField, Tooltip("プレイヤー")] private GameObject _playerObj;
-
     [Header("ドロップするもの")]
-    [SerializeField, Tooltip("経験値")] private GameObject _expObj;
-    [SerializeField, Tooltip("お金")] private GameObject _money;
+    [SerializeField, Tooltip("経験値")] private DropItem _expItem;
+    [SerializeField, Tooltip("お金")] private DropItem _moneyItem;
 
     [Header("吹き飛ぶ力")]
     [SerializeField, Tooltip("上")] private float _forceHeightPower;
     [SerializeField, Tooltip("横")] private float _forceHorizontalPower;
 
-    // ---------------------------- Property
-    public GameObject PlayerObj => _playerObj;
-
-    // ---------------------------- UnityMessage
-    private void Awake()
-    {
-        // シングルトン
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     // ---------------------------- PublicMethod
-    public void DropExp(Vector3 pos, int value)
+    /// <summary>
+    /// 経験値を落とす処理
+    /// </summary>
+    public void DropExp()
     {
-        for (int i = 0; i < value; i++)
+        for (int i = 0; i < _expItem.value; i++)
         {
-            DropAnimation(pos, _expObj);
+            DropAnimation(_expItem.obj);
         }
     }
-    public void DropMoney(Vector3 pos, int value)
+
+    /// <summary>
+    /// お金を落とす距離
+    /// </summary>
+    public void DropMoney()
     {
-        for (int i = 0; i < value; i++)
+        for (int i = 0; i < _moneyItem.value; i++)
         {
-            DropAnimation(pos, _money);
+            DropAnimation(_moneyItem.obj);
         }
     }
 
     // ---------------------------- PrivateMethod
-    private void DropAnimation(Vector3 pos, GameObject dropObj)
+    /// <summary>
+    /// アイテムを生成して飛ばす処理
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="dropObj"></param>
+    private void DropAnimation(GameObject dropObj)
     {
         GameObject obj = Instantiate(dropObj);
-        obj.transform.position = pos;
+        obj.transform.position = transform.position;
 
         if (obj.GetComponent<Rigidbody>() == null)
             obj.AddComponent<Rigidbody>();
@@ -62,7 +59,7 @@ public class ItemDrop : MonoBehaviour
         Rigidbody rb = obj.GetComponent<Rigidbody>();
 
         // 360度から抽選
-        float spawnAngle = Random.Range(0, 360);
+        float spawnAngle = Random.Range(0, 8) * 45;
         // ラジアン角に変更
         float radians = spawnAngle * Mathf.Deg2Rad;
         // 方向
