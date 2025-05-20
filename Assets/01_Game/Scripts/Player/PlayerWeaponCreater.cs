@@ -9,7 +9,7 @@ public class PlayerWeaponCreater : BasePlayerComponent
     [SerializeField] private float _rayDist = 50f;
 
     // ---------- Field
-    public WeaponCreatePrediction _predictWeapon = null;
+    private WeaponCreatePrediction _predictWeapon = null;
     private Vector3 _createPos;
 
     // ---------- UnityMessage
