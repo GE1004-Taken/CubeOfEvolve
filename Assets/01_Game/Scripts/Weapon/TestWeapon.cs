@@ -6,7 +6,7 @@ public class TestWeapon : BaseWeapon
 
     protected override void Attack()
     {
-        var dir = (nearestEnemyTransform.position - transform.position).normalized;
+        var dir = (_nearestEnemyTransform.position - transform.position).normalized;
 
         var bullet = Instantiate(
             _bulletPrefab,
@@ -14,8 +14,8 @@ public class TestWeapon : BaseWeapon
             Quaternion.identity);
 
         bullet.Initialize(
-            atk,
-            attackSpeed,
+            _atk,
+            _attackSpeed,
             dir);
     }
 }
