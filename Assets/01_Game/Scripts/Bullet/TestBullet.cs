@@ -4,31 +4,41 @@ using UnityEngine;
 
 public class TestBullet : MonoBehaviour
 {
-    // ---------- Field
+    // ---------------------------- SerializeField
+    [SerializeField, Tooltip("攻撃対象のタグ")] private string _targetTag;
+
+    // ---------------------------- Field
     private float _atk;
     private float _attackSpeed;
     private Vector3 _attackDir;
     private float _destroySecond = 20f;
 
+    // ---------------------------- UnityMessage
+    public string TargetTag => _targetTag;
+
+    // ---------------------------- UnityMessage
     private void Start()
     {
         // 自然消滅時間
-        Destroy(this, _destroySecond);
+        Destroy(gameObject, _destroySecond);
 
         // 移動
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
                 transform.Translate(_attackDir * _attackSpeed * Time.deltaTime);
-            });
+            })
+            .AddTo(this);
 
         // 衝突処理
         this.OnTriggerEnterAsObservable()
             .Subscribe(collider =>
             {
-                if(collider.TryGetComponent<IDamageble>(out var damageble))
+                if (collider.transform.parent == null) return;
+
+                if (collider.transform.parent.TryGetComponent<IDamageble>(out var damageble)
+                    && collider.CompareTag(_targetTag))
                 {
-                    Debug.Log("敵にダメージを与えた");
                     damageble.TakeDamage(_atk);
                     Destroy(gameObject);
                 }
@@ -36,7 +46,7 @@ public class TestBullet : MonoBehaviour
             .AddTo(this);
     }
 
-    // ---------- Method
+    // ---------------------------- PublicMethod
     public void Initialize(
         float atk,
         float attackSpeed,
