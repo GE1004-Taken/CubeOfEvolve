@@ -16,7 +16,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
     // ---------------------------- UnityMessage
     private void Start()
     {
-        _targetObj = EnemyManager.Instance.PlayerObj;
+        _targetObj = PlayerMonitoring.Instance.PlayerObj;
     }
 
     private void FixedUpdate()

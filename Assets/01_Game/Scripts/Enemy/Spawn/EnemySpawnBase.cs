@@ -29,7 +29,7 @@ public abstract class EnemySpawnBase : MonoBehaviour
     // ---------------------------- UnityMessage
     private void Start()
     {
-        _targetObj = EnemyManager.Instance.PlayerObj;
+        _targetObj = PlayerMonitoring.Instance.PlayerObj;
 
         StartMethod();
     }
@@ -53,7 +53,7 @@ public abstract class EnemySpawnBase : MonoBehaviour
         Vector3 spawnPos = _targetObj.transform.position + direction * _playerDistance;
 
         // 敵を生成
-        var obj = Instantiate(enemyObj, EnemyManager.Instance.transform);
+        var obj = Instantiate(enemyObj, PlayerMonitoring.Instance.transform);
         obj.transform.position = spawnPos;
 
         // 敵のステータスの初期設定処理
