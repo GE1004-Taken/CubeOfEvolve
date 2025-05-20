@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     private ReactiveProperty<GameState> _currentGameState = new();
     public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
 
+    // ---------- Property
+    public TimeManager TimeManager => _timeManager;
+
     // ---------- UnityMessage
     private void Awake()
     {
@@ -43,7 +46,11 @@ public class GameManager : MonoBehaviour
                         ResetGame();
                         break;
 
-                    case GameState.GAME:
+                    case GameState.GAME_BATTLE:
+                        StartGame();
+                        break;
+
+                    case GameState.GAME_BUILD:
                         StartGame();
                         break;
 
