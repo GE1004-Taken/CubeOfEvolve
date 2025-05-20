@@ -12,7 +12,7 @@ public class PlayerMover : BasePlayerComponent
     {
         _rb = GetComponent<Rigidbody>();
 
-        Input.Move
+        InputEventProvider.Move
             .Subscribe(x =>
             {
                 // カメラのxzの単位ベクトル取得

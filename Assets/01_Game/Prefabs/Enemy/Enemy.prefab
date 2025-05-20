@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7554446048943423277}
   - component: {fileID: 9083148481948566112}
   - component: {fileID: 2812298798557937631}
+  - component: {fileID: 6345187585446272889}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Eenmy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -73,10 +74,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e8d9a61f7a41694595c43cae0c992cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 100
+  _speed: 400
   _maxHp: 3
-  _dropExp: 4
-  _itemDrop: {fileID: 0}
+  _itemDrop: {fileID: 6345187585446272889}
+--- !u!114 &6345187585446272889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7493165143647539368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4976d5b2ffba9f44a8b3b478e5be3e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _expItem:
+    value: 2
+    obj: {fileID: 4454796058120037739, guid: 925a844414a032545a54948e0970a395, type: 3}
+  _moneyItem:
+    value: 2
+    obj: {fileID: 884141326000241757, guid: 097f2104548ca0c4dbd03db4f55ba8b3, type: 3}
+  _forceHeightPower: 2
+  _forceHorizontalPower: 3
 --- !u!1 &7824150715302907780
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +111,7 @@ GameObject:
   - component: {fileID: 8193168326287687321}
   m_Layer: 6
   m_Name: Body
-  m_TagString: Eenmy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

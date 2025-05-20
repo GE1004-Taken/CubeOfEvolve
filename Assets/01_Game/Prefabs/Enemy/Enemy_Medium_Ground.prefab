@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4681444600761308699}
   m_Layer: 6
   m_Name: Body (1)
-  m_TagString: Eenmy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 4666981831308551917}
   m_Layer: 6
   m_Name: Body (3)
-  m_TagString: Eenmy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 2831663455800282525}
   m_Layer: 6
   m_Name: Body (2)
-  m_TagString: Eenmy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -426,6 +426,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _status: {fileID: 6836661466846567729}
   _rb: {fileID: 570315383611613326}
+  _minDistance: 0
 --- !u!114 &6836661466846567729 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2812298798557937631, guid: e1ce90e6c9328e64db08ef639c611baa, type: 3}
