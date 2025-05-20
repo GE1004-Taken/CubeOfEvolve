@@ -29,47 +29,46 @@ public class PlayerCubeCreater : BasePlayerComponent
             {
                 var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(
+                if (!Physics.Raycast(
                     mouseRay.origin,
                     mouseRay.direction * _rayDist,
-                    out RaycastHit hit))
+                    out RaycastHit hit)) return;
+
+                if (hit.collider.TryGetComponent<Cube>(out var cube))
                 {
-                    if (hit.collider.TryGetComponent<Cube>(out var cube))
+                    _createPos = cube.transform.position + hit.normal;
+
+                    // 設置予測キューブを生成
+                    if (_predictCube == null)
                     {
-                        _createPos = cube.transform.position + hit.normal;
+                        _predictCube = Instantiate(
+                                _cubePrefab,
+                                _createPos,
+                                transform.rotation);
 
-                        // 設置予測キューブを生成
-                        if (_predictCube == null)
-                        {
-                            _predictCube = Instantiate(
-                                    _cubePrefab,
-                                    _createPos,
-                                    transform.rotation);
+                        _predictCube.transform.SetParent(transform);
 
-                            _predictCube.transform.SetParent(transform);
+                        _predictCubeMeshRenderer = _predictCube.GetComponent<MeshRenderer>();
 
-                            _predictCubeMeshRenderer = _predictCube.GetComponent<MeshRenderer>();
-
-                            _predictCubeMeshRenderer.material = _trueMaterial;
-                        }
-                        // 設置予測キューブの位置を更新
-                        else
-                        {
-                            _predictCube.transform.position = _createPos;
-                        }
-
-                        _canCreated = true;
+                        _predictCubeMeshRenderer.material = _trueMaterial;
                     }
+                    // 設置予測キューブの位置を更新
                     else
                     {
-                        _canCreated = false;
+                        _predictCube.transform.position = _createPos;
+                    }
 
-                        if (_predictCube != null)
-                        {
-                            _predictCubeMeshRenderer.material = _falseMaterial;
+                    _canCreated = true;
+                }
+                else
+                {
+                    _canCreated = false;
 
-                            Destroy(_predictCube.gameObject);
-                        }
+                    if (_predictCube != null)
+                    {
+                        _predictCubeMeshRenderer.material = _falseMaterial;
+
+                        Destroy(_predictCube.gameObject);
                     }
                 }
             });
