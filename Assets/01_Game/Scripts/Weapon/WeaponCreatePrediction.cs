@@ -1,0 +1,139 @@
+using R3;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class WeaponCreatePrediction : MonoBehaviour
+{
+    // ---------- SerializeField
+    [SerializeField] private List<GameObject> _cubes = new List<GameObject>();
+
+    [SerializeField] private Material _normalMaterial;
+    [SerializeField] private Material _trueMaterial;
+    [SerializeField] private Material _falseMaterial;
+
+    [SerializeField] private SerializableReactiveProperty<bool> _isActived;
+
+    public ReadOnlyReactiveProperty<bool> IsActived => _isActived;
+
+    private ReactiveProperty<bool> _canCreated = new ReactiveProperty<bool>();
+    public ReadOnlyReactiveProperty<bool> CanCreated => _canCreated;
+
+    private Vector3[] _directions =
+    {
+        Vector3.up,
+        -Vector3.up,
+        Vector3.right,
+        -Vector3.right,
+        Vector3.forward,
+        -Vector3.forward
+    };
+
+    // ---------- UnityMessage
+    private void Start()
+    {
+        // 設置が出来るかで色を変える
+        _canCreated
+            .Subscribe(x =>
+            {
+                foreach(var cube in _cubes)
+                {
+                    if (x)
+                    {
+                        cube.GetComponent<Renderer>().material = _trueMaterial;
+                    }
+                    else
+                    {
+                        cube.GetComponent<Renderer>().material = _falseMaterial;
+                    }
+                }
+            });
+
+        // 設置や削除処理
+        _isActived
+            .Skip(1)
+            .Subscribe(x =>
+            {
+                if (x)
+                {
+                    foreach (var cube in _cubes)
+                    {
+                        cube.GetComponent<Renderer>().material = _normalMaterial;
+                        cube.GetComponent<BoxCollider>().enabled = true;
+                    }
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
+            });
+    }
+
+    // ---------- PrivateMethod
+    /// <summary>
+    /// 全てのキューブが隣接しているかチェック
+    /// </summary>
+    /// <returns></returns>
+    public void CheckNeighboringAllCube()
+    {
+        foreach (var cube in _cubes)
+        {
+            if (CheckNeighboringCube(cube, 1f)) continue;
+
+            _canCreated.Value = false;
+            return;
+        }
+
+        _canCreated.Value = true;
+    }
+
+    /// <summary>
+    /// キューブが隣接しているかチェック
+    /// </summary>
+    /// <param name="cube">対象のキューブ</param>
+    /// <param name="cubeScale">キューブの一辺の長さ</param>
+    /// <returns></returns>
+    private bool CheckNeighboringCube(
+    GameObject cube,
+    float cubeScale)
+    {
+        foreach (var direction in _directions)
+        {
+            if (Physics.Raycast(
+            cube.transform.position,
+            direction,
+            out RaycastHit hit,
+            cubeScale))
+            {
+                if (!hit.collider.CompareTag("Cube")) continue;
+
+                // 0.49fは隣接しているキューブを除外する為
+                var halfScale = cubeScale * 0.49f;
+
+                // 対象のキューブにめり込んでいるコライダー数
+                var cubeInsideColliders = Physics.OverlapBox(
+                    cube.transform.position,
+                    new Vector3(halfScale, halfScale, halfScale),
+                    cube.transform.rotation);
+
+                // その数が0より大きいなら設置済みとみなす
+                if(cubeInsideColliders.Length > 0) return false;
+
+                return true;
+            };
+        }
+        return false;
+    }
+
+    // ---------- Event
+    public void ActiveWeapon()
+    {
+        _isActived.Value = true;
+    }
+
+    public void InactiveWeapon()
+    {
+        _isActived.Value = false;
+    }
+}
