@@ -12,6 +12,9 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
     private ReactiveProperty<bool> _isPushedSkillButton = new ReactiveProperty<bool>();
     public ReadOnlyReactiveProperty<bool> Skill => _isPushedSkillButton;
 
+    private ReactiveProperty<bool> _isPushedCreateButton = new ReactiveProperty<bool>();
+    public ReadOnlyReactiveProperty<bool> Create => _isPushedCreateButton;
+
     private ReactiveProperty<bool> _isPushedPauseButton = new ReactiveProperty<bool>();
     public ReadOnlyReactiveProperty<bool> Pause => _isPushedPauseButton;
 
@@ -33,6 +36,18 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
         else if(context.canceled)
         {
             _isPushedSkillButton.Value = false;
+        }
+    }
+
+    public void OnCreate(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _isPushedCreateButton.Value = true;
+        }
+        else if (context.canceled)
+        {
+            _isPushedCreateButton.Value = false;
         }
     }
 

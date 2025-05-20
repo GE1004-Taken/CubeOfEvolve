@@ -6,7 +6,7 @@ public class PlayerSkill : BasePlayerComponent
 {
     protected override void OnInitialize()
     {
-        Input.Skill
+        InputEventProvider.Skill
             .Skip(1)
             .Subscribe(_ =>
             {

@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1160600856621668459}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -291,6 +291,9 @@ GameObject:
   - component: {fileID: 6917629506812186995}
   - component: {fileID: 5175521391761362082}
   - component: {fileID: 100909744585822006}
+  - component: {fileID: 7000552848840723741}
+  - component: {fileID: 6497953513524797507}
+  - component: {fileID: 3060206199156380132}
   - component: {fileID: 1607303575592988257}
   - component: {fileID: 4051989162334480098}
   - component: {fileID: 6545724616646423686}
@@ -298,7 +301,7 @@ GameObject:
   - component: {fileID: 8883072607098323410}
   m_Layer: 0
   m_Name: PlayerCore
-  m_TagString: Untagged
+  m_TagString: Cube
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -311,7 +314,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9016021313319397845}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -388,6 +391,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfae81c6a9ca45c42b9eb086394664bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7000552848840723741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016021313319397845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ef8bda7c25db95499a088bb85d42b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cubePrefab: {fileID: 4176307090542740963, guid: 3f1f541fac57ad84f9fa768dd2a23677, type: 3}
+  _rayDist: 50
+  _normalMaterial: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
+  _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
+--- !u!114 &6497953513524797507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016021313319397845}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96c0c12535cd241948bae17c2d8a15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponPrefab: {fileID: 1873873604698115469, guid: c8bf7ddc2d9063a48a7b56cf03544b52, type: 3}
+  _rayDist: 50
+  _predictWeapon: {fileID: 0}
+--- !u!114 &3060206199156380132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016021313319397845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68def82d3890dcb42a73059d8e9bc8ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _index: {x: 0, y: 0, z: 0}
+  _isActived:
+    value: 1
+  _collider: {fileID: 5194833259994588229}
 --- !u!114 &1607303575592988257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,6 +584,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 48609fdb-59a5-4aac-ba4e-286ff6ed195a
     m_ActionName: Player/Skill
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5175521391761362082}
+        m_TargetAssemblyTypeName: PlayerInputer, Assembly-CSharp
+        m_MethodName: OnCreate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6602a5ba-98d0-4982-ba6c-4af99d6f21a9
+    m_ActionName: Player/Create
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

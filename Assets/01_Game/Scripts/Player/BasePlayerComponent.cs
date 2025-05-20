@@ -6,7 +6,7 @@ public abstract class BasePlayerComponent : MonoBehaviour
     private IInputEventProvider _inputEventProvider;
 
     // 各コンポーネントでよく使われるものコンポーネント
-    protected IInputEventProvider Input => _inputEventProvider;
+    protected IInputEventProvider InputEventProvider => _inputEventProvider;
     protected PlayerCore Core;
 
     // ---------- UnityMessage
