@@ -46,12 +46,15 @@ public class GameManager : MonoBehaviour
                         ResetGame();
                         break;
 
-                    case GameState.GAME_BATTLE:
+                    case GameState.READY:
+                        break;
+
+                    case GameState.BATTLE:
                         StartGame();
                         break;
 
-                    case GameState.GAME_BUILD:
-                        StartGame();
+                    case GameState.BUILD:
+                        StopGame();
                         break;
 
                     case GameState.PAUSE:
