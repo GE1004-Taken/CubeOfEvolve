@@ -49,6 +49,7 @@ public class PlayerCore : MonoBehaviour, IDamageble
 
         // ƒŒƒxƒ‹ˆ—(‰¼)
         _level
+            .Skip(1)
             .Subscribe(x =>
             {
                 _maxCubeCount.Value += 3;
