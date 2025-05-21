@@ -1,5 +1,6 @@
-// 作成日：   250508
-// 更新日：   250508
+// 作成日： 250508
+// 更新日： 250508 機能完成
+//              250820 機能拡張 閉じるボタンを複数設定可能に。
 // 作成者： 安中 健人
 
 // 概要説明(AIにより作成)：
@@ -17,7 +18,8 @@ namespace AT.uGUI
         // ---------------------------- SerializeField
         [Header("ボタン")]
         [SerializeField] private List<Button> _openBtnList = new List<Button> ();
-        [SerializeField] private Button _closeBtn;
+        //[SerializeField] private Button _closeBtn;
+        [SerializeField] private List<Button> _closeBtnList = new List<Button> ();
         // ---------------------------- Field
         private Button _saveBtn; // 一時変数
         private Canvas _canvas;
@@ -26,7 +28,7 @@ namespace AT.uGUI
         {
             Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
             _canvas.enabled = true;
-            _closeBtn.Select();
+            _closeBtnList[0].Select();
             _saveBtn = clickedButton;
         }
         private void OnCloseCanvas()
@@ -44,12 +46,21 @@ namespace AT.uGUI
         private void Start()
         {
             _canvas = GetComponent<Canvas>();
-            foreach (var button in _openBtnList)
-            {
-                // ラムダ式を使って、ボタンがクリックされたときに OnOpenCanvas メソッドに自身を渡す
-                button.onClick.AddListener(() => OnOpenCanvas(button));
-            }
-            _closeBtn.onClick.AddListener(OnCloseCanvas);
+            if (_openBtnList == null)
+                return;
+            else
+                foreach (var button in _openBtnList)
+                {
+                    // ラムダ式を使って、ボタンがクリックされたときに OnOpenCanvas メソッドに自身を渡す
+                    button.onClick.AddListener(() => OnOpenCanvas(button));
+                }
+            if(_closeBtnList == null)
+                return ;
+            else
+                foreach (var button in _closeBtnList)
+                {
+                    button.onClick.AddListener(() => OnCloseCanvas());
+                }
         }
 
         // ---------------------------- PublicMethod
