@@ -1,0 +1,76 @@
+using Cysharp.Threading.Tasks;
+using System;
+using UnityEngine;
+
+public class EnemyMove_Assault : EnemyMoveBase
+{
+    // ---------------------------- SerializeField
+    [SerializeField] private float _moveDelaySecond;
+    [SerializeField] private float _destroyDelaySecond;
+
+    // ---------------------------- SerializeField
+    private Vector3 _moveForward;
+    private bool _isAssault = false;
+
+    // ---------------------------- PrivateMethod
+    /// <summary>
+    /// 突撃処理
+    /// </summary>
+    private void Assault()
+    {
+        // 移動方向にスピードを掛ける
+        _rb.linearVelocity = _status.Speed * Time.deltaTime * _moveForward.normalized + new Vector3(0, _rb.linearVelocity.y, 0);
+    }
+
+    // ---------------------------- OverrideMethod
+    public override void Move()
+    {
+        if (_isAssault)
+        {
+            Assault();
+        }
+        else
+        {
+            // 敵から対象へのベクトルを取得
+            _moveForward = _targetObj.transform.position - transform.position;
+
+            // 高さは追わない
+            _moveForward.y = 0;
+
+            // キャラクターの向きを進行方向に向ける
+            if (_moveForward != Vector3.zero)
+            {
+                // 方向ベクトルを取得
+                Vector3 direction = _targetObj.transform.position - transform.position;
+                Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
+
+                // Y軸の回転のみ取得
+                transform.rotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public override async void InitializeAsync()
+    {
+        // キャンセル処理を書くところ要相談
+        await UniTask.Delay(TimeSpan.FromSeconds(_moveDelaySecond), cancellationToken: destroyCancellationToken, delayType: DelayType.DeltaTime)
+         .SuppressCancellationThrow();
+
+        if (this != null && gameObject != null)
+        {
+            _isAssault = true;
+        }
+
+        // キャンセル処理を書くところ要相談
+        await UniTask.Delay(TimeSpan.FromSeconds(_destroyDelaySecond), cancellationToken: destroyCancellationToken, delayType: DelayType.DeltaTime)
+         .SuppressCancellationThrow();
+
+        if (this != null && gameObject != null)
+        {
+            Destroy(gameObject);
+        }
+    }
+}

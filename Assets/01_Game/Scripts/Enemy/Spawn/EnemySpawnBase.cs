@@ -11,6 +11,9 @@ public abstract class EnemySpawnBase : MonoBehaviour
         [Header("¶¬‚µ‚½‚¢ŠÔ")]
         public float delaySecond;
 
+        [Header("¶¬”")]
+        public int spawnValue;
+
         [Header("¶¬‚µ‚½‚¢“G‚Ìí—Ş")]
         public List<GameObject> enemyList = new();
     }
@@ -20,10 +23,9 @@ public abstract class EnemySpawnBase : MonoBehaviour
 
     [Header("¶¬‹——£"), SerializeField] private float _playerDistance;
 
-    [Header(""), SerializeField] protected TimeManager _timeManager;
-
 
     // ---------------------------- Field
+    protected SpawnType _currentSpawnType = new();
     private GameObject _targetObj;                  // UŒ‚‘ÎÛ
 
     // ---------------------------- UnityMessage

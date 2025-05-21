@@ -3,20 +3,20 @@ using UnityEngine;
 public abstract class EnemyMoveBase : MonoBehaviour
 {
     // ---------------------------- SerializeField
-    [Header("ステータス")]
-    [SerializeField] private EnemyStatus _status;
-
-    [Header("Rigidbody")]
-    [SerializeField] private Rigidbody _rb;                          // RigidBody保存
+    [SerializeField] protected EnemyStatus _status;
 
     // ---------------------------- Field
+    protected Rigidbody _rb;                          // RigidBody保存
     protected GameObject _targetObj;                  // 攻撃対象
-
 
     // ---------------------------- UnityMessage
     private void Start()
     {
+        _status = GetComponent<EnemyStatus>();
+        _rb = GetComponent<Rigidbody>();
         _targetObj = PlayerMonitoring.Instance.PlayerObj;
+
+        InitializeAsync();
     }
 
     private void FixedUpdate()
@@ -77,5 +77,17 @@ public abstract class EnemyMoveBase : MonoBehaviour
 
 
     // ---------------------------- VirtualMethod
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public virtual void InitializeAsync()
+    {
+
+    }
+
+    // ---------------------------- AbstractMethod
+    /// <summary>
+    /// 移動処理
+    /// </summary>
     public abstract void Move();
 }

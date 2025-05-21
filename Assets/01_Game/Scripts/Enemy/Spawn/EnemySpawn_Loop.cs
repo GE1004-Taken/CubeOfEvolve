@@ -7,27 +7,21 @@ using Random = UnityEngine.Random;
 public class EnemySpawn_Loop : EnemySpawnBase
 {
     // ---------------------------- SerializeField
-    [Header("ê∂ê¨êî"), SerializeField] private float _spawnValue;
-
     [Header("ê∂ê¨ä‘äu"), SerializeField] private float _spawnInterval;
 
     [Header("ä‘äuâ¡ë¨ìx"), SerializeField] private float _intervalAccelerate;
-
-
-    // ---------------------------- Field
-    private List<GameObject> _currentSpawnObjList = new();
 
     // ---------------------------- OverrideMethod
     public override void StartMethod()
     {
         foreach (var spawnType in _spawnType)
         {
-            _timeManager.CurrentTimeSecond
+            GameManager.Instance.TimeManager.CurrentTimeSecond
                 .Where(value => spawnType.delaySecond <= value)
                 .Take(1)
                 .Subscribe(value =>
                 {
-                    _currentSpawnObjList = spawnType.enemyList;
+                    _currentSpawnType = spawnType;
                 })
                 .AddTo(this);
         }
@@ -49,10 +43,10 @@ public class EnemySpawn_Loop : EnemySpawnBase
             yield return new WaitForSeconds(_spawnInterval);
 
             // ìGÇê∂ê¨Ç∑ÇÈèàóù
-            for (int i = 0; i < _spawnValue; i++)
+            for (int i = 0; i < _currentSpawnType.spawnValue; i++)
             {
-                int num = Random.Range(0, _currentSpawnObjList.Count);
-                Spawn(_currentSpawnObjList[num]);
+                int num = Random.Range(0, _currentSpawnType.enemyList.Count);
+                Spawn(_currentSpawnType.enemyList[num]);
             }
         }
     }

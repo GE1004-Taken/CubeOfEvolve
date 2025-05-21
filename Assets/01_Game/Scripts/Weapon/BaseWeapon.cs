@@ -1,7 +1,5 @@
-using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using R3.Triggers;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,35 +7,39 @@ using UnityEngine;
 public abstract class BaseWeapon : MonoBehaviour
 {
     // ---------- SerializeField
-    [SerializeField, Tooltip("UŒ‚—Í")] protected float atk;
-    [SerializeField, Tooltip("UŒ‚‘¬“x")] protected float attackSpeed;
-    [SerializeField, Tooltip("UŒ‚”ÍˆÍ")] protected float range;
-    [SerializeField, Tooltip("UŒ‚ŠÔŠu")] protected float interval;
-    [SerializeField, Tooltip("‘ÎÛŒŸ’m—p")] protected SphereCollider sphereCollider;
+    [SerializeField, Tooltip("UŒ‚—Í")] protected float _atk;
+    [SerializeField, Tooltip("UŒ‚‘¬“x")] protected float _attackSpeed;
+    [SerializeField, Tooltip("UŒ‚”ÍˆÍ")] protected float _range;
+    [SerializeField, Tooltip("UŒ‚ŠÔŠu")] protected float _interval;
+    [SerializeField, Tooltip("‘ÎÛŒŸ’m—p")] protected SphereCollider _sphereCollider;
+
+    [SerializeField, Tooltip("UŒ‚‘ÎÛ‚Ìƒ^ƒO")] private string _targetTag;
 
     // ---------- Field
-    protected float currentInterval;
-    protected List<Transform> inRangeEnemies = new();
-    protected Transform nearestEnemyTransform;
+    protected float _currentInterval;
+    protected List<Transform> _inRangeEnemies = new();
+    protected Transform _nearestEnemyTransform;
 
     // ---------- UnityMethod
     private void Start()
     {
-        sphereCollider.radius = range;
+        _sphereCollider.radius = _range;
 
         this.OnTriggerEnterAsObservable()
-            .Where(x => x.CompareTag("Enemy"))
+            .Where(x => x.CompareTag(_targetTag))
             .Subscribe(x =>
             {
-                inRangeEnemies.Add(x.transform);
-            });
+                _inRangeEnemies.Add(x.transform);
+            })
+            .AddTo(this);
 
         this.OnTriggerExitAsObservable()
-            .Where(x => x.CompareTag("Enemy"))
+            .Where(x => x.CompareTag(_targetTag))
             .Subscribe(x =>
             {
-                inRangeEnemies[inRangeEnemies.IndexOf(x.transform)] = null;
-            });
+                _inRangeEnemies[_inRangeEnemies.IndexOf(x.transform)] = null;
+            })
+            .AddTo(this);
 
 
         this.UpdateAsObservable()
@@ -46,7 +48,7 @@ public abstract class BaseWeapon : MonoBehaviour
                 var nearestEnemyDist = 0f;
 
                 // ˆê”Ô‹ß‚¢“G‚ğæ“¾
-                foreach (var enemyTransform in inRangeEnemies)
+                foreach (var enemyTransform in _inRangeEnemies)
                 {
                     if (enemyTransform == null) continue;
 
@@ -57,32 +59,31 @@ public abstract class BaseWeapon : MonoBehaviour
                     if (nearestEnemyDist == 0f || dist < nearestEnemyDist)
                     {
                         nearestEnemyDist = dist;
-                        nearestEnemyTransform = enemyTransform;
+                        _nearestEnemyTransform = enemyTransform;
                     }
                 }
 
                 // ”ÍˆÍŠO(null)‚É‚È‚Á‚½—v‘f‚ğÁ‚·
-                if (inRangeEnemies.Count > 0)
+                if (_inRangeEnemies.Count > 0)
                 {
-                    inRangeEnemies.RemoveAll(x => x == null);
+                    _inRangeEnemies.RemoveAll(x => x == null);
                 }
 
                 // ƒCƒ“ƒ^[ƒoƒ‹’†‚È‚ç
-                if (currentInterval < interval)
+                if (_currentInterval < _interval)
                 {
-                    currentInterval += Time.deltaTime;
+                    _currentInterval += Time.deltaTime;
                 }
                 // ƒCƒ“ƒ^[ƒoƒ‹I—¹‚©‚Â“G‚ª‚¢‚½‚ç
                 else
                 {
-                    if (inRangeEnemies.Count <= 0) return;
-
-                    Debug.Log("ˆê”Ô‹ß‚¢“G" + nearestEnemyTransform.gameObject.name);
+                    if (_inRangeEnemies.Count <= 0) return;
 
                     Attack();
-                    currentInterval = 0f;
+                    _currentInterval = 0f;
                 }
-            });
+            })
+            .AddTo(this);
     }
 
     // ---------- AbstractMethod

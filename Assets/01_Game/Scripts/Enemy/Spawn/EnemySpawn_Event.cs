@@ -4,25 +4,26 @@ using UnityEngine;
 
 public class EnemySpawn_Event : EnemySpawnBase
 {
-    // ---------------------------- Field
-    private List<GameObject> _currentSpawnObjList = new();
-
     // ---------------------------- OverrideMethod
     public override void StartMethod()
     {
         foreach (var spawnType in _spawnType)
         {
-            _timeManager.CurrentTimeSecond
+            GameManager.Instance.TimeManager.CurrentTimeSecond
                 .Where(value => spawnType.delaySecond <= value)
                 .Take(1)
                 .Subscribe(value =>
                 {
-                    _currentSpawnObjList = spawnType.enemyList;
+                    _currentSpawnType = spawnType;
 
                     // “G‚ğ¶¬‚·‚éˆ—
-                    int num = Random.Range(0, _currentSpawnObjList.Count);
+                    int num = Random.Range(0, _currentSpawnType.enemyList.Count);
 
-                    Spawn(_currentSpawnObjList[num]);
+                    // “G‚ğ¶¬‚·‚éˆ—
+                    for (int i = 0; i < _currentSpawnType.spawnValue; i++)
+                    {
+                        Spawn(_currentSpawnType.enemyList[num]);
+                    }
                 })
                 .AddTo(this);
         }

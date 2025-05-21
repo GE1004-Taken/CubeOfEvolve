@@ -4,7 +4,9 @@ namespace Assets.IGC2025.Scripts.GameManagers
     {
         TITLE,
         INITIALIZE,
-        GAME,
+        READY,
+        BATTLE,
+        BUILD,
         PAUSE,
         TUTORIAL,
         GAMEOVER,
