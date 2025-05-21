@@ -291,8 +291,8 @@ GameObject:
   - component: {fileID: 6917629506812186995}
   - component: {fileID: 5175521391761362082}
   - component: {fileID: 100909744585822006}
-  - component: {fileID: 7000552848840723741}
-  - component: {fileID: 6497953513524797507}
+  - component: {fileID: 6401569566127664891}
+  - component: {fileID: 6454232470311963539}
   - component: {fileID: 3060206199156380132}
   - component: {fileID: 1607303575592988257}
   - component: {fileID: 4051989162334480098}
@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfae81c6a9ca45c42b9eb086394664bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7000552848840723741
+--- !u!114 &6401569566127664891
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -400,29 +400,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 9016021313319397845}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ef8bda7c25db95499a088bb85d42b68, type: 3}
+  m_Script: {fileID: 11500000, guid: 662c9be90baabc347b9a5d6a89c9a082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selectedWeapon:
+    value: {fileID: 0}
   _cubePrefab: {fileID: 4176307090542740963, guid: 3f1f541fac57ad84f9fa768dd2a23677, type: 3}
   _rayDist: 50
-  _normalMaterial: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
-  _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
---- !u!114 &6497953513524797507
+--- !u!114 &6454232470311963539
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9016021313319397845}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f96c0c12535cd241948bae17c2d8a15, type: 3}
+  m_Script: {fileID: 11500000, guid: 32f913b3e5dd8604caf872564f8ab366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponPrefab: {fileID: 1873873604698115469, guid: c8bf7ddc2d9063a48a7b56cf03544b52, type: 3}
-  _rayDist: 50
-  _predictWeapon: {fileID: 0}
+  _cubes:
+  - {fileID: 3060206199156380132}
+  _normalMaterial: {fileID: 2100000, guid: 87dbb044dc0904b4f83e30445be3ccea, type: 2}
+  _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
+  _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
+  _isActived:
+    value: 1
 --- !u!114 &3060206199156380132
 MonoBehaviour:
   m_ObjectHideFlags: 0
