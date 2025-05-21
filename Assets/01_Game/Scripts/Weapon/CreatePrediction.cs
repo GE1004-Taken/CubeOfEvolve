@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponCreatePrediction : MonoBehaviour
+public class CreatePrediction : MonoBehaviour
 {
     // ---------- SerializeField
     [SerializeField] private List<Cube> _cubes = new List<Cube>();
@@ -35,6 +35,7 @@ public class WeaponCreatePrediction : MonoBehaviour
     {
         // Ý’u‚ªo—ˆ‚é‚©‚ÅF‚ð•Ï‚¦‚é
         _canCreated
+            .Where(_ => !_isActived.Value)
             .Subscribe(x =>
             {
                 foreach(var cube in _cubes)
