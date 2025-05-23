@@ -11,7 +11,7 @@ public class TestBullet : MonoBehaviour
     private float _atk;
     private float _attackSpeed;
     private Vector3 _attackDir;
-    private float _destroySecond = 20f;
+    private float _destroySecond = 10f;
 
     // ---------------------------- UnityMessage
     public string TargetTag => _targetTag;
