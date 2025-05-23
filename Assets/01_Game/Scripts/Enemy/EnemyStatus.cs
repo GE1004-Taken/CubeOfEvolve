@@ -53,14 +53,6 @@ public class EnemyStatus : MonoBehaviour, IDamageble
             .AddTo(this);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            TakeDamage(1);
-        }
-    }
-
     // ---------------------------- PublicMethod
     /// <summary>
     /// エネミーが生成される処理
