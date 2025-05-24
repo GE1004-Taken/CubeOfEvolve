@@ -3,13 +3,15 @@ using UnityEngine;
 using Assets.IGC2025.Scripts.GameManagers;
 
 [RequireComponent(typeof(TimeManager))]
+[RequireComponent(typeof(SceneLoader))]
 public class GameManager : MonoBehaviour
 {
     // ---------- Singleton
     public static GameManager Instance;
 
     // ---------- SerializeField
-    [SerializeField] private TimeManager _timeManager;
+    private TimeManager _timeManager;
+    private SceneLoader _sceneLoader;
 
     // ---------- RP
     private ReactiveProperty<GameState> _currentGameState = new();
@@ -17,10 +19,12 @@ public class GameManager : MonoBehaviour
 
     // ---------- Property
     public TimeManager TimeManager => _timeManager;
+    public SceneLoader SceneLoader => _sceneLoader;
 
     // ---------- UnityMessage
     private void Awake()
     {
+        // ƒVƒ“ƒOƒ‹ƒgƒ“
         if (Instance == null)
         {
             Instance = this;
@@ -30,6 +34,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // ‰Šú‰»
+        _timeManager = GetComponent<TimeManager>();
+        _sceneLoader = GetComponent<SceneLoader>();
     }
 
     private void Start()
