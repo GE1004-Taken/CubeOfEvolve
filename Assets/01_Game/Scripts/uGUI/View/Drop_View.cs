@@ -1,4 +1,5 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using App.GameSystem.Modules;
 using R3;
 using System.Collections.Generic;
 using TMPro;

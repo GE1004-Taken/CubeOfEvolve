@@ -13,6 +13,7 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using R3;
 using R3.Triggers;
+using System;
 
 // ゲーム全体のサウンド管理を行うシングルトンクラス。
 public class SoundManager : MonoBehaviour
@@ -58,6 +59,9 @@ public class SoundManager : MonoBehaviour
     private AudioSource currentBGMSource;
     // 現在再生中の BGM の SoundData。
     private SoundData currentSoundData;
+
+    // フェード処理中の購読を管理するためのDisposable。
+    private IDisposable _fadeDisposable;
 
     // ---------------------------- UnityMessage
 
@@ -163,6 +167,48 @@ public class SoundManager : MonoBehaviour
         {
             Debug.LogWarning($"その別名は登録されていません: {name}");
         }
+    }
+
+    /// <summary>
+    /// 現在再生中のBGMをフェードアウトさせて停止します。
+    /// </summary>
+    /// <param name="fadeDuration">フェードアウトにかける時間（秒）</param>
+    public void StopBGMWithFade(float fadeDuration)
+    {
+        if (currentBGMSource == null || !currentBGMSource.isPlaying)
+        {
+            Debug.Log("再生中のBGMがありません。");
+            return;
+        }
+
+        // 既存のフェード処理を中止
+        _fadeDisposable?.Dispose();
+
+        float startVolume = currentBGMSource.volume;
+        _fadeDisposable = Observable.Interval(TimeSpan.FromSeconds(Time.deltaTime))
+            .TakeWhile(_ => currentBGMSource != null && currentBGMSource.volume > 0)
+            .Subscribe(
+                _ =>
+                {
+                    if (currentBGMSource != null)
+                    {
+                        currentBGMSource.volume -= startVolume * (Time.deltaTime / fadeDuration);
+                        if (currentBGMSource.volume <= 0)
+                        {
+                            currentBGMSource.Stop();
+                            currentBGMSource.volume = startVolume; // 元のボリュームに戻しておく
+                            _fadeDisposable?.Dispose(); // 購読を解除
+                        }
+                    }
+                    else
+                    {
+                        _fadeDisposable?.Dispose(); // AudioSourceがnullになった場合も解除
+                    }
+                }
+                // R3ではonErrorとonCompletedはSubscribeの引数としては指定しません。
+                // エラーはCatchなどで、完了はFinallyなどで扱います。
+                // 今回のようなロジックでは通常エラーは発生しにくいです。
+            );
     }
 
     // PlayBGMForScene メソッド：指定されたシーン名に対応する BGM を再生する。

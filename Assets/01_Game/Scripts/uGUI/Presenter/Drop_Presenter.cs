@@ -125,7 +125,7 @@ public class Drop_Presenter : MonoBehaviour
             //     upgradeableModuleIds.Add(runtimeModule.Id);
             // }
             // 仮に、レベルが5未満のモジュールをアップグレード可能とする
-            if (runtimeModule.CurrentLevel < 5)
+            if (runtimeModule.CurrentLevelValue < 5)
             {
                 upgradeableModuleIds.Add(runtimeModule.Id);
             }
