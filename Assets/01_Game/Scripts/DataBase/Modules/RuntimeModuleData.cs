@@ -30,8 +30,8 @@ public class RuntimeModuleData
         // ランタイムデータの初期値を設定
         // masterData に _initialLevel があればそれを利用
         // 今回はmasterDataにレベルがないので、初期レベルは0とします
-        CurrentLevel = 0;
-        Quantity = 1; // プレイヤーがモジュールを所有したら初期数は1とする例
+        CurrentLevel = masterData.Level;
+        Quantity = masterData.Quantity; // プレイヤーがモジュールを所有したら初期数は1とする例
     }
 
     /// <summary>
@@ -54,8 +54,6 @@ public class RuntimeModuleData
     {
         public int id;
         public int level;
-        public int durability;
-        public bool isEquipped;
         public int quantity;
     }
 }

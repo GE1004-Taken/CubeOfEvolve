@@ -32,6 +32,7 @@ namespace App.GameSystem.Modules
             }
             else
             {
+                Initialize();
                 Instance = this;
                 // シーン遷移してもデータを保持したい場合はコメント解除
                 //DontDestroyOnLoad(gameObject);
@@ -40,38 +41,54 @@ namespace App.GameSystem.Modules
         // ------------------ シングルトンパターン終わり
 
         // ------------------ 初期化
-        /// <summary>
+       
         /// ランタイムモジュールデータを初期化します。
+        /// ModuleDataStoreに含まれる全てのモジュールを初期状態でプレイヤーが持つように設定します。
         /// 通常、ゲーム開始時やシーンロード時に呼び出されます。
         /// </summary>
-        /// <param name="initialModuleIds">プレイヤーが初期状態で持つモジュールのIDリスト。</param>
-        public void Initialize(List<int> initialModuleIds)
+        public void Initialize()
         {
             if (_moduleDataStore == null)
             {
-                Debug.LogError("ModuleDataStore is not assigned to RuntimeModuleManager.");
+                Debug.LogError("RuntimeModuleManager: ModuleDataStore is not assigned in Inspector! Cannot initialize modules.");
+                return;
+            }
+            if (_moduleDataStore.DaraBase == null)
+            {
+                Debug.LogError("RuntimeModuleManager: ModuleDataStore.DaraBase is NULL! Master data is not loaded. Cannot initialize modules.");
+                return;
+            }
+            if (_moduleDataStore.DaraBase.ItemList == null || _moduleDataStore.DaraBase.ItemList.Count == 0)
+            {
+                Debug.LogWarning("RuntimeModuleManager: ModuleDataStore.DaraBase.ItemList is EMPTY. No master ModuleData to initialize with.");
                 return;
             }
 
             _runtimeModules.Clear(); // 既存のランタイムデータをクリア
 
-            // 初期状態でプレイヤーに持たせるモジュールを生成
-            foreach (int moduleId in initialModuleIds)
+            // (変更点: Storeから全てのモジュールを取得し、ランタイムデータとして追加)
+            foreach (ModuleData masterModuleData in _moduleDataStore.DaraBase.ItemList)
             {
-                ModuleData masterModuleData = _moduleDataStore.FindWithId(moduleId);
                 if (masterModuleData != null)
                 {
-                    // RuntimeModuleData をマスターデータから初期化
                     RuntimeModuleData runtimeModule = new RuntimeModuleData(masterModuleData);
-                    _runtimeModules.Add(runtimeModule.Id, runtimeModule);
+                    // 既に同じIDが存在しないかチェック (エラー防止、通常は発生しないはずだが念のため)
+                    if (_runtimeModules.ContainsKey(runtimeModule.Id))
+                    {
+                        Debug.LogWarning($"RuntimeModuleManager: Duplicate module ID {runtimeModule.Id} found in ModuleDataStore.DaraBase.ItemList. Skipping duplicate.");
+                    }
+                    else
+                    {
+                        _runtimeModules.Add(runtimeModule.Id, runtimeModule);
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning($"Master ModuleData with ID {moduleId} not found. Skipping initialization for this module.");
+                    Debug.LogWarning("RuntimeModuleManager: Null ModuleData found in ModuleDataStore.DaraBase.ItemList. Skipping.");
                 }
             }
 
-            Debug.Log($"Initialized {_runtimeModules.Count} player runtime modules.");
+            Debug.Log($"RuntimeModuleManager Initialized. Managing {_runtimeModules.Count} player runtime modules, taken from ModuleDataStore.");
         }
 
         // ------------------ ランタイムデータへのアクセス
