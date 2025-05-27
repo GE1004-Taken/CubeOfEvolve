@@ -1,4 +1,5 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using App.GameSystem.Modules;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +37,7 @@ public class Detailed_View : MonoBehaviour
         // if (_blockSizeImage != null) _blockSizeImage.sprite = masterData.BlockSprite;
 
         // 各テキストコンポーネントに値を代入
-        if (_levelText != null) _levelText.text = $"Lv: {runtimeData.CurrentLevel}";
+        if (_levelText != null) _levelText.text = $"Lv: {runtimeData.CurrentLevelValue}";
         if (_unitNameText != null) _unitNameText.text = masterData.ViewName; // マスターデータの表示名
         //if (_atkText != null) _atkText.text = $"ATK: {masterData.AttackPower + (runtimeData.CurrentLevel * 5)}"; // 例: 攻撃力はマスターデータとレベルから計算
         //if (_rapidText != null) _rapidText.text = $"SPD: {masterData.Speed}"; // 例: 速度はマスターデータから
