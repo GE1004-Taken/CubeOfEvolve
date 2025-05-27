@@ -9,7 +9,7 @@ namespace App.BaseSystem.DataStores.ScriptableObjects
         [SerializeField] protected T _dataBase;
 
         // ------------------------------ Property
-        public T DaraBase => _dataBase;
+        public T DataBase => _dataBase;
 
         // ------------------------------ PublicMethod
         public U FindWithName(string name)

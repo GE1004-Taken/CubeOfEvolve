@@ -53,12 +53,12 @@ namespace App.GameSystem.Modules
                 Debug.LogError("RuntimeModuleManager: ModuleDataStore is not assigned in Inspector! Cannot initialize modules.");
                 return;
             }
-            if (_moduleDataStore.DaraBase == null)
+            if (_moduleDataStore.DataBase == null)
             {
                 Debug.LogError("RuntimeModuleManager: ModuleDataStore.DaraBase is NULL! Master data is not loaded. Cannot initialize modules.");
                 return;
             }
-            if (_moduleDataStore.DaraBase.ItemList == null || _moduleDataStore.DaraBase.ItemList.Count == 0)
+            if (_moduleDataStore.DataBase.ItemList == null || _moduleDataStore.DataBase.ItemList.Count == 0)
             {
                 Debug.LogWarning("RuntimeModuleManager: ModuleDataStore.DaraBase.ItemList is EMPTY. No master ModuleData to initialize with.");
                 return;
@@ -67,7 +67,7 @@ namespace App.GameSystem.Modules
             _runtimeModules.Clear(); // 既存のランタイムデータをクリア
 
             // (変更点: Storeから全てのモジュールを取得し、ランタイムデータとして追加)
-            foreach (ModuleData masterModuleData in _moduleDataStore.DaraBase.ItemList)
+            foreach (ModuleData masterModuleData in _moduleDataStore.DataBase.ItemList)
             {
                 if (masterModuleData != null)
                 {
