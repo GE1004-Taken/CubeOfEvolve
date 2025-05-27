@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AT.uGUI.TEST
 {
@@ -7,6 +8,14 @@ namespace AT.uGUI.TEST
     {
         [SerializeField] PlayerCore _playerCore;
         private bool _isPossible = true;
+        
+        [SerializeField] private Button _button;
+        [SerializeField] private Drop_Presenter _drop;
+
+        private void Start()
+        {
+            _button.onClick.AddListener(() =>_drop.PrepareAndShowDropUI());
+        }
 
         // Update is called once per frame
         void Update()
