@@ -1,0 +1,171 @@
+// App.GameSystem.UI/Shop_View.cs
+using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using App.GameSystem.Modules;
+using R3;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace App.GameSystem.UI
+{
+    /// <summary>
+    /// ショップ画面のビューを担当するクラス。
+    /// モジュールリストの表示、UIの表示・非表示、購入ボタンクリックイベントの通知を行う。
+    /// </summary>
+    public class Shop_View : MonoBehaviour
+    {
+        // ----- SerializeField
+        [SerializeField] private GameObject _moduleItemPrefab; // 各モジュール表示用のプレハブ (Detailed_ViewとButtonを含む)
+        [SerializeField] private Transform _contentParent; // モジュールリストの親Transform
+        [SerializeField] private TextMeshProUGUI _playerMoneyText; // プレイヤーの所持コイン表示用テキスト
+        [SerializeField] private ModuleDataStore _moduleDataStore; // MasterDataを取得するために必要
+
+        // ----- Events (Presenter が R3 で購読する)
+        public Subject<int> OnModulePurchaseRequested { get; private set; } = new Subject<int>();
+        // OnShopCloseRequested はPresenterが直接購読しないため削除（外部でShop_View.Hide()を呼ぶ想定）
+
+        // ----- Field
+        private List<GameObject> _instantiatedModuleItems = new List<GameObject>();
+        private Dictionary<int, Button> _purchaseButtons = new Dictionary<int, Button>(); // モジュールIDと購入ボタンのマッピング
+        private CompositeDisposable _disposables = new CompositeDisposable(); // R3購読管理用
+
+        // ----- UnityMessage
+        private void Awake()
+        {
+            if (_moduleDataStore == null)
+            {
+                Debug.LogError("Shop_View: ModuleDataStore is not assigned in Inspector! Cannot display module details.", this);
+                enabled = false;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            _disposables.Dispose(); // オブジェクト破棄時に全ての購読を解除
+        }
+
+        // ----- Public Methods (Presenter から呼び出される)
+
+        /// <summary>
+        /// ショップに表示するモジュールリストを設定し、UIを更新します。
+        /// レベル1以上のモジュールのみ、実際のランタイムデータに基づいて表示されます。
+        /// </summary>
+        /// <param name="shopRuntimeModules">ショップに表示するRuntimeModuleDataのリスト。</param>
+        public void DisplayShopModules(List<RuntimeModuleData> shopRuntimeModules)
+        {
+            // 既存のモジュールアイテムを全てクリア
+            foreach (var item in _instantiatedModuleItems)
+            {
+                Destroy(item);
+            }
+            _instantiatedModuleItems.Clear();
+            _purchaseButtons.Clear();
+            _disposables.Clear(); // 新しいボタン購読のために既存の購読をクリア
+
+            // 各モジュールデータを基にUI要素を生成・設定
+            foreach (var runtimeData in shopRuntimeModules)
+            {
+                if (runtimeData == null)
+                {
+                    Debug.LogWarning("Shop_View: Null RuntimeModuleData provided in shopRuntimeModules list. Skipping.", this);
+                    continue;
+                }
+
+                // 対応するマスターデータを取得
+                ModuleData masterData = _moduleDataStore.FindWithId(runtimeData.Id);
+                if (masterData == null)
+                {
+                    Debug.LogError($"Shop_View: MasterData for RuntimeModule ID {runtimeData.Id} not found in ModuleDataStore. Cannot display module.", this);
+                    continue;
+                }
+
+                GameObject moduleItem = Instantiate(_moduleItemPrefab, _contentParent);
+                _instantiatedModuleItems.Add(moduleItem);
+
+                Detailed_View detailedView = moduleItem.GetComponent<Detailed_View>();
+                Button purchaseButton = moduleItem.GetComponentInChildren<Button>(); // 子要素からボタンを探す
+
+                if (detailedView == null)
+                {
+                    Debug.LogError($"Shop_View: _moduleItemPrefab does not have Detailed_View component. Module ID: {masterData.Id}", moduleItem);
+                    continue;
+                }
+                if (purchaseButton == null)
+                {
+                    Debug.LogError($"Shop_View: _moduleItemPrefab does not have Button component in children. Module ID: {masterData.Id}", moduleItem);
+                    continue;
+                }
+
+                // 実際のRuntimeModuleDataをDetailed_Viewに渡す
+                detailedView.SetInfo(masterData, runtimeData);
+
+                // 購入ボタンにイベントを登録
+                _purchaseButtons.Add(masterData.Id, purchaseButton);
+                int moduleId = masterData.Id; // クロージャのためにコピー
+                purchaseButton.OnClickAsObservable()
+                              .Subscribe(_ => OnModulePurchaseButtonClicked(moduleId))
+                              .AddTo(_disposables); // _disposables に追加
+
+                // ボタンのテキストを設定 (例: "購入 - 100G")
+                TextMeshProUGUI buttonText = purchaseButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (buttonText != null)
+                {
+                    buttonText.text = $"購入 - {masterData.BasePrice}G";
+                }
+            }
+        }
+
+        /// <summary>
+        /// プレイヤーの所持コインをUIに表示します。
+        /// </summary>
+        /// <param name="coins">プレイヤーの現在の所持コイン。</param>
+        public void UpdatePlayerCoins(int coins)
+        {
+            if (_playerMoneyText != null)
+            {
+                _playerMoneyText.text = $"所持コイン: {coins}";
+            }
+        }
+
+        /// <summary>
+        /// 特定のモジュールの購入ボタンの有効/無効を切り替えます。
+        /// </summary>
+        /// <param name="moduleId">対象のモジュールID。</param>
+        /// <param name="isInteractable">ボタンを操作可能にするか。</param>
+        public void SetPurchaseButtonInteractable(int moduleId, bool isInteractable)
+        {
+            if (_purchaseButtons.TryGetValue(moduleId, out Button button))
+            {
+                button.interactable = isInteractable;
+            }
+        }
+
+        /// <summary>
+        /// ショップUIを表示します。
+        /// </summary>
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// ショップUIを非表示にします。
+        /// </summary>
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
+        // ----- Private Methods (UIイベントハンドラ)
+
+        /// <summary>
+        /// モジュール購入ボタンがクリックされたときに呼び出されるハンドラ。
+        /// </summary>
+        /// <param name="moduleId">購入がリクエストされたモジュールのID。</param>
+        private void OnModulePurchaseButtonClicked(int moduleId)
+        {
+            OnModulePurchaseRequested.OnNext(moduleId); // Presenterに通知
+        }
+    }
+}
