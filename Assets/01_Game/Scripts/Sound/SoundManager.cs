@@ -170,7 +170,7 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 現在再生中のBGMをフェードアウトさせて停止します。
+    /// 現在再生中のBGMをフェードアウトさせて停止する。
     /// </summary>
     /// <param name="fadeDuration">フェードアウトにかける時間（秒）</param>
     public void StopBGMWithFade(float fadeDuration)

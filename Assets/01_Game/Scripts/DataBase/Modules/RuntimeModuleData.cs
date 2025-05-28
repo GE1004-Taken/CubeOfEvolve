@@ -1,52 +1,73 @@
-// App.GameSystem.Modules/RuntimeModuleData.cs
-using R3; // R3を使用
-using System; // Serializableを使用する場合
-using UnityEngine; // ScriptableObjectなど、Unityの型を使用する場合
-using App.BaseSystem.DataStores.ScriptableObjects.Modules; // ModuleDataを参照するため
+using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using R3;
+using System;
+using UnityEngine;
 
 namespace App.GameSystem.Modules
 {
-    [Serializable] // Unity Inspectorで表示したい場合など
+    /// <summary>
+    /// ゲーム中に動的に変化するモジュールデータを管理するクラス。
+    /// マスターデータ (ModuleData) を基に初期化され、レベルや数量などの状態を保持します。
+    /// </summary>
+    [Serializable]
     public class RuntimeModuleData
     {
-        public int Id { get; private set; }
+        // ----- Property (公開プロパティ)
+        public int Id { get; private set; } // モジュールの一意なID。
 
-        // 現在のレベルをReactivePropertyで公開
+        // ----- ReactiveProperty (リアクティブプロパティ)
         [SerializeField]
-        private ReactiveProperty<int> _currentLevel;
-        public ReadOnlyReactiveProperty<int> Level => _currentLevel;
-        public int CurrentLevelValue => _currentLevel.Value; // 直接値を取得するためのプロパティ
+        private ReactiveProperty<int> _currentLevel; // 現在のレベルを管理するReactiveProperty。
+        public ReadOnlyReactiveProperty<int> Level => _currentLevel; // 外部公開用の読み取り専用レベルプロパティ。
+        public int CurrentLevelValue => _currentLevel.Value; // 現在のレベルの直接値。
 
-        // 現在の数量をReactivePropertyで公開
         [SerializeField]
-        private ReactiveProperty<int> _quantity;
-        public ReadOnlyReactiveProperty<int> Quantity => _quantity;
-        public int CurrentQuantityValue => _quantity.Value; // 直接値を取得するためのプロパティ
+        private ReactiveProperty<int> _quantity; // 現在の数量を管理するReactiveProperty。
+        public ReadOnlyReactiveProperty<int> Quantity => _quantity; // 外部公開用の読み取り専用数量プロパティ。
+        public int CurrentQuantityValue => _quantity.Value; // 現在の数量の直接値。
 
-        // コンストラクタ (MasterDataから初期化)
+        // ----- Constructor (コンストラクタ)
+        /// <summary>
+        /// ModuleDataマスターデータからRuntimeModuleDataのインスタンスを初期化します。
+        /// </summary>
+        /// <param name="masterData">モジュールのマスターデータ。</param>
         public RuntimeModuleData(ModuleData masterData)
         {
-            Id = masterData.Id;
-            _currentLevel = new ReactiveProperty<int>(0); // 初期レベルは0
-            _quantity = new ReactiveProperty<int>(0); // 初期数量は0
+            Id = masterData.Id; // マスターデータからIDを設定。
+            _currentLevel = new ReactiveProperty<int>(0); // 初期レベルは0で設定。
+            _quantity = new ReactiveProperty<int>(0); // 初期数量は0で設定。
         }
 
-        // レベルを更新する内部メソッド
+        // ----- Public Methods (公開メソッド)
+        /// <summary>
+        /// モジュールのレベルを更新します。
+        /// </summary>
+        /// <param name="newLevel">設定する新しいレベル。</param>
         public void SetLevel(int newLevel)
         {
-            if (newLevel < 0) newLevel = 0;
-            _currentLevel.Value = newLevel;
+            if (newLevel < 0) newLevel = 0; // レベルが負の値にならないように制限。
+            _currentLevel.Value = newLevel; // ReactivePropertyの値を更新。
         }
 
-        // 数量を更新する内部メソッド
+        /// <summary>
+        /// モジュールの数量を更新します。
+        /// </summary>
+        /// <param name="newQuantity">設定する新しい数量。</param>
         public void SetQuantity(int newQuantity)
         {
-            if (newQuantity < 0) newQuantity = 0;
-            _quantity.Value = newQuantity;
+            if (newQuantity < 0) newQuantity = 0; // 数量が負の値にならないように制限。
+            _quantity.Value = newQuantity; // ReactivePropertyの値を更新。
         }
 
-        // Convenience methods for changing level/quantity (通常はRuntimeModuleManager経由で呼ばれる)
+        /// <summary>
+        /// モジュールのレベルを1上げます。
+        /// </summary>
         public void LevelUp() => SetLevel(_currentLevel.Value + 1);
+
+        /// <summary>
+        /// モジュールの数量を指定された量だけ変更します。
+        /// </summary>
+        /// <param name="amount">数量の増減量。</param>
         public void ChangeQuantity(int amount) => SetQuantity(_quantity.Value + amount);
     }
 }

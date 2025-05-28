@@ -1,8 +1,7 @@
-// App.GameSystem.Presenters/Shop_Presenter.cs
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using App.GameSystem.UI;
-using R3; // R3のusingディレクティブ
+using R3;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,33 +11,38 @@ namespace App.GameSystem.Presenters
     /// <summary>
     /// ショップ画面のプレゼンターを担当するクラス。
     /// ViewからのイベントをR3で購読し、Model（RuntimeModuleManager, PlayerCore）を操作し、
-    /// Viewに表示データを渡す。
-    /// また、RuntimeModuleのレベル変更を監視し、ショップ表示を更新する。
+    /// Viewに表示データを渡します。また、RuntimeModuleのレベル変更を監視し、ショップ表示を更新します。
     /// </summary>
     public class Shop_Presenter : MonoBehaviour
     {
+        // ----- SerializedField (Unity Inspectorで設定)
         [Header("Dependencies")]
-        [SerializeField] private Shop_View _shopView;
-        [SerializeField] private ModuleDataStore _moduleDataStore;
-        [SerializeField] private RuntimeModuleManager _runtimeModuleManager;
-        [SerializeField] private PlayerCore _playerCore;
+        [SerializeField] private Shop_View _shopView; // ショップUIを表示するViewコンポーネント。
+        [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
+        [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
+        [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）を管理するコンポーネント。
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
-        // 各モジュールのレベル・数量変更購読用。コレクション変更時にクリアするためCompositeDisposableを使用
-        private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable();
+        // ----- Private Members (内部データ)
+        private CompositeDisposable _disposables = new CompositeDisposable(); // 全体の購読解除を管理するCompositeDisposable。
+        private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // 各モジュールのレベル・数量変更購読を管理するCompositeDisposable。
 
+        // ----- UnityMessage
+        /// <summary>
+        /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
+        /// 依存関係の取得と初期設定を行います。
+        /// </summary>
         void Awake()
         {
-            // 依存関係の取得とチェックはAwakeの早い段階で行う
+            // 依存関係の取得とチェック
             if (_shopView == null) _shopView = FindObjectOfType<Shop_View>();
-            if (_moduleDataStore == null) Debug.LogError("Shop_Presenter: ModuleDataStore is not assigned in Inspector!", this);
+            if (_moduleDataStore == null) Debug.LogError("Shop_Presenter: ModuleDataStoreがInspectorで設定されていません！", this);
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
             if (_playerCore == null) _playerCore = FindObjectOfType<PlayerCore>();
 
             // 各依存関係が揃っているか最終チェック
             if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
             {
-                Debug.LogError("Shop_Presenter: One or more dependencies are missing. Please check Inspector assignments and scene setup. Disabling this component.", this);
+                Debug.LogError("Shop_Presenter: 依存関係が不足しています。Inspectorの設定とシーンのセットアップを確認してください。このコンポーネントを無効にします。", this);
                 enabled = false;
                 return;
             }
@@ -55,14 +59,13 @@ namespace App.GameSystem.Presenters
             }
             else
             {
-                Debug.LogError("Shop_Presenter: PlayerCore.Money ReactiveProperty is null. Cannot subscribe to money changes.", this);
+                Debug.LogError("Shop_Presenter: PlayerCore.Money ReactivePropertyがnullです。所持金の変更を購読できません。", this);
             }
 
             // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ショップUIを更新する
-            // モジュールの追加、削除、または既存モジュールのレベル・数量変更がRuntimeModuleManagerから通知された場合に発火
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
                 .Subscribe(_ => {
-                    Debug.Log("RuntimeModuleData collection changed. Re-subscribing to module changes and updating shop UI.");
+                    Debug.Log("RuntimeModuleDataコレクションが変更されました。モジュールの変更購読を再設定し、ショップUIを更新します。");
                     // 既存のモジュールレベル・数量変更購読を全て解除
                     _moduleLevelAndQuantityChangeDisposables.Clear();
 
@@ -75,22 +78,25 @@ namespace App.GameSystem.Presenters
                 })
                 .AddTo(_disposables);
 
-            // 初期表示のために、コレクションが初期化された後に一度PrepareAndShowShopUIを呼び出す
-            // OnAllRuntimeModuleDataChangedがAwake後に発火するため、この行は不要な場合もありますが、
-            // 確実に初期表示を行うために残しておきます。
+            // 初期表示のためにショップUIを準備して表示
             PrepareAndShowShopUI();
         }
 
+        /// <summary>
+        /// OnDestroyはゲームオブジェクトが破棄されるときに呼び出されます。
+        /// 全ての購読を解除し、リソースを解放します。
+        /// </summary>
         private void OnDestroy()
         {
             _disposables.Dispose();
             _moduleLevelAndQuantityChangeDisposables.Dispose(); // 各モジュールのレベル・数量変更購読も解除
         }
 
+        // ----- Private Methods (プライベートメソッド)
         /// <summary>
-        /// 各RuntimeModuleDataのレベルと数量変更を購読するヘルパーメソッド
+        /// 各RuntimeModuleDataのレベルと数量変更を購読するヘルパーメソッドです。
         /// </summary>
-        /// <param name="runtimeModuleData"></param>
+        /// <param name="runtimeModuleData">購読対象のRuntimeModuleData。</param>
         private void SubscribeToModuleChanges(RuntimeModuleData runtimeModuleData)
         {
             // Levelの変更を購読
@@ -98,59 +104,34 @@ namespace App.GameSystem.Presenters
             {
                 runtimeModuleData.Level
                     .Subscribe(level => {
-                        Debug.Log($"Module {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) level changed to {level}. Updating shop UI.");
+                        Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) のレベルが {level} に変更されました。ショップUIを更新します。");
                         PrepareAndShowShopUI(); // レベルが変更されたらショップを再表示
                     })
                     .AddTo(_moduleLevelAndQuantityChangeDisposables); // 個別モジュールの購読は専用のDisposableBagに追加
             }
             else
             {
-                Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} does not expose its Level as a ReactiveProperty.", this);
+                Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はLevelをReactivePropertyとして公開していません。", this);
             }
 
-            // Quantityの変更も購読 (もし数量の変化でボタンの状態を変えたい場合)
+            // Quantityの変更を購読
             if (runtimeModuleData.Quantity != null)
             {
                 runtimeModuleData.Quantity
                     .Subscribe(quantity => {
-                        Debug.Log($"Module {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) quantity changed to {quantity}. Updating purchase button interactability.");
-                        // 数量変更だけならショップリスト全体ではなく、ボタンのインタラクト性のみ更新
-                        UpdatePurchaseButtonsInteractability();
+                        Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) の数量が {quantity} に変更されました。購入ボタンのインタラクト性を更新します。");
+                        UpdatePurchaseButtonsInteractability(); // 数量変更だけならショップリスト全体ではなく、ボタンのインタラクト性のみ更新
                     })
                     .AddTo(_moduleLevelAndQuantityChangeDisposables); // 個別モジュールの購読は専用のDisposableBagに追加
             }
             else
             {
-                Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} does not expose its Quantity as a ReactiveProperty.", this);
+                Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はQuantityをReactivePropertyとして公開していません。", this);
             }
         }
 
         /// <summary>
-        /// ショップ画面を表示する準備をし、Viewに表示を依頼します。
-        /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
-        /// また、RuntimeModuleDataの変更によっても自動的に呼び出されることがあります。
-        /// </summary>
-        public void PrepareAndShowShopUI()
-        {
-            if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
-            {
-                Debug.LogError("Shop_Presenter dependencies not met! Cannot prepare shop UI. Check Awake logs.", this);
-                return;
-            }
-
-            // ★変更点: レベル1以上のモジュールのみをViewに渡す★
-            // AllRuntimeModuleDataはIReadOnlyList<RuntimeModuleData>型になっている
-            List<RuntimeModuleData> shopRuntimeModules = _runtimeModuleManager.AllRuntimeModuleData
-                .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0) // CurrentLevelValueを使用
-                .ToList();
-
-            _shopView.DisplayShopModules(shopRuntimeModules);
-            _shopView.UpdatePlayerCoins(_playerCore.Money.CurrentValue);
-            UpdatePurchaseButtonsInteractability();
-        }
-
-        /// <summary>
-        /// プレイヤーのコイン変更時にショップUIを更新する。
+        /// プレイヤーのコイン変更時にショップUIを更新します。
         /// </summary>
         /// <param name="newCoins">新しいコイン量。</param>
         private void UpdateShopUIOnCoinChange(int newCoins)
@@ -167,13 +148,13 @@ namespace App.GameSystem.Presenters
         {
             if (_playerCore == null || _moduleDataStore == null || _moduleDataStore.DataBase == null || _moduleDataStore.DataBase.ItemList == null)
             {
-                Debug.LogError("Shop_Presenter: Required data for updating purchase button interactability is missing.", this);
+                Debug.LogError("Shop_Presenter: 購入ボタンのインタラクト可能性を更新するための必要なデータが不足しています。", this);
                 return;
             }
 
             // ショップに表示されているすべてのモジュール（レベル1以上のもの）についてチェック
             foreach (var runtimeData in _runtimeModuleManager.AllRuntimeModuleData
-                                                            .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0))
+                                                             .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0))
             {
                 ModuleData masterData = _moduleDataStore.FindWithId(runtimeData.Id);
                 if (masterData == null) continue;
@@ -187,7 +168,7 @@ namespace App.GameSystem.Presenters
         }
 
         /// <summary>
-        /// モジュール購入リクエストを受け取った際のハンドラ。
+        /// モジュール購入リクエストを受け取った際のハンドラです。
         /// </summary>
         /// <param name="moduleId">購入がリクエストされたモジュールのID。</param>
         private void HandleModulePurchaseRequested(int moduleId)
@@ -195,21 +176,21 @@ namespace App.GameSystem.Presenters
             ModuleData masterData = _moduleDataStore.FindWithId(moduleId);
             if (masterData == null)
             {
-                Debug.LogError($"Shop_Presenter: Master data for module ID {moduleId} not found. Cannot process purchase.", this);
+                Debug.LogError($"Shop_Presenter: モジュールID {moduleId} のマスターデータが見つかりません。購入を処理できません。", this);
                 return;
             }
 
             RuntimeModuleData runtimeModule = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
             if (runtimeModule == null)
             {
-                Debug.LogError($"Shop_Presenter: Runtime data for module ID {moduleId} not found. This should not happen if modules are initialized to all players.", this);
+                Debug.LogError($"Shop_Presenter: モジュールID {moduleId} のランタイムデータが見つかりません。これは全てのプレイヤーにモジュールが初期化されている場合は発生しないはずです。", this);
                 return;
             }
 
             // レベルが0のモジュールは購入できない
-            if (runtimeModule.CurrentLevelValue == 0) // CurrentLevelValueを使用
+            if (runtimeModule.CurrentLevelValue == 0)
             {
-                Debug.LogWarning($"Shop_Presenter: Module ID {moduleId} ({masterData.ViewName}) is at level 0. Cannot purchase from shop. Please upgrade it first (e.g., via drops).", this);
+                Debug.LogWarning($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) はレベル0です。ショップから購入できません。まずアップグレードしてください（例: ドロップ経由で）。", this);
                 return;
             }
 
@@ -217,7 +198,7 @@ namespace App.GameSystem.Presenters
             if (_playerCore.Money.CurrentValue >= masterData.BasePrice)
             {
                 _playerCore.PayMoney(masterData.BasePrice);
-                Debug.Log($"Shop_Presenter: Player purchased module ID {moduleId} ({masterData.ViewName}) for {masterData.BasePrice} coins. Remaining coins: {_playerCore.Money.CurrentValue}.", this);
+                Debug.Log($"Shop_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を {masterData.BasePrice} コインで購入しました。残りコイン: {_playerCore.Money.CurrentValue}。", this);
 
                 // モジュールをプレイヤーのランタイムモジュールに追加（数量を1増やす）
                 _runtimeModuleManager.ChangeModuleQuantity(moduleId, 1);
@@ -227,8 +208,32 @@ namespace App.GameSystem.Presenters
             }
             else
             {
-                Debug.Log($"Shop_Presenter: Not enough coins to purchase module ID {moduleId} ({masterData.ViewName}). Required: {masterData.BasePrice}, Have: {_playerCore.Money.CurrentValue}.", this);
+                Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのにコインが不足しています。必要: {masterData.BasePrice}、所持: {_playerCore.Money.CurrentValue}。", this);
             }
+        }
+
+        // ----- Public Methods (公開メソッド)
+        /// <summary>
+        /// ショップ画面を表示する準備をし、Viewに表示を依頼します。
+        /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
+        /// また、RuntimeModuleDataの変更によっても自動的に呼び出されることがあります。
+        /// </summary>
+        public void PrepareAndShowShopUI()
+        {
+            if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
+            {
+                Debug.LogError("Shop_Presenter: ショップUIを準備するための依存関係が満たされていません！Awakeのログを確認してください。", this);
+                return;
+            }
+
+            // レベル1以上のモジュールのみをViewに渡す
+            List<RuntimeModuleData> shopRuntimeModules = _runtimeModuleManager.AllRuntimeModuleData
+                .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0)
+                .ToList();
+
+            _shopView.DisplayShopModules(shopRuntimeModules);
+            _shopView.UpdatePlayerCoins(_playerCore.Money.CurrentValue);
+            UpdatePurchaseButtonsInteractability();
         }
     }
 }

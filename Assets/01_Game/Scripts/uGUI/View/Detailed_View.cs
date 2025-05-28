@@ -4,19 +4,21 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// モジュールの詳細情報をUIに表示するクラスです。
+/// </summary>
 public class Detailed_View : MonoBehaviour
 {
-    // -----
-    // -----SerializeField
-    [SerializeField] private Image _itemImage;
-    [SerializeField] private Image _blockSizeImage;
-    [SerializeField] private TextMeshProUGUI _levelText;
-    [SerializeField] private TextMeshProUGUI _unitNameText;
-    [SerializeField] private TextMeshProUGUI _atkText; // 例: 攻撃力
-    [SerializeField] private TextMeshProUGUI _rapidText; // 例: 攻撃速度
-    [SerializeField] private TextMeshProUGUI _priceText; // 例: 価格
+    // ----- SerializedField (Unity Inspectorで設定)
+    [SerializeField] private Image _itemImage; // モジュールのアイコン画像。
+    [SerializeField] private Image _blockSizeImage; // モジュールのブロックサイズを示す画像。
+    [SerializeField] private TextMeshProUGUI _levelText; // モジュールのレベルを表示するテキスト。
+    [SerializeField] private TextMeshProUGUI _unitNameText; // モジュールの名前を表示するテキスト。
+    [SerializeField] private TextMeshProUGUI _atkText; // モジュールの攻撃力を表示するテキスト（例）。
+    [SerializeField] private TextMeshProUGUI _rapidText; // モジュールの攻撃速度を表示するテキスト（例）。
+    [SerializeField] private TextMeshProUGUI _priceText; // モジュールの価格を表示するテキスト（例）。
 
-    // -----Public
+    // ----- Public Methods (Presenterから呼び出される)
     /// <summary>
     /// モジュール情報をUIに設定します。
     /// </summary>
@@ -26,21 +28,21 @@ public class Detailed_View : MonoBehaviour
     {
         if (masterData == null || runtimeData == null)
         {
-            Debug.LogError("MasterData or RuntimeData is null in Detailed_View.SetInfo.");
+            Debug.LogError("Detailed_View.SetInfoでMasterDataまたはRuntimeDataがnullです。");
             return;
         }
 
-        // アイテム画像代入 (ModuleDataにSpriteなどの画像情報があれば)
-        // if (_itemImage != null) _itemImage.sprite = masterData.IconSprite;
-
-        // ブロックサイズ画像代入 (もしあれば)
-        // if (_blockSizeImage != null) _blockSizeImage.sprite = masterData.BlockSprite;
-
         // 各テキストコンポーネントに値を代入
-        if (_levelText != null) _levelText.text = $"Lv: {runtimeData.CurrentLevelValue}";
-        if (_unitNameText != null) _unitNameText.text = masterData.ViewName; // マスターデータの表示名
-        //if (_atkText != null) _atkText.text = $"ATK: {masterData.AttackPower + (runtimeData.CurrentLevel * 5)}"; // 例: 攻撃力はマスターデータとレベルから計算
-        //if (_rapidText != null) _rapidText.text = $"SPD: {masterData.Speed}"; // 例: 速度はマスターデータから
-        if (_priceText != null) _priceText.text = $"Price: {masterData.BasePrice}";
+        if (_levelText != null) _levelText.text = $"{runtimeData.CurrentLevelValue}";
+        if (_unitNameText != null) _unitNameText.text = masterData.ViewName; // マスターデータの表示名。
+        // ATKの計算例: 攻撃力はマスターデータとレベルから計算されます。
+        // if (_atkText != null) _atkText.text = $"ATK: {masterData.AttackPower + (runtimeData.CurrentLevelValue * 5)}";
+        // SPDの例: 速度はマスターデータから取得されます。
+        // if (_rapidText != null) _rapidText.text = $"SPD: {masterData.Speed}";
+        if (_priceText != null) _priceText.text = $"{masterData.BasePrice}";
+
+        // アイテム画像とブロックサイズ画像は、`ModuleData` に `Sprite` などの画像情報が含まれている場合に設定します。
+        // if (_itemImage != null) _itemImage.sprite = masterData.IconSprite;
+        // if (_blockSizeImage != null) _blockSizeImage.sprite = masterData.BlockSprite;
     }
 }
