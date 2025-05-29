@@ -6,32 +6,38 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// ドロップ選択画面のビューを担当するクラス。
+/// モジュールオプションの表示、UIの表示・非表示、選択ボタンクリックイベントの通知を行います。
+/// </summary>
 public class Drop_View : MonoBehaviour
 {
-    // -----
-    // -----SerializeField
-    [SerializeField] private GameObject[] _moduleOptionObjects = new GameObject[3]; // 各モジュール選択肢のルートGameObject
-    [SerializeField] private TextMeshProUGUI _instructionsText; // 説明文テキスト
+    // ----- SerializedField (Unity Inspectorで設定)
+    [SerializeField] private GameObject[] _moduleOptionObjects = new GameObject[3]; // 各モジュール選択肢のルートGameObject。
+    [SerializeField] private TextMeshProUGUI _instructionsText; // 説明文テキスト。
 
-    // -----Field
-    private List<Button> _buttons = new List<Button>();
-    private List<Detailed_View> _detailedViews = new List<Detailed_View>();
-    private List<int> _currentDisplayedModuleIds = new List<int>(); // 現在表示しているモジュールのIDリスト
+    // ----- Private Members (内部データ)
+    private List<Button> _buttons = new List<Button>(); // 各オプションのボタンリスト。
+    private List<Detailed_View> _detailedViews = new List<Detailed_View>(); // 各オプションの詳細表示ビューリスト。
+    private List<int> _currentDisplayedModuleIds = new List<int>(); // 現在表示しているモジュールのIDリスト。
 
-    // -----Events (PresenterがR3で購読する)
-    // ユーザーがモジュールを選択した際に、選択されたモジュールのIDを通知
-    // UniRx.ISubject<int> ではなく R3.Subject<int> を使用
-    public Subject<int> OnModuleSelected { get; private set; } = new Subject<int>(); // R3.Subject を初期化
+    // ----- Events (PresenterがR3で購読する)
+    public Subject<int> OnModuleSelected { get; private set; } = new Subject<int>(); // ユーザーがモジュールを選択した際に、選択されたモジュールのIDを通知するSubject。
 
-    // -----UnityMessage
+    // ----- MonoBehaviour Lifecycle (MonoBehaviourライフサイクル)
+    /// <summary>
+    /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
+    /// 各オプションUIのコンポーネントを取得し、イベントを購読します。
+    /// </summary>
     private void Awake()
     {
-        // 各オプションオブジェクトからButtonとDetailed_Viewを取得し、初期化
         InitOptionViews();
-
     }
 
-    // -----Private
+    // ----- Private Methods (内部処理)
+    /// <summary>
+    /// 各モジュールオプションのViewコンポーネントを初期化し、ボタンイベントを購読します。
+    /// </summary>
     private void InitOptionViews()
     {
         _buttons.Clear();
@@ -42,15 +48,15 @@ public class Drop_View : MonoBehaviour
             GameObject obj = _moduleOptionObjects[i];
             if (obj == null)
             {
-                Debug.LogError($"_moduleOptionObjects[{i}] is null. Please assign it in the Inspector.");
+                Debug.LogError($"_moduleOptionObjects[{i}]がnullです。Inspectorで割り当ててください。");
                 continue;
             }
 
             Button button = obj.GetComponent<Button>();
             Detailed_View detailedView = obj.GetComponent<Detailed_View>();
 
-            if (button == null) Debug.LogError($"Button component not found on _moduleOptionObjects[{i}].");
-            if (detailedView == null) Debug.LogError($"Detailed_View component not found on _moduleOptionObjects[{i}].");
+            if (button == null) Debug.LogError($"_moduleOptionObjects[{i}]にButtonコンポーネントが見つかりません。");
+            if (detailedView == null) Debug.LogError($"_moduleOptionObjects[{i}]にDetailed_Viewコンポーネントが見つかりません。");
 
             if (button != null && detailedView != null)
             {
@@ -58,41 +64,34 @@ public class Drop_View : MonoBehaviour
                 _detailedViews.Add(detailedView);
 
                 // ボタンクリックイベントをR3で購読
-                int index = i; // クロージャのためにインデックスをキャプチャ
+                int index = i; // クロージャのためにインデックスをキャプチャ。
                 button.OnClickAsObservable()
                       .Subscribe(_ => OnOptionButtonClicked(index))
-                      .AddTo(this); // オブジェクト破棄時に購読を解除
+                      .AddTo(this); // オブジェクト破棄時に購読を解除。
             }
-            //obj.SetActive(false); // 各オプションも初期は非表示
         }
     }
 
     /// <summary>
-    /// オプションボタンがクリックされた際のハンドラ。
+    /// オプションボタンがクリックされた際のハンドラです。
     /// </summary>
     /// <param name="index">クリックされたボタンのインデックス。</param>
     private void OnOptionButtonClicked(int index)
     {
         if (index < 0 || index >= _currentDisplayedModuleIds.Count)
         {
-            //// 代替オプションがクリックされた場合の処理など
-            //if (_defaultOptionObject.activeSelf && index == _moduleOptionObjects.Length) // 例: 3つのオプションの後ろに代替オプションがある場合
-            //{
-            //    // ここで代替オプションが選択された場合のロジックを実行
-            //    // 例: 経験値獲得、コイン獲得などをPresenterに通知
-            //    Debug.Log("Default option selected.");
-            //    OnModuleSelected.OnNext(-1); // 仮に-1を代替オプションのIDとする
-            //}
-            Debug.LogWarning($"Invalid option index clicked: {index}");
+            Debug.LogWarning($"無効なオプションインデックスがクリックされました: {index}");
             return;
         }
 
         int selectedModuleId = _currentDisplayedModuleIds[index];
-        OnModuleSelected.OnNext(selectedModuleId); // 選択されたモジュールIDをイベントとして発火
+        OnModuleSelected.OnNext(selectedModuleId); // 選択されたモジュールIDをイベントとして発火。
 
+        // UIを非表示にするなどの後処理が必要であれば、ここで呼び出す
+        // 例: Hide();
     }
 
-    // -----Public
+    // ----- Public Methods (Presenterから呼び出される)
     /// <summary>
     /// ドロップ選択UIを表示します。
     /// Presenterから提供されるモジュールデータに基づいてUIを更新します。
@@ -101,13 +100,13 @@ public class Drop_View : MonoBehaviour
     /// <param name="showDefaultOption">代替オプションを表示するかどうか。</param>
     public void Show(List<(ModuleData master, RuntimeModuleData runtime)> moduleDatas, bool showDefaultOption)
     {
+        _currentDisplayedModuleIds.Clear(); // 表示IDリストをクリア。
 
-        _currentDisplayedModuleIds.Clear(); // 表示IDリストをクリア
-
-        //// まず全てのオプションを非表示に
-        //foreach (var obj in _moduleOptionObjects) obj.SetActive(false);
-        //_defaultOptionObject.SetActive(false);
-
+        // 全てのオプションを初期非表示にする (もし必要であれば)
+        foreach (var obj in _moduleOptionObjects)
+        {
+            obj.SetActive(false);
+        }
 
         // 渡されたデータに基づいて各オプションUIを設定
         for (int i = 0; i < moduleDatas.Count && i < _detailedViews.Count; i++)
@@ -116,17 +115,43 @@ public class Drop_View : MonoBehaviour
             if (master != null && runtime != null)
             {
                 _moduleOptionObjects[i].SetActive(true);
-                _detailedViews[i].SetInfo(master, runtime); // MasterDataとRuntimeDataの両方を渡す
-                _currentDisplayedModuleIds.Add(master.Id); // 表示中のモジュールIDを記録
+                _detailedViews[i].SetInfo(master, runtime); // MasterDataとRuntimeDataの両方を渡す。
+                _currentDisplayedModuleIds.Add(master.Id); // 表示中のモジュールIDを記録。
             }
         }
 
-        // 代替オプションの表示
+        // 代替オプションの表示 (現在コメントアウトされているため、必要に応じて実装)
         if (showDefaultOption)
         {
-            //_defaultOptionObject.SetActive(true);
-            // 必要であれば_defaultOptionObject内のDetailed_Viewやテキストを設定
+            // 例えば、_moduleOptionObjectsの最後の要素を代替オプションとして使用する場合
+            // if (_moduleOptionObjects.Length > moduleDatas.Count)
+            // {
+            //     _moduleOptionObjects[moduleDatas.Count].SetActive(true);
+            //     // 代替オプションのテキストなどを設定
+            //     _instructionsText.text = "アップグレード可能なモジュールがありません。代わりにコインを獲得します。";
+            //     // このボタンがクリックされたときに-1をOnModuleSelectedに発行するようにする
+            //     _buttons[moduleDatas.Count].OnClickAsObservable()
+            //         .Subscribe(_ => OnModuleSelected.OnNext(-1))
+            //         .AddTo(this);
+            // }
+            Debug.Log("Drop_View: 代替オプション表示のロジックが有効になりましたが、UIの実装はまだです。");
+            _instructionsText.text = "アップグレード可能なモジュールがありません。";
         }
+        else
+        {
+            // 通常の指示テキストを表示
+            _instructionsText.text = "アップグレードするモジュールを選択してください。";
+        }
+
+        // UI全体を表示
+        gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// ドロップ選択UIを非表示にします。
+    /// </summary>
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
 }
