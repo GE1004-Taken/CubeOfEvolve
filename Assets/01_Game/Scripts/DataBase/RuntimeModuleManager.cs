@@ -91,7 +91,7 @@ namespace App.GameSystem.Modules
             }
             // 全ての要素を追加し終えた後に一度だけ変更を通知。
             _collectionChangedSubject.OnNext(Unit.Default);
-            Debug.Log($"RuntimeModuleManager: {_allRuntimeModuleDataInternal.Count}個のモジュールをレベル0、数量0で初期化しました。");
+            Debug.Log($"RuntimeModuleManager: {_allRuntimeModuleDataInternal.Count}個のモジュールを初期化しました。");
 
             // デバッグ用: 特定のモジュールを初期レベル1に設定してショップに表示されるかテスト
             // if (_runtimeModuleDictionary.TryGetValue(1001, out var debugRmd)) // 仮のID

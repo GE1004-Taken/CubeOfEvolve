@@ -34,8 +34,8 @@ namespace App.GameSystem.Modules
         public RuntimeModuleData(ModuleData masterData)
         {
             Id = masterData.Id; // マスターデータからIDを設定。
-            _currentLevel = new ReactiveProperty<int>(0); // 初期レベルは0で設定。
-            _quantity = new ReactiveProperty<int>(0); // 初期数量は0で設定。
+            _currentLevel = new ReactiveProperty<int>(masterData.Level); // 初期レベルはマスターデータから代入。
+            _quantity = new ReactiveProperty<int>(masterData.Quantity); // 初期数量はマスターデータから代入。
         }
 
         // ----- Public Methods (公開メソッド)

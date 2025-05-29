@@ -88,7 +88,7 @@ public class Drop_View : MonoBehaviour
         OnModuleSelected.OnNext(selectedModuleId); // 選択されたモジュールIDをイベントとして発火。
 
         // UIを非表示にするなどの後処理が必要であれば、ここで呼び出す
-        // 例: Hide();
+        //Hide();
     }
 
     // ----- Public Methods (Presenterから呼び出される)
@@ -101,12 +101,6 @@ public class Drop_View : MonoBehaviour
     public void Show(List<(ModuleData master, RuntimeModuleData runtime)> moduleDatas, bool showDefaultOption)
     {
         _currentDisplayedModuleIds.Clear(); // 表示IDリストをクリア。
-
-        // 全てのオプションを初期非表示にする (もし必要であれば)
-        foreach (var obj in _moduleOptionObjects)
-        {
-            obj.SetActive(false);
-        }
 
         // 渡されたデータに基づいて各オプションUIを設定
         for (int i = 0; i < moduleDatas.Count && i < _detailedViews.Count; i++)
