@@ -34,10 +34,10 @@ namespace App.GameSystem.Presenters
         void Awake()
         {
             // 依存関係の取得とチェック
-            if (_shopView == null) _shopView = FindObjectOfType<Shop_View>();
+            if (_shopView == null) Debug.LogError("Shop_Presenter: ShopViewがInspectorで設定されていません！", this);
             if (_moduleDataStore == null) Debug.LogError("Shop_Presenter: ModuleDataStoreがInspectorで設定されていません！", this);
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
-            if (_playerCore == null) _playerCore = FindObjectOfType<PlayerCore>();
+            if (_playerCore == null) Debug.LogError("Shop_Presenter: PlayerCoreがInspectorで設定されていません！", this);
 
             // 各依存関係が揃っているか最終チェック
             if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
@@ -112,21 +112,6 @@ namespace App.GameSystem.Presenters
             else
             {
                 Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はLevelをReactivePropertyとして公開していません。", this);
-            }
-
-            // Quantityの変更を購読
-            if (runtimeModuleData.Quantity != null)
-            {
-                runtimeModuleData.Quantity
-                    .Subscribe(quantity => {
-                        Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) の数量が {quantity} に変更されました。購入ボタンのインタラクト性を更新します。");
-                        UpdatePurchaseButtonsInteractability(); // 数量変更だけならショップリスト全体ではなく、ボタンのインタラクト性のみ更新
-                    })
-                    .AddTo(_moduleLevelAndQuantityChangeDisposables); // 個別モジュールの購読は専用のDisposableBagに追加
-            }
-            else
-            {
-                Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はQuantityをReactivePropertyとして公開していません。", this);
             }
         }
 
