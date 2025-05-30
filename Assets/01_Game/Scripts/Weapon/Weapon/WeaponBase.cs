@@ -25,12 +25,37 @@ public abstract class WeaponBase : MonoBehaviour
     // ---------------------------- UnityMethod
     private void Start()
     {
-        _data.weaponDataList[_id].Level.
-            Subscribe(value =>
+        if (transform.root.CompareTag("Player"))
+        {
+            foreach (var i in WeaponLevelManager.Instance.PlayerWeaponLevels)
             {
-                _attack = _data.weaponDataList[_id].Attack * _data.weaponDataList[_id].Level.CurrentValue;
-            }).
-            AddTo(this);
+                i.Subscribe(value =>
+                {
+                    _attack = _data.weaponDataList[_id].Attack * value;
+                    Debug.Log($"プレイヤー：{value}");
+                })
+                    .AddTo(this);
+            }
+        }
+        if (transform.root.CompareTag("Enemy"))
+        {
+            foreach (var i in WeaponLevelManager.Instance.EnemyWeaponLevels)
+            {
+                i.Subscribe(value =>
+                {
+                    _attack = _data.weaponDataList[_id].Attack * value;
+                    Debug.Log($"エネミー：{value}");
+                })
+                    .AddTo(this);
+            }
+        }
+
+        //_data.weaponDataList[_id].Level.
+        //    Subscribe(value =>
+        //    {
+        //        _attack = _data.weaponDataList[_id].Attack * _data.weaponDataList[_id].Level.CurrentValue;
+        //    }).
+        //    AddTo(this);
 
         this.UpdateAsObservable()
             .Subscribe(_ =>

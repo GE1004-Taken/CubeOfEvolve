@@ -335,6 +335,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Weapon_Turret
       objectReference: {fileID: 0}
+    - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 5802498300164406200, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
@@ -403,7 +411,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_Name
-      value: Weapon_Turret (1)
+      value: Weapon_Turret
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5802498300164406200, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_LocalPosition.x
