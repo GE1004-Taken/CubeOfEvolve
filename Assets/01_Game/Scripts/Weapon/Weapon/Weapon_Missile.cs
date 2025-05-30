@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Weapon_Missile : BaseWeapon
+public class Weapon_Missile : WeaponBase
 {
     [SerializeField] private Bullet_Missile _bulletPrefab;
     [SerializeField] private int _spawnCount;
@@ -16,10 +16,14 @@ public class Weapon_Missile : BaseWeapon
 
             int randomDir = Random.Range(0, 2) == 0 ? 1 : -1;
 
+            // ‰¡•ûŒü ~ ¶‰Eƒ‰ƒ“ƒ_ƒ€ ~ ƒ‰ƒ“ƒ_ƒ€‹——£ { ƒ‰ƒ“ƒ_ƒ€‚‚³
+            var velocity
+                = transform.right * randomDir * Random.Range(1, 5) * 5 + new Vector3(0, Random.Range(1, 4) * 5, 0);
+
             bullet.Initialize(
-                _atk,
-                _attackSpeed,
-                transform.right * Random.Range(1, 5) * 5 * randomDir + new Vector3(0, Random.Range(1, 4) * 5, 0),
+                _targetTag,
+                _attack,
+                velocity,
                 _nearestEnemyTransform,
                 2);
         }

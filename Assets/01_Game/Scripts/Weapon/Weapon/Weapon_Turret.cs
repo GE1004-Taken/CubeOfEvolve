@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class TestWeapon : BaseWeapon
+public class Weapon_Turret : WeaponBase
 {
-    [SerializeField] private TestBullet _bulletPrefab;
+    [SerializeField] private Bullet_Linear _bulletPrefab;
 
     protected override void Attack()
     {
@@ -14,8 +14,9 @@ public class TestWeapon : BaseWeapon
             Quaternion.identity);
 
         bullet.Initialize(
-            _atk,
-            _attackSpeed,
+            _targetTag,
+            _attack,
+            _bulletSpeed,
             dir);
     }
 }

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928f8f76d7ccbb74f82419c10a07ce6b, type: 3}
+  m_Name: Weapon Data Base
+  m_EditorClassIdentifier: 
+  weaponDataList:
+  - Weapon: {fileID: 8431714175781951356, guid: 62a8d97f53cfb1d49882ebcc9885e086, type: 3}
+    Name: "\u30C9\u30EA\u30EB"
+    ID: 0
+    _level:
+      value: 0
+    _price:
+      value: 100
+    Attack: 10
+  - Weapon: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
+    Name: "\u30DF\u30B5\u30A4\u30EB"
+    ID: 1
+    _level:
+      value: 0
+    _price:
+      value: 100
+    Attack: 10
+  - Weapon: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+    Name: "\u30BF\u30EC\u30C3\u30C8"
+    ID: 2
+    _level:
+      value: 0
+    _price:
+      value: 100
+    Attack: 10
