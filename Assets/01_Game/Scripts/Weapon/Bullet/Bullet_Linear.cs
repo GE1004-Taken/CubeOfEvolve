@@ -2,19 +2,11 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 
-public class TestBullet : MonoBehaviour
+public class Bullet_Linear : BulletBase
 {
-    // ---------------------------- SerializeField
-    [SerializeField, Tooltip("UŒ‚‘ÎÛ‚Ìƒ^ƒO")] private string _targetTag;
-
     // ---------------------------- Field
-    private float _atk;
-    private float _attackSpeed;
-    private Vector3 _attackDir;
-    private float _destroySecond = 10f;
-
-    // ---------------------------- UnityMessage
-    public string TargetTag => _targetTag;
+    private float _moveSpeed;
+    private Vector3 _direction;
 
     // ---------------------------- UnityMessage
     private void Start()
@@ -26,7 +18,7 @@ public class TestBullet : MonoBehaviour
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
-                transform.Translate(_attackDir * _attackSpeed * Time.deltaTime);
+                transform.Translate(_direction * _moveSpeed * Time.deltaTime);
             })
             .AddTo(this);
 
@@ -39,7 +31,7 @@ public class TestBullet : MonoBehaviour
                 if (collider.transform.parent.TryGetComponent<IDamageble>(out var damageble)
                     && collider.CompareTag(_targetTag))
                 {
-                    damageble.TakeDamage(_atk);
+                    damageble.TakeDamage(_attack);
                     Destroy(gameObject);
                 }
             })
@@ -48,12 +40,14 @@ public class TestBullet : MonoBehaviour
 
     // ---------------------------- PublicMethod
     public void Initialize(
-        float atk,
-        float attackSpeed,
-        Vector3 attackDir)
+        string targetTag,
+        float attack,
+        float moveSpeed,
+        Vector3 direction)
     {
-        _atk = atk;
-        _attackSpeed = attackSpeed;
-        _attackDir = attackDir;
+        _targetTag = targetTag;
+        _attack = attack;
+        _moveSpeed = moveSpeed;
+        _direction = direction;
     }
 }

@@ -2,23 +2,13 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 
-public class Bullet_Missile : MonoBehaviour
+public class Bullet_Missile : BulletBase
 {
-    // ---------------------------- SerializeField
-    [SerializeField, Tooltip("攻撃対象のタグ")] private string _targetTag;
-
     // ---------------------------- Field
-    private float _atk;
-    private float _attackSpeed;
-    private float _destroySecond = 10f;
-
     private Vector3 _velocity;  // 方向
     private Vector3 _position;
     private Transform _target;  // 目的地
     private float _period;      // 移動期間
-
-    // ---------------------------- UnityMessage
-    public string TargetTag => _targetTag;
 
     // ---------------------------- UnityMessage
     private void Start()
@@ -58,7 +48,7 @@ public class Bullet_Missile : MonoBehaviour
                 if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
                 && other.CompareTag(_targetTag))
                 {
-                    damageble.TakeDamage(_atk);
+                    damageble.TakeDamage(_attack);
                     Destroy(gameObject);
                 }
 
@@ -72,15 +62,15 @@ public class Bullet_Missile : MonoBehaviour
 
     // ---------------------------- PublicMethod
     public void Initialize(
-        float atk,
-        float attackSpeed,
-        Vector3 attackDir,
+        string targetTag,
+        float attack,
+        Vector3 velocity,
         Transform target,
         float period)
     {
-        _atk = atk;
-        _attackSpeed = attackSpeed;
-        _velocity = attackDir;
+        _targetTag = targetTag;
+        _attack = attack;
+        _velocity = velocity;
         _target = target;
         _period = period;
     }
