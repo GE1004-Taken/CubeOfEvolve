@@ -55,7 +55,7 @@ public abstract class EnemySpawnBase : MonoBehaviour
         Vector3 spawnPos = _targetObj.transform.position + direction * _playerDistance;
 
         // 敵を生成
-        var obj = Instantiate(enemyObj, PlayerMonitoring.Instance.transform);
+        var obj = Instantiate(enemyObj);
         obj.transform.position = spawnPos;
 
         // 敵のステータスの初期設定処理
