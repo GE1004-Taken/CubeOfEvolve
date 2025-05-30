@@ -8,10 +8,10 @@ public class WeaponLevelManager : MonoBehaviour
     [SerializeField] private WeaponDataBase _weaponData;
 
     // ---------------------------- ReactiveProperty
-    public ReadOnlyReactiveProperty<int[]> PlayerWeaponLevels => _playerWeaponLevels;
-    private ReactiveProperty<int[]> _playerWeaponLevels = new();
-    public ReadOnlyReactiveProperty<int[]> EnemyWeaponLevels => _enemyWeaponLevels;
-    private ReactiveProperty<int[]> _enemyWeaponLevels = new();
+    public ReadOnlyReactiveProperty<int>[] PlayerWeaponLevels => _playerWeaponLevels;
+    private ReactiveProperty<int>[] _playerWeaponLevels;
+    public ReadOnlyReactiveProperty<int>[] EnemyWeaponLevels => _enemyWeaponLevels;
+    private ReactiveProperty<int>[] _enemyWeaponLevels;
 
     // ---------------------------- UnityMassage
     private void Awake()
@@ -25,13 +25,13 @@ public class WeaponLevelManager : MonoBehaviour
             Destroy(this);
         }
 
-        _playerWeaponLevels.Value = new int[_weaponData.weaponDataList.Count];
-        _enemyWeaponLevels.Value = new int[_weaponData.weaponDataList.Count];
+        _playerWeaponLevels = new ReactiveProperty<int>[_weaponData.weaponDataList.Count];
+        _enemyWeaponLevels = new ReactiveProperty<int>[_weaponData.weaponDataList.Count];
 
         for (int i = 0; i < _weaponData.weaponDataList.Count; i++)
         {
-            _playerWeaponLevels.Value[i] = _weaponData.weaponDataList[i].Level.CurrentValue;
-            _enemyWeaponLevels.Value[i] = 1;
+            _playerWeaponLevels[i] = new ReactiveProperty<int>(_weaponData.weaponDataList[i].Level.CurrentValue);
+            _enemyWeaponLevels[i] = new ReactiveProperty<int>(1);
         }
     }
 
@@ -42,6 +42,6 @@ public class WeaponLevelManager : MonoBehaviour
     /// <param name="index">ïêäÌÇÃID</param>
     public void WeaponLevelUp(int index)
     {
-        _playerWeaponLevels.Value[index]++;
+        _playerWeaponLevels[index].Value++;
     }
 }
