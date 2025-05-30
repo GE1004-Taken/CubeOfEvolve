@@ -21,7 +21,6 @@ public abstract class WeaponBase : MonoBehaviour
     // ---------------------------- Field
     protected float _attack;
     protected float _currentInterval;
-    protected Transform _nearestEnemyTransform;
 
     // ---------------------------- UnityMethod
     private void Start()
