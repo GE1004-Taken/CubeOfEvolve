@@ -24,14 +24,17 @@ public class Bullet_Linear : BulletBase
 
         // Õ“Ëˆ—
         this.OnTriggerEnterAsObservable()
-            .Subscribe(collider =>
+            .Subscribe(other =>
             {
-                if (collider.transform.parent == null) return;
-
-                if (collider.transform.parent.TryGetComponent<IDamageble>(out var damageble)
-                    && collider.CompareTag(_targetTag))
+                if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
+                && other.CompareTag(_targetTag))
                 {
                     damageble.TakeDamage(_attack);
+                    Destroy(gameObject);
+                }
+
+                if (other.CompareTag("Ground"))
+                {
                     Destroy(gameObject);
                 }
             })
