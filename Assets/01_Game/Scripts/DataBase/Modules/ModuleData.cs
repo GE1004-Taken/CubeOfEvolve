@@ -39,44 +39,29 @@ namespace App.BaseSystem.DataStores.ScriptableObjects.Modules
         [SerializeField] private MODULE_TYPE _moduleType; // モジュールの種類を設定します。
         [SerializeField] private string _viewName = "表示名"; // モジュールの表示名を設定します。
         [SerializeField] private string _description = "説明文"; // モジュールの詳細な説明文を設定します。
+        [SerializeField] private Sprite _mainSprite;
+        [SerializeField] private Sprite _blockSprite;
         [SerializeField] private int _basePrice = 100; // モジュールの基本価格を設定します。
-        //[SerializeField] private BaseWeapon _weaponData; // 武器等のデータ。攻撃力など変数と、ダメージ処理の記述が入ってる。
+        [SerializeField] private ModuleParameter _state; // モジュールの基礎ステータス。
+        [SerializeField] private WeaponBase _weaponData; // 武器等のデータ。攻撃力など変数と、ダメージ処理の記述が入ってる。
 
         // 可変
         [SerializeField] private int _level = 0; // モジュールの現在のレベルを設定します。
         [SerializeField] private int _quantity = 0; // モジュールの現在の数量を設定します。
 
         // ----- Property
-        /// <summary>
-        /// モジュールタイプとその表示名の読み取り専用辞書を取得します。
-        /// </summary>
         public static IReadOnlyDictionary<MODULE_TYPE, string> ModuleTypeMapping => _moduleTypeMapping;
-
-        /// <summary>
-        /// このモジュールの種類を取得します。
-        /// </summary>
+      
         public MODULE_TYPE ModuleType => _moduleType;
-        /// <summary>
-        /// このモジュールの表示名を取得します。
-        /// </summary>
         public string ViewName => _viewName;
-        /// <summary>
-        /// このモジュールの説明文を取得します。
-        /// </summary>
         public string Description => _description;
-        /// <summary>
-        /// このモジュールの基本価格を取得します。
-        /// </summary>
+        public Sprite MainSprite => _mainSprite;
+        public Sprite BlockSprite => _blockSprite;
         public int BasePrice => _basePrice;
+        public ModuleParameter ModuleState => _state;
+        public WeaponBase WeaponData => _weaponData;
 
-        /// <summary>
-        /// このモジュールの現在のレベルを取得します。
-        /// </summary>
         public int Level => _level;
-        /// <summary>
-        /// このモジュールの現在の数量を取得します。
-        /// </summary>
         public int Quantity => _quantity;
-        //public BaseWeapon WeaponData => _weaponData; // 武器データに関するプロパティ。コメントアウトされています。
     }
 }
