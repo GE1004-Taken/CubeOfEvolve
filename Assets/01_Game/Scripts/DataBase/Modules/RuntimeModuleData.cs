@@ -26,6 +26,26 @@ namespace App.GameSystem.Modules
         public ReadOnlyReactiveProperty<int> Quantity => _quantity; // 外部公開用の読み取り専用数量プロパティ。
         public int CurrentQuantityValue => _quantity.Value; // 現在の数量の直接値。
 
+        [SerializeField]
+        private ReactiveProperty<float> _attack; // 現在の攻撃力を管理するReactiveProperty。
+        public ReadOnlyReactiveProperty<float> Atk => _attack; // 外部公開用の読み取り専用攻撃力プロパティ。
+        public float CurrentAttackValue => _attack.Value; // 現在の攻撃力の直接値。
+
+        [SerializeField]
+        private ReactiveProperty<float> _bulletSpeed; // 現在の速度を管理するReactiveProperty。
+        public ReadOnlyReactiveProperty<float> Spd => _bulletSpeed; // 外部公開用の読み取り専用速度プロパティ。
+        public float CurrentBulletSpeedValue => _bulletSpeed.Value; // 現在の速度の直接値。
+
+        [SerializeField]
+        private ReactiveProperty<float> _interval; // 現在の速度を管理するReactiveProperty。
+        public ReadOnlyReactiveProperty<float> Interval => _interval; // 外部公開用の読み取り専用速度プロパティ。
+        public float CurrentIntervalValue => _interval.Value; // 現在の速度の直接値。
+
+        [SerializeField]
+        private ReactiveProperty<float> _searchRange; // 現在の速度を管理するReactiveProperty。
+        public ReadOnlyReactiveProperty<float> SearchRange => _searchRange; // 外部公開用の読み取り専用速度プロパティ。
+        public float CurrentSearchRangeValue => _searchRange.Value; // 現在の速度の直接値。
+
         // ----- Constructor (コンストラクタ)
         /// <summary>
         /// ModuleDataマスターデータからRuntimeModuleDataのインスタンスを初期化します。
@@ -36,6 +56,16 @@ namespace App.GameSystem.Modules
             Id = masterData.Id; // マスターデータからIDを設定。
             _currentLevel = new ReactiveProperty<int>(masterData.Level); // 初期レベルはマスターデータから代入。
             _quantity = new ReactiveProperty<int>(masterData.Quantity); // 初期数量はマスターデータから代入。
+            _attack = new ReactiveProperty<float>(masterData.ModuleState.Attack);
+            _bulletSpeed = new ReactiveProperty<float>(masterData.ModuleState.BulletSpeed);
+            _interval = new ReactiveProperty<float>(masterData.ModuleState.Interval);
+            _searchRange = new ReactiveProperty<float>(masterData.ModuleState.SearchRange);
+        }
+
+        // ----- Private
+        private void LevelUpBonus()
+        {
+
         }
 
         // ----- Public Methods (公開メソッド)
