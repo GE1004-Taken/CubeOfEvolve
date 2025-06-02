@@ -2,7 +2,9 @@ using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using R3;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// ドロップ選択画面のプレゼンターを担当するクラス。
@@ -14,11 +16,15 @@ public class Drop_Presenter : MonoBehaviour
     // ----- SerializedField (Unity Inspectorで設定)
     [Header("Dependencies")]
     [SerializeField] private Drop_View _dropView; // ドロップUIを表示するViewコンポーネント。
+    [SerializeField] private TextMeshProUGUI _instructionsText; // 説明文
+
     [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
     [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
+    
 
     // ----- Private Members (内部データ)
     private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
+    private List<int> _candidateModuleIds = new List<int>();
 
     // ----- MonoBehaviour Lifecycle (MonoBehaviourライフサイクル)
     /// <summary>
@@ -28,9 +34,7 @@ public class Drop_Presenter : MonoBehaviour
     void Awake()
     {
         // 依存関係が未設定の場合、シーンから取得を試みる
-        if (_dropView == null) _dropView = FindObjectOfType<Drop_View>();
         if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
-        // _moduleDataStore は GameManager などから渡されるか、直接参照する想定です。
 
         // ViewからのイベントをR3で購読
         if (_dropView != null)
@@ -38,6 +42,9 @@ public class Drop_Presenter : MonoBehaviour
             _dropView.OnModuleSelected
                 .Subscribe(selectedModuleId => HandleModuleSelected(selectedModuleId))
                 .AddTo(this); // R3 の AddTo(CompositeDisposable) を使用。
+            _dropView.OnModuleEnter
+                .Subscribe(EnterModuleId => HandleModuleEnter(EnterModuleId))
+                .AddTo(this);
         }
         else
         {
@@ -66,13 +73,13 @@ public class Drop_Presenter : MonoBehaviour
         }
 
         // 1. 提示するモジュールを選択するロジック
-        List<int> candidateModuleIds = GetRandomAvailableModuleIds(NUMBER_OF_OPTIONS);
+        _candidateModuleIds = GetRandomAvailableModuleIds(NUMBER_OF_OPTIONS);
 
         // 2. Viewに渡すためのデータ準備
         List<(ModuleData master, RuntimeModuleData runtime)> displayDatas = new List<(ModuleData, RuntimeModuleData)>();
         bool showDefaultOption = false; // 代替オプション（例: コイン獲得）を表示するかどうか。
 
-        if (candidateModuleIds.Count == 0)
+        if (_candidateModuleIds.Count == 0)
         {
             // 選択肢がない場合、代替オプションを表示
             showDefaultOption = true;
@@ -80,7 +87,7 @@ public class Drop_Presenter : MonoBehaviour
         }
         else
         {
-            foreach (int moduleId in candidateModuleIds)
+            foreach (int moduleId in _candidateModuleIds)
             {
                 RuntimeModuleData runtime = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
                 ModuleData master = _moduleDataStore.FindWithId(moduleId);
@@ -97,7 +104,7 @@ public class Drop_Presenter : MonoBehaviour
         }
 
         // 3. Viewに表示を依頼
-        _dropView.Show(displayDatas, showDefaultOption);
+        _dropView.Show(displayDatas);
     }
 
     // ----- Private Methods (内部処理)
@@ -124,6 +131,11 @@ public class Drop_Presenter : MonoBehaviour
 
         // 必要であれば、UIの更新など、ゲーム全体の状態に応じた後処理を呼び出す
         // 例: GameManager.Instance.OnPlayerModuleUpgraded();
+    }
+
+    private void HandleModuleEnter(int EnterModuleId)
+    {
+        // _instructionsText = _moduleDataStore.DataBase[EnterModuleId].
     }
 
     /// <summary>
