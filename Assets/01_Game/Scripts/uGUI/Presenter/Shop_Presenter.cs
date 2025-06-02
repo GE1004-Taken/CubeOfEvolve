@@ -1,12 +1,13 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
-using App.GameSystem.UI;
+using MVRP.AT.View;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
-namespace App.GameSystem.Presenters
+namespace MVRP.AT.Presenter
 {
     /// <summary>
     /// ショップ画面のプレゼンターを担当するクラス。
@@ -15,12 +16,18 @@ namespace App.GameSystem.Presenters
     /// </summary>
     public class Shop_Presenter : MonoBehaviour
     {
-        // ----- SerializedField (Unity Inspectorで設定)
+        // ----- SerializedField
+
+        // Models
         [Header("Dependencies")]
         [SerializeField] private Shop_View _shopView; // ショップUIを表示するViewコンポーネント。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
         [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）を管理するコンポーネント。
+
+        // Views
+        [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
+        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText;
 
         // ----- Private Members (内部データ)
         private CompositeDisposable _disposables = new CompositeDisposable(); // 全体の購読解除を管理するCompositeDisposable。
@@ -52,15 +59,17 @@ namespace App.GameSystem.Presenters
                 .Subscribe(moduleId => HandleModulePurchaseRequested(moduleId))
                 .AddTo(_disposables);
 
-            // PlayerCore の Money が変更されたらUIを更新する購読
-            if (_playerCore.Money != null)
-            {
-                _playerCore.Money.Subscribe(money => UpdateShopUIOnCoinChange(money)).AddTo(_disposables);
-            }
-            else
-            {
-                Debug.LogError("Shop_Presenter: PlayerCore.Money ReactivePropertyがnullです。所持金の変更を購読できません。", this);
-            }
+            // Playerの所持金を監視
+            _playerCore.Money
+                .Subscribe(x =>
+                {
+                    // Viewに反映
+                    _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f);
+                }).AddTo(this);
+
+            _shopView.OnModuleHovered
+                .Subscribe(x => HandleModuleHovered(x))
+                .AddTo(this);
 
             // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ショップUIを更新する
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
@@ -113,17 +122,6 @@ namespace App.GameSystem.Presenters
             {
                 Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はLevelをReactivePropertyとして公開していません。", this);
             }
-        }
-
-        /// <summary>
-        /// プレイヤーのコイン変更時にショップUIを更新します。
-        /// </summary>
-        /// <param name="newCoins">新しいコイン量。</param>
-        private void UpdateShopUIOnCoinChange(int newCoins)
-        {
-            if (_shopView == null) return;
-            _shopView.UpdatePlayerCoins(newCoins);
-            UpdatePurchaseButtonsInteractability(); // コイン量に応じてボタンの有効/無効を切り替える
         }
 
         /// <summary>
@@ -183,7 +181,7 @@ namespace App.GameSystem.Presenters
             if (_playerCore.Money.CurrentValue >= masterData.BasePrice)
             {
                 _playerCore.PayMoney(masterData.BasePrice);
-                Debug.Log($"Shop_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を {masterData.BasePrice} コインで購入しました。残りコイン: {_playerCore.Money.CurrentValue}。", this);
+                Debug.Log($"Shop_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を {masterData.BasePrice} 金で購入しました。残り金: {_playerCore.Money.CurrentValue}。", this);
 
                 // モジュールをプレイヤーのランタイムモジュールに追加（数量を1増やす）
                 _runtimeModuleManager.ChangeModuleQuantity(moduleId, 1);
@@ -193,8 +191,13 @@ namespace App.GameSystem.Presenters
             }
             else
             {
-                Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのにコインが不足しています。必要: {masterData.BasePrice}、所持: {_playerCore.Money.CurrentValue}。", this);
+                Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのに金が不足しています。必要: {masterData.BasePrice}、所持: {_playerCore.Money.CurrentValue}。", this);
             }
+        }
+
+        private void HandleModuleHovered(int EnterModuleId)
+        {
+             _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
         }
 
         // ----- Public Methods (公開メソッド)
@@ -203,7 +206,7 @@ namespace App.GameSystem.Presenters
         /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
         /// また、RuntimeModuleDataの変更によっても自動的に呼び出されることがあります。
         /// </summary>
-        public void PrepareAndShowShopUI()
+        private void PrepareAndShowShopUI()
         {
             if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
             {
@@ -217,7 +220,6 @@ namespace App.GameSystem.Presenters
                 .ToList();
 
             _shopView.DisplayShopModules(shopRuntimeModules);
-            _shopView.UpdatePlayerCoins(_playerCore.Money.CurrentValue);
             UpdatePurchaseButtonsInteractability();
         }
     }
