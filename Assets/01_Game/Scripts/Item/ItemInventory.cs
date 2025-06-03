@@ -9,6 +9,11 @@ public class ItemInventory : MonoBehaviour
     private PlayerCore _playerCore;
 
     // ---------------------------- UnityMassage
+    private void Start()
+    {
+        _playerCore = GetComponent<PlayerCore>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if ("Item" == LayerMask.LayerToName(other.gameObject.layer)
