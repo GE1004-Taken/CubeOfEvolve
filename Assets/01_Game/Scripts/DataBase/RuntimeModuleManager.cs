@@ -11,10 +11,10 @@ namespace App.GameSystem.Modules
     /// </summary>
     public class RuntimeModuleManager : MonoBehaviour
     {
-        // ----- Singleton (シングルトン)
-        public static RuntimeModuleManager Instance { get; private set; } // RuntimeModuleManagerのシングルトンインスタンス。
+        // ----- Singleton
+        public static RuntimeModuleManager Instance { get; private set; } 
 
-        // ----- SerializedField (Unity Inspectorで設定)
+        // ----- SerializedField 
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを格納するデータストア。
 
         // ----- Private Members (内部データ)
@@ -23,23 +23,13 @@ namespace App.GameSystem.Modules
         private Dictionary<int, RuntimeModuleData> _runtimeModuleDictionary = new Dictionary<int, RuntimeModuleData>(); // モジュールIDをキーとしたRuntimeModuleDataの高速アクセス用辞書。
 
         // ----- Public Properties (公開プロパティ)
-        /// <summary>
-        /// 全てのRuntimeModuleDataを読み取り専用リストとして取得します。
-        /// </summary>
         public IReadOnlyList<RuntimeModuleData> AllRuntimeModuleData => _allRuntimeModuleDataInternal;
-
-        /// <summary>
-        /// モジュールコレクション全体の変更イベントを購読するためのObservableを取得します。
-        /// </summary>
         public Observable<Unit> OnAllRuntimeModuleDataChanged => _collectionChangedSubject.AsObservable();
 
-        // ----- MonoBehaviour Lifecycle (MonoBehaviourライフサイクル)
-        /// <summary>
-        /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
-        /// シングルトンの初期化とデータストアのチェックを行います。
-        /// </summary>
+        // ----- UnityMessage
         void Awake()
         {
+            // シングルトン初期化
             if (Instance == null)
             {
                 Instance = this;
@@ -50,30 +40,29 @@ namespace App.GameSystem.Modules
                 Destroy(gameObject);
             }
 
+            // 参照NullCheck
             if (_moduleDataStore == null)
             {
                 Debug.LogError("RuntimeModuleManager: ModuleDataStoreが設定されていません！", this);
             }
 
+            // 初期化
             InitializeAllModules();
         }
 
-        /// <summary>
-        /// OnDestroyはゲームオブジェクトが破棄されるときに呼び出されます。
-        /// Subjectのリソースを解放します。
-        /// </summary>
         void OnDestroy()
         {
-            _collectionChangedSubject.Dispose();
+            _collectionChangedSubject.Dispose(); // リソース開放
         }
 
         // ----- Private Methods (プライベートメソッド)
         /// <summary>
         /// 全てのマスターモジュールデータを基にRuntimeModuleDataを初期化します。
-        /// (レベル0, 数量0)。ゲーム開始時に一度だけ呼ばれることを想定しています。
+        /// ゲーム開始時に一度だけ呼ばれることを想定しています。
         /// </summary>
         private void InitializeAllModules()
         {
+            // 参照NullCheck
             if (_moduleDataStore == null || _moduleDataStore.DataBase == null || _moduleDataStore.DataBase.ItemList == null)
             {
                 Debug.LogError("RuntimeModuleManager: モジュールの初期化に必要なModuleDataStoreデータが利用できません。", this);
@@ -89,17 +78,10 @@ namespace App.GameSystem.Modules
                     _allRuntimeModuleDataInternal.Add(newRmd); // 内部リストに追加。
                 }
             }
+
             // 全ての要素を追加し終えた後に一度だけ変更を通知。
             _collectionChangedSubject.OnNext(Unit.Default);
             Debug.Log($"RuntimeModuleManager: {_allRuntimeModuleDataInternal.Count}個のモジュールを初期化しました。");
-
-            // デバッグ用: 特定のモジュールを初期レベル1に設定してショップに表示されるかテスト
-            // if (_runtimeModuleDictionary.TryGetValue(1001, out var debugRmd)) // 仮のID
-            // {
-            //     debugRmd.SetLevel(1);
-            //     debugRmd.SetQuantity(1);
-            //     Debug.Log($"デバッグ: モジュール1001をレベル1、数量1に設定しました。");
-            // }
         }
 
         // ----- Public Methods (公開メソッド)
@@ -135,12 +117,12 @@ namespace App.GameSystem.Modules
         }
 
         /// <summary>
-        /// モジュールのレベルを上げます。
+        /// モジュールのレベルを上げる関数。
         /// </summary>
         /// <param name="moduleId">対象モジュールのID。</param>
         public void LevelUpModule(int moduleId)
         {
-            if (_runtimeModuleDictionary.TryGetValue(moduleId, out RuntimeModuleData rmd))
+            if (_runtimeModuleDictionary.TryGetValue(moduleId, out RuntimeModuleData rmd))// 高速アクセス
             {
                 rmd.LevelUp(); // RuntimeModuleData内のReactivePropertyを更新。
                 // 個別のRuntimeModuleDataが変更された場合、コレクションの変更も通知。

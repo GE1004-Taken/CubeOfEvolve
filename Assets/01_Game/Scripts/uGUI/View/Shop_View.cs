@@ -1,12 +1,13 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using R3;
+using R3.Triggers;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace App.GameSystem.UI
+namespace MVRP.AT.View
 {
     /// <summary>
     /// ショップ画面のビューを担当するクラス。
@@ -14,25 +15,22 @@ namespace App.GameSystem.UI
     /// </summary>
     public class Shop_View : MonoBehaviour
     {
-        // ----- SerializedField (Unity Inspectorで設定)
+        // ----- SerializedField
         [SerializeField] private GameObject _moduleItemPrefab; // 各モジュール表示用のプレハブ (Detailed_ViewとButtonを含む)。
         [SerializeField] private Transform _contentParent; // モジュールリストの親Transform。
-        [SerializeField] private TextMeshProUGUI _playerMoneyText; // プレイヤーの所持コイン表示用テキスト。
         [SerializeField] private ModuleDataStore _moduleDataStore; // マスターデータを取得するために必要。
 
         // ----- Events (PresenterがR3で購読する)
         public Subject<int> OnModulePurchaseRequested { get; private set; } = new Subject<int>(); // モジュール購入リクエストを通知するSubject。
+        public Subject<int> OnModuleHovered { get; private set; } = new Subject<int>(); // モジュール購入リクエストを通知するSubject。
 
         // ----- Private Members (内部データ)
         private List<GameObject> _instantiatedModuleItems = new List<GameObject>(); // 生成されたモジュールアイテムのリスト。
         private Dictionary<int, Button> _purchaseButtons = new Dictionary<int, Button>(); // モジュールIDと購入ボタンのマッピング。
         private CompositeDisposable _disposables = new CompositeDisposable(); // R3購読管理用。
 
-        // ----- MonoBehaviour Lifecycle (MonoBehaviourライフサイクル)
-        /// <summary>
-        /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
-        /// データストアの割り当てを確認します。
-        /// </summary>
+        // ----- UnityMessage
+        
         private void Awake()
         {
             if (_moduleDataStore == null)
@@ -42,10 +40,6 @@ namespace App.GameSystem.UI
             }
         }
 
-        /// <summary>
-        /// OnDestroyはゲームオブジェクトが破棄されるときに呼び出されます。
-        /// 全てのR3購読を解除します。
-        /// </summary>
         private void OnDestroy()
         {
             _disposables.Dispose(); // オブジェクト破棄時に全ての購読を解除。
@@ -110,8 +104,12 @@ namespace App.GameSystem.UI
                 _purchaseButtons.Add(masterData.Id, purchaseButton);
                 int moduleId = masterData.Id; // クロージャのためにコピー。
                 purchaseButton.OnClickAsObservable()
-                              .Subscribe(_ => OnModulePurchaseButtonClicked(moduleId))
-                              .AddTo(_disposables); // _disposables に追加。
+                    .Subscribe(_ => OnModulePurchaseButtonClicked(moduleId))
+                    .AddTo(_disposables); // _disposables に追加。
+                // OnEnter
+                purchaseButton.OnPointerEnterAsObservable()
+                    .Subscribe(_ => OnShopItemHovered(moduleId))
+                    .AddTo(_disposables);
 
                 // ボタンのテキストを設定 (例: "購入 - 100G")
                 TextMeshProUGUI buttonText = purchaseButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -119,18 +117,6 @@ namespace App.GameSystem.UI
                 {
                     buttonText.text = $"購入 - {masterData.BasePrice}G";
                 }
-            }
-        }
-
-        /// <summary>
-        /// プレイヤーの所持コインをUIに表示します。
-        /// </summary>
-        /// <param name="coins">プレイヤーの現在の所持コイン。</param>
-        public void UpdatePlayerCoins(int coins)
-        {
-            if (_playerMoneyText != null)
-            {
-                _playerMoneyText.text = $"所持コイン: {coins}";
             }
         }
 
@@ -147,22 +133,6 @@ namespace App.GameSystem.UI
             }
         }
 
-        /// <summary>
-        /// ショップUIを表示します。
-        /// </summary>
-        public void Show()
-        {
-            gameObject.SetActive(true);
-        }
-
-        /// <summary>
-        /// ショップUIを非表示にします。
-        /// </summary>
-        public void Hide()
-        {
-            gameObject.SetActive(false);
-        }
-
         // ----- Private Methods (UIイベントハンドラ)
 
         /// <summary>
@@ -172,6 +142,15 @@ namespace App.GameSystem.UI
         private void OnModulePurchaseButtonClicked(int moduleId)
         {
             OnModulePurchaseRequested.OnNext(moduleId); // Presenterに通知。
+        }
+
+        /// <summary>
+        /// モジュールにカーソルを重ねた際のハンドラ。
+        /// </summary>
+        /// <param name="moduleId"></param>
+        private void OnShopItemHovered(int moduleId)
+        {
+            OnModuleHovered.OnNext(moduleId); // 選択されたモジュールIDをイベントとして発火。
         }
     }
 }
