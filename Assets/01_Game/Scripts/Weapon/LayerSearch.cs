@@ -1,12 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LayerSearch : MonoBehaviour
 {
-    // ---------------------------- SerializeField
-    [SerializeField] private float _range;
-    [SerializeField] private LayerMask _mask;
-
     // ---------------------------- Field
+    private float _range;
+    private string _maskName;
+
     private GameObject _nearestEnemyObj;
 
     // ---------------------------- Property
@@ -24,8 +24,9 @@ public class LayerSearch : MonoBehaviour
             _range,
             Vector3.down,
             0,
-            _mask))
+            LayerMask.GetMask(_maskName)))
         {
+
             if (hit.transform == null) continue;
 
             var dis = Vector3.Distance(
@@ -44,5 +45,12 @@ public class LayerSearch : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _range);
+    }
+
+    // ---------------------------- PublicMethod
+    public void Initialize(float range, string layerName)
+    {
+        _range = range;
+        _maskName = layerName;
     }
 }
