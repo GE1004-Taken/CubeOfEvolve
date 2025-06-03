@@ -3,7 +3,6 @@ using App.GameSystem.Modules;
 using R3;
 using R3.Triggers;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +19,7 @@ namespace MVRP.AT.View
         [SerializeField] private Transform _contentParent; // モジュールリストの親Transform。
         [SerializeField] private ModuleDataStore _moduleDataStore; // マスターデータを取得するために必要。
 
-        // ----- Events (PresenterがR3で購読する)
+        // ----- Events
         public Subject<int> OnModulePurchaseRequested { get; private set; } = new Subject<int>(); // モジュール購入リクエストを通知するSubject。
         public Subject<int> OnModuleHovered { get; private set; } = new Subject<int>(); // モジュール購入リクエストを通知するSubject。
 
@@ -45,7 +44,7 @@ namespace MVRP.AT.View
             _disposables.Dispose(); // オブジェクト破棄時に全ての購読を解除。
         }
 
-        // ----- Public Methods (Presenterから呼び出される)
+        // ----- Public
 
         /// <summary>
         /// ショップに表示するモジュールリストを設定し、UIを更新します。
@@ -83,7 +82,7 @@ namespace MVRP.AT.View
                 GameObject moduleItem = Instantiate(_moduleItemPrefab, _contentParent);
                 _instantiatedModuleItems.Add(moduleItem);
 
-                Detailed_View detailedView = moduleItem.GetComponent<Detailed_View>();
+                Info_View detailedView = moduleItem.GetComponent<Info_View>();
                 Button purchaseButton = moduleItem.GetComponentInChildren<Button>(); // 子要素からボタンを探す。
 
                 if (detailedView == null)
@@ -111,12 +110,6 @@ namespace MVRP.AT.View
                     .Subscribe(_ => OnShopItemHovered(moduleId))
                     .AddTo(_disposables);
 
-                // ボタンのテキストを設定 (例: "購入 - 100G")
-                TextMeshProUGUI buttonText = purchaseButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (buttonText != null)
-                {
-                    buttonText.text = $"購入 - {masterData.BasePrice}G";
-                }
             }
         }
 
@@ -133,7 +126,7 @@ namespace MVRP.AT.View
             }
         }
 
-        // ----- Private Methods (UIイベントハンドラ)
+        // ----- Private
 
         /// <summary>
         /// モジュール購入ボタンがクリックされたときに呼び出されるハンドラです。

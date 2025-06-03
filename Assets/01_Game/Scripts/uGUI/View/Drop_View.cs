@@ -20,7 +20,7 @@ namespace MVRP.AT.View
 
         // ----- Private Members (内部データ)
         private List<Button> _buttons = new List<Button>(); // 各オプションのボタンリスト。
-        private List<Detailed_View> _detailedViews = new List<Detailed_View>(); // 各オプションの詳細表示ビューリスト。
+        private List<Info_View> _detailedViews = new List<Info_View>(); // 各オプションの詳細表示ビューリスト。
         private List<int> _currentDisplayedModuleIds = new List<int>(); // 現在表示しているモジュールのIDリスト。
 
         // ----- Events (PresenterがR3で購読する)
@@ -56,7 +56,7 @@ namespace MVRP.AT.View
                 }
 
                 Button button = obj.GetComponent<Button>();
-                Detailed_View detailedView = obj.GetComponent<Detailed_View>();
+                Info_View detailedView = obj.GetComponent<Info_View>();
 
                 if (button == null) Debug.LogError($"_moduleOptionObjects[{i}]にButtonコンポーネントが見つかりません。");
                 if (detailedView == null) Debug.LogError($"_moduleOptionObjects[{i}]にDetailed_Viewコンポーネントが見つかりません。");

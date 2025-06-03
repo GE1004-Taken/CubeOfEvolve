@@ -16,35 +16,29 @@ namespace App.GameSystem.Modules
         public int Id { get; private set; } // モジュールの一意なID。
 
         // ----- ReactiveProperty (リアクティブプロパティ)
-        [SerializeField]
         private ReactiveProperty<int> _currentLevel; // 現在のレベルを管理するReactiveProperty。
         public ReadOnlyReactiveProperty<int> Level => _currentLevel; // 外部公開用の読み取り専用レベルプロパティ。
         public int CurrentLevelValue => _currentLevel.Value; // 現在のレベルの直接値。
 
-        [SerializeField]
-        private ReactiveProperty<int> _quantity; // 現在の数量を管理するReactiveProperty。
-        public ReadOnlyReactiveProperty<int> Quantity => _quantity; // 外部公開用の読み取り専用数量プロパティ。
-        public int CurrentQuantityValue => _quantity.Value; // 現在の数量の直接値。
+        private ReactiveProperty<int> _quantity;
+        public ReadOnlyReactiveProperty<int> Quantity => _quantity;
+        public int CurrentQuantityValue => _quantity.Value;
 
-        [SerializeField]
-        private ReactiveProperty<float> _attack; // 現在の攻撃力を管理するReactiveProperty。
-        public ReadOnlyReactiveProperty<float> Atk => _attack; // 外部公開用の読み取り専用攻撃力プロパティ。
-        public float CurrentAttackValue => _attack.Value; // 現在の攻撃力の直接値。
+        private ReactiveProperty<float> _attack;
+        public ReadOnlyReactiveProperty<float> Atk => _attack;
+        public float CurrentAttackValue => _attack.Value;
 
-        [SerializeField]
-        private ReactiveProperty<float> _bulletSpeed; // 現在の速度を管理するReactiveProperty。
-        public ReadOnlyReactiveProperty<float> Spd => _bulletSpeed; // 外部公開用の読み取り専用速度プロパティ。
-        public float CurrentBulletSpeedValue => _bulletSpeed.Value; // 現在の速度の直接値。
+        private ReactiveProperty<float> _bulletSpeed;
+        public ReadOnlyReactiveProperty<float> Spd => _bulletSpeed;
+        public float CurrentBulletSpeedValue => _bulletSpeed.Value;
 
-        [SerializeField]
-        private ReactiveProperty<float> _interval; // 現在の速度を管理するReactiveProperty。
-        public ReadOnlyReactiveProperty<float> Interval => _interval; // 外部公開用の読み取り専用速度プロパティ。
-        public float CurrentIntervalValue => _interval.Value; // 現在の速度の直接値。
+        private ReactiveProperty<float> _interval;
+        public ReadOnlyReactiveProperty<float> Interval => _interval;
+        public float CurrentIntervalValue => _interval.Value;
 
-        [SerializeField]
-        private ReactiveProperty<float> _searchRange; // 現在の速度を管理するReactiveProperty。
-        public ReadOnlyReactiveProperty<float> SearchRange => _searchRange; // 外部公開用の読み取り専用速度プロパティ。
-        public float CurrentSearchRangeValue => _searchRange.Value; // 現在の速度の直接値。
+        private ReactiveProperty<float> _searchRange;
+        public ReadOnlyReactiveProperty<float> SearchRange => _searchRange;
+        public float CurrentSearchRangeValue => _searchRange.Value;
 
         // ----- Constructor (コンストラクタ)
         /// <summary>
@@ -63,6 +57,7 @@ namespace App.GameSystem.Modules
         }
 
         // ----- Private
+
         private void LevelUpBonus()
         {
 
@@ -77,6 +72,7 @@ namespace App.GameSystem.Modules
         {
             if (newLevel < 0) newLevel = 0; // レベルが負の値にならないように制限。
             _currentLevel.Value = newLevel; // ReactivePropertyの値を更新。
+            LevelUpBonus();
         }
 
         /// <summary>

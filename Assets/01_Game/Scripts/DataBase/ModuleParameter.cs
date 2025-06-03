@@ -5,7 +5,7 @@ using UnityEngine;
 public class ModuleParameter
 {
     // -----SerializeField
-    [SerializeField] private float _attack; 
+    [SerializeField] private float _attack;
     [SerializeField] private float _bulletSpeed; 
     [SerializeField] private float _interval; 
     [SerializeField] private float _searchRange;

@@ -1805,7 +1805,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5095611727835368661, guid: 14d04cb8136761f4b91f700527ed72ea, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1759195.5
+      value: -1788704.6
       objectReference: {fileID: 0}
     - target: {fileID: 5819946685723746814, guid: 14d04cb8136761f4b91f700527ed72ea, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2422,7 +2422,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 60.000004
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -2448,8 +2448,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291960209}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38268346, y: -0.000000027533762, z: 0.000000011404859, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 10, z: -10}
+  m_LocalRotation: {x: -0.24999997, y: 0.25000006, z: 0.066987306, w: 0.9330127}
+  m_LocalPosition: {x: -2, y: -1, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2813,6 +2813,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2786226350070758631, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
+      propertyPath: _moduleDataStore
+      value: 
+      objectReference: {fileID: 287020722}
+    - target: {fileID: 2786226350070758631, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
+      propertyPath: _runtimeModuleManager
+      value: 
+      objectReference: {fileID: 2005941729}
     - target: {fileID: 3080310223312133455, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
       propertyPath: _moduleDataStore
       value: 
@@ -2821,18 +2829,6 @@ PrefabInstance:
       propertyPath: _runtimeModuleManager
       value: 
       objectReference: {fileID: 2005941729}
-    - target: {fileID: 3455917783686467296, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3455917783686467296, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3455917783686467296, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3469879995691673580, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
       propertyPath: m_Name
       value: GUI_Game
@@ -2861,6 +2857,10 @@ PrefabInstance:
       propertyPath: _runtimeModuleManager
       value: 
       objectReference: {fileID: 2005941729}
+    - target: {fileID: 5679469020652497693, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
+      propertyPath: _moduleDataStore
+      value: 
+      objectReference: {fileID: 287020722}
     - target: {fileID: 5803759900237298578, guid: d12dfbf36e831bd4e9c4180f939bc837, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
