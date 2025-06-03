@@ -1891,10 +1891,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b83a7813f20f8d4b81ab642a68d5c9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dropView: {fileID: 8582743465032407506}
-  _hoveredModuleInfoText: {fileID: 7802647086812310490}
   _runtimeModuleManager: {fileID: 0}
   _moduleDataStore: {fileID: 0}
+  _dropView: {fileID: 8582743465032407506}
+  _hoveredModuleInfoText: {fileID: 7802647086812310490}
 --- !u!1 &2041870314127480828
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,6 +2276,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248a1de084b55624c8ea2e7907ef8762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _buildView: {fileID: 5679469020652497693}
+  _moduleDataStore: {fileID: 0}
+  _runtimeModuleManager: {fileID: 0}
+  _hoveredModuleInfoText: {fileID: 2809249260096572432}
+  _exitButton: {fileID: 5964289739053894610}
 --- !u!1 &2253666435902493374
 GameObject:
   m_ObjectHideFlags: 0
@@ -3449,7 +3454,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7568253688314864326
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10458,6 +10463,7 @@ GameObject:
   - component: {fileID: 5004312927309491282}
   - component: {fileID: 1044933158027537176}
   - component: {fileID: 1171566039554563261}
+  - component: {fileID: 5679469020652497693}
   m_Layer: 0
   m_Name: BuildView
   m_TagString: Untagged
@@ -10570,6 +10576,21 @@ MonoBehaviour:
   _closeBtnList:
   - {fileID: 9213432164064926404}
   - {fileID: 5679385318938376193}
+--- !u!114 &5679469020652497693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4788898699408214553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3cc94438c6dc774a848aee70f745081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moduleItemPrefab: {fileID: 5505164946313307120, guid: bd6e1f9efe2dbcc4796c599fdbc53d05, type: 3}
+  _contentParent: {fileID: 7080851907093633119}
+  _moduleDataStore: {fileID: 0}
 --- !u!1 &4921742244508440135
 GameObject:
   m_ObjectHideFlags: 0
@@ -13074,6 +13095,8 @@ MonoBehaviour:
   - {fileID: 6851052600619340882}
   _closeBtnList:
   - {fileID: 5964289739053894610}
+  - {fileID: 9213432164064926404}
+  - {fileID: 5679385318938376193}
 --- !u!1 &6503933934342266100
 GameObject:
   m_ObjectHideFlags: 0
@@ -13652,13 +13675,14 @@ GameObject:
   - component: {fileID: 7080851907093633119}
   - component: {fileID: 3337365234725456722}
   - component: {fileID: 8566223408592096302}
+  - component: {fileID: 3896355410877821603}
   m_Layer: 0
   m_Name: Panel_List
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7080851907093633119
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13716,6 +13740,30 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3896355410877821603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6934806805568000541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 300, y: 400}
+  m_Spacing: {x: 90, y: 120}
+  m_Constraint: 1
+  m_ConstraintCount: 5
 --- !u!1 &6963423212137288322
 GameObject:
   m_ObjectHideFlags: 0
@@ -16946,6 +16994,7 @@ MonoBehaviour:
   _itemImage: {fileID: 7905819007389505131}
   _blockSizeImage: {fileID: 6496811604561210227}
   _levelText: {fileID: 3148069021515170284}
+  _quantityText: {fileID: 0}
   _unitNameText: {fileID: 8289148005901237570}
   _atkText: {fileID: 1447284725918898070}
   _rapidText: {fileID: 8092827981874890378}
@@ -17283,6 +17332,7 @@ MonoBehaviour:
   _itemImage: {fileID: 1229958097721903620}
   _blockSizeImage: {fileID: 2778689513750165276}
   _levelText: {fileID: 6275375509794528643}
+  _quantityText: {fileID: 0}
   _unitNameText: {fileID: 1129933938111717677}
   _atkText: {fileID: 7544484945395272697}
   _rapidText: {fileID: 930324226279299813}
@@ -17527,6 +17577,7 @@ MonoBehaviour:
   _itemImage: {fileID: 2030709717858110807}
   _blockSizeImage: {fileID: 3148249790612500559}
   _levelText: {fileID: 6496912100998552272}
+  _quantityText: {fileID: 0}
   _unitNameText: {fileID: 185037959555655294}
   _atkText: {fileID: 7317314689578880170}
   _rapidText: {fileID: 132323000104574390}
