@@ -5,12 +5,7 @@ using UnityEngine;
 public abstract class WeaponBase : MonoBehaviour
 {
     // ---------------------------- SerializeField
-    [SerializeField, Tooltip("データ")] protected WeaponDataBase _data;
-
-    [SerializeField, Tooltip("ID")] private int _id;
-
-    [SerializeField, Tooltip("弾速")] protected float _bulletSpeed;
-    [SerializeField, Tooltip("攻撃間隔")] protected float _interval;
+    [SerializeField, Tooltip("データ")] protected WeaponData _data;
 
     [Header("索敵")]
     [SerializeField, Tooltip("索敵範囲")] protected float _scoutingRange;
@@ -31,37 +26,28 @@ public abstract class WeaponBase : MonoBehaviour
             {
                 i.Subscribe(value =>
                 {
-                    _attack = _data.weaponDataList[_id].Attack * value;
-                    Debug.Log($"プレイヤー：{value}");
+                    _attack = _data.Attack * value;
                 })
                     .AddTo(this);
             }
         }
         if (transform.root.CompareTag("Enemy"))
         {
-            foreach (var i in WeaponLevelManager.Instance.EnemyWeaponLevels)
+            foreach (var level in WeaponLevelManager.Instance.EnemyWeaponLevels)
             {
-                i.Subscribe(value =>
+                level.Subscribe(value =>
                 {
-                    _attack = _data.weaponDataList[_id].Attack * value;
-                    Debug.Log($"エネミー：{value}");
+                    _attack = _data.Attack * value;
                 })
                     .AddTo(this);
             }
         }
 
-        //_data.weaponDataList[_id].Level.
-        //    Subscribe(value =>
-        //    {
-        //        _attack = _data.weaponDataList[_id].Attack * _data.weaponDataList[_id].Level.CurrentValue;
-        //    }).
-        //    AddTo(this);
-
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
                 // インターバル中なら
-                if (_currentInterval < _interval)
+                if (_currentInterval < _data.Interval)
                 {
                     _currentInterval += Time.deltaTime;
                 }
