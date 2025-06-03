@@ -25,12 +25,12 @@ public class WeaponLevelManager : MonoBehaviour
             Destroy(this);
         }
 
-        _playerWeaponLevels = new ReactiveProperty<int>[_weaponData.weaponDataList.Count];
-        _enemyWeaponLevels = new ReactiveProperty<int>[_weaponData.weaponDataList.Count];
+        _playerWeaponLevels = new ReactiveProperty<int>[_weaponData.WeaponDataList.Count];
+        _enemyWeaponLevels = new ReactiveProperty<int>[_weaponData.WeaponDataList.Count];
 
-        for (int i = 0; i < _weaponData.weaponDataList.Count; i++)
+        for (int i = 0; i < _weaponData.WeaponDataList.Count; i++)
         {
-            _playerWeaponLevels[i] = new ReactiveProperty<int>(_weaponData.weaponDataList[i].Level.CurrentValue);
+            _playerWeaponLevels[i] = new ReactiveProperty<int>(_weaponData.WeaponDataList[i].Level.CurrentValue);
             _enemyWeaponLevels[i] = new ReactiveProperty<int>(1);
         }
     }
