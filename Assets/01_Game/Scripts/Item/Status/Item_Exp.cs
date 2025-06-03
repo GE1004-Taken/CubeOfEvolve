@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class Item_Exp : ItemBase
 {
-    public override void UseItem()
+    [SerializeField] private int _value;
+
+    public override void UseItem(PlayerCore playerCore)
     {
         Debug.Log("ŒoŒ±’l‚ðŠl“¾");
+        playerCore.ReceiveExp(_value);
     }
 }

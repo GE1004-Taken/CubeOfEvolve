@@ -25,5 +25,5 @@ public abstract class ItemBase : MonoBehaviour
     /// <summary>
     /// アイテムを使う処理
     /// </summary>
-    public abstract void UseItem();
+    public abstract void UseItem(PlayerCore playerCore);
 }
