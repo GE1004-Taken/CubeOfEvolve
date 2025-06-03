@@ -17,24 +17,20 @@ namespace MVRP.AT.Presenter
     public class Drop_Presenter : MonoBehaviour
     {
         // ----- SerializedField
-        [Header("Dependencies")]
-        [SerializeField] private Drop_View _dropView; // ドロップUIを表示するViewコンポーネント。
-        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // 説明文
-
+        // -----Models
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
-
+        // -----Views
+        [SerializeField] private Drop_View _dropView; // ドロップUIを表示するViewコンポーネント。
+        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // 説明文
 
         // ----- Private Members (内部データ)
         private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
         private List<int> _candidateModuleIds = new List<int>();
 
-        // ----- MonoBehaviour Lifecycle (MonoBehaviourライフサイクル)
-        /// <summary>
-        /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
-        /// 依存関係の取得とViewイベントの購読を行います。
-        /// </summary>
-        void Awake()
+        // ----- UnityMessage
+        
+        private void Awake()
         {
             // 依存関係が未設定の場合、シーンから取得を試みる
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
@@ -62,7 +58,7 @@ namespace MVRP.AT.Presenter
             }
         }
 
-        // ----- Public Methods (外部から呼び出されるメソッド)
+        // -----Public
         /// <summary>
         /// ドロップ選択UIを表示する準備をし、Viewに表示を依頼します。
         /// このメソッドは、例えばプレイヤーが特定のアイテムを拾った際にGameManagerなどから呼び出されます。
@@ -84,8 +80,8 @@ namespace MVRP.AT.Presenter
 
             if (_candidateModuleIds.Count == 0)
             {
-                // 選択肢がない場合。普通到達しない
-                Debug.Log("Drop_Presenter: 到達しない場面に来ちゃったねえ……");
+                // 選択肢がない場合。全部のモジュールがレベル5の場合
+                Debug.Log("Drop_Presenter: 全部のモジュールがレベル5になっちゃったみたい");
             }
             else
             {
@@ -109,7 +105,7 @@ namespace MVRP.AT.Presenter
             _dropView.UpdateModuleView(displayDatas);
         }
 
-        // ----- Private Methods (内部処理)
+        // -----Private
         /// <summary>
         /// ユーザーがモジュールを選択した際のイベントハンドラ。
         /// Viewからのイベント（R3で購読）によって呼び出されます。
@@ -153,8 +149,7 @@ namespace MVRP.AT.Presenter
             // まだレベル上限に達していないモジュールを抽出するロジック
             foreach (var runtimeModule in _runtimeModuleManager.AllRuntimeModuleData)
             {
-                // ここでマスターデータに maxLevel のような情報がある前提
-                // 仮に、レベルが5未満のモジュールをアップグレード可能とする
+                // レベルが5未満のモジュールをアップグレード可能とする
                 if (runtimeModule.CurrentLevelValue < 5)
                 {
                     upgradeableModuleIds.Add(runtimeModule.Id);

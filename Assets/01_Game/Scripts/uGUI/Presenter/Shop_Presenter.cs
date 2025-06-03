@@ -19,7 +19,6 @@ namespace MVRP.AT.Presenter
         // ----- SerializedField
 
         // Models
-        [Header("Dependencies")]
         [SerializeField] private Shop_View _shopView; // ショップUIを表示するViewコンポーネント。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
@@ -200,7 +199,7 @@ namespace MVRP.AT.Presenter
              _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
         }
 
-        // ----- Public Methods (公開メソッド)
+        // ----- Public
         /// <summary>
         /// ショップ画面を表示する準備をし、Viewに表示を依頼します。
         /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
@@ -208,6 +207,7 @@ namespace MVRP.AT.Presenter
         /// </summary>
         private void PrepareAndShowShopUI()
         {
+            // 参照NullCheck
             if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
             {
                 Debug.LogError("Shop_Presenter: ショップUIを準備するための依存関係が満たされていません！Awakeのログを確認してください。", this);
