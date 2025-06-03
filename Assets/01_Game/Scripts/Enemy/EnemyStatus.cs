@@ -45,8 +45,7 @@ public class EnemyStatus : MonoBehaviour, IDamageble
         _hp.Where(value => value <= 0)
             .Subscribe(value =>
             {
-                _itemDrop.DropExp();
-                _itemDrop.DropMoney();
+                _itemDrop.DropItemProcess();
 
                 Destroy(gameObject);
             })

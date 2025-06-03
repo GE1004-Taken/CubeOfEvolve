@@ -89,12 +89,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4976d5b2ffba9f44a8b3b478e5be3e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _expItem:
+  _dropItemList:
+  - data: {fileID: 11400000, guid: b29b60979fb148e4cb2e96f0dc2ede04, type: 2}
     value: 2
-    obj: {fileID: 4454796058120037739, guid: 925a844414a032545a54948e0970a395, type: 3}
-  _moneyItem:
-    value: 2
-    obj: {fileID: 884141326000241757, guid: 097f2104548ca0c4dbd03db4f55ba8b3, type: 3}
+  - data: {fileID: 11400000, guid: 1c8a93d5c87344340a5e60e62b102029, type: 2}
+    value: 1
   _forceHeightPower: 2
   _forceHorizontalPower: 3
 --- !u!1 &7824150715302907780
