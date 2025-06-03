@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class Item_Money : ItemBase
 {
-    public override void UseItem()
+    [SerializeField] private int _value;
+
+    public override void UseItem(PlayerCore playerCore)
     {
         Debug.Log("‚¨‹à‚ðŠl“¾");
+        playerCore.ReceiveMoney(_value);
     }
 }

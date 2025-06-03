@@ -5,6 +5,9 @@ public class ItemInventory : MonoBehaviour
     // ---------------------------- SerializeField
     [SerializeField] private ItemDataBase _itemDataBase;
 
+    // ---------------------------- SerializeField
+    private PlayerCore _playerCore;
+
     // ---------------------------- UnityMassage
     private void OnTriggerEnter(Collider other)
     {
@@ -20,20 +23,6 @@ public class ItemInventory : MonoBehaviour
     // ---------------------------- PublicMethod
     public void GetItem(ItemData itemData)
     {
-        switch (itemData.Type)
-        {
-            // 入手してストックしておけるもの
-            case ItemData.ItemType.Use:
-                _itemDataBase.FindItemByName(itemData).Count++;
-                break;
-
-            // 入手してすぐ効力を発揮するモノ
-            case ItemData.ItemType.Status:
-                itemData.Item.UseItem();
-                break;
-
-            default:
-                break;
-        }
+        itemData.Item.UseItem(_playerCore);
     }
 }
