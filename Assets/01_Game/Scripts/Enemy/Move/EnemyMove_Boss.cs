@@ -1,3 +1,4 @@
+using R3;
 using UnityEngine;
 
 public class EnemyMove_Boss : EnemyMoveBase
@@ -12,5 +13,17 @@ public class EnemyMove_Boss : EnemyMoveBase
         {
             LinearMovement();
         }
+    }
+
+    public override void Initialize()
+    {
+        // Ž€‚Ì”»’è
+        _status.Hp
+            .Where(value => value <= 0)
+            .Subscribe(value =>
+            {
+                GameManager.Instance.ChangeGameState(Assets.IGC2025.Scripts.GameManagers.GameState.GAMECLEAR);
+            })
+            .AddTo(this);
     }
 }

@@ -16,7 +16,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _targetObj = PlayerMonitoring.Instance.PlayerObj;
 
-        InitializeAsync();
+        Initialize();
     }
 
     private void FixedUpdate()
@@ -80,7 +80,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
     /// <summary>
     /// 初期化
     /// </summary>
-    public virtual void InitializeAsync()
+    public virtual void Initialize()
     {
 
     }

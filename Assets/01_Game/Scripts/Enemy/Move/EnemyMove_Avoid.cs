@@ -27,7 +27,7 @@ public class EnemyMove_Avoid : EnemyMoveBase
     /// <summary>
     /// ‰Šú‰»
     /// </summary>
-    public override void InitializeAsync()
+    public override void Initialize()
     {
         this.UpdateAsObservable()
             .Subscribe(_ =>
