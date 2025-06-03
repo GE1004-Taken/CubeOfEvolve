@@ -8,18 +8,12 @@ using Random = UnityEngine.Random;
 public class ItemMoveAnimation : MonoBehaviour
 {
     // ---------------------------- SerializeField
-    [SerializeField, Tooltip("名前")] private string _name;
-
-
     [SerializeField, Tooltip("マテリアル")] private MeshRenderer _material;
 
     [SerializeField, Tooltip("吸われるまでの待機時間")] private float _delaySecond;
     [SerializeField, Tooltip("移動速度")] private float _moveSpeed;
     [SerializeField, Tooltip("Collider")] private Collider _collider;
     [SerializeField, Tooltip("RigidBody")] private Rigidbody _rb;
-
-    // ---------------------------- Property
-    public string Name => _name;
 
     // ---------------------------- UnityMessage
     private void Awake()

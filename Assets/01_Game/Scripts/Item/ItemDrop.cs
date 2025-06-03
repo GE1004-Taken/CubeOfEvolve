@@ -7,13 +7,12 @@ public class ItemDrop : MonoBehaviour
     [Serializable]
     private class DropItem
     {
+        public ItemData data;
         public int value;
-        public GameObject obj;
     }
     // ---------------------------- SerializeField
     [Header("ドロップするもの")]
-    [SerializeField, Tooltip("経験値")] private DropItem _expItem;
-    [SerializeField, Tooltip("お金")] private DropItem _moneyItem;
+    [SerializeField, Tooltip("")] private DropItem[] _dropItemList;
 
     [Header("吹き飛ぶ力")]
     [SerializeField, Tooltip("上")] private float _forceHeightPower;
@@ -23,22 +22,14 @@ public class ItemDrop : MonoBehaviour
     /// <summary>
     /// 経験値を落とす処理
     /// </summary>
-    public void DropExp()
+    public void DropItemProcess()
     {
-        for (int i = 0; i < _expItem.value; i++)
+        foreach (var dropItem in _dropItemList)
         {
-            DropAnimation(_expItem.obj);
-        }
-    }
-
-    /// <summary>
-    /// お金を落とす距離
-    /// </summary>
-    public void DropMoney()
-    {
-        for (int i = 0; i < _moneyItem.value; i++)
-        {
-            DropAnimation(_moneyItem.obj);
+            for (int i = 0; i < dropItem.value; i++)
+            {
+                DropAnimation(dropItem.data.Item);
+            }
         }
     }
 
@@ -48,13 +39,13 @@ public class ItemDrop : MonoBehaviour
     /// </summary>
     /// <param name="pos"></param>
     /// <param name="dropObj"></param>
-    private void DropAnimation(GameObject dropObj)
+    private void DropAnimation(ItemBase dropObj)
     {
-        GameObject obj = Instantiate(dropObj);
+        var obj = Instantiate(dropObj);
         obj.transform.position = transform.position;
 
         if (obj.GetComponent<Rigidbody>() == null)
-            obj.AddComponent<Rigidbody>();
+            obj.gameObject.AddComponent<Rigidbody>();
 
         Rigidbody rb = obj.GetComponent<Rigidbody>();
 
