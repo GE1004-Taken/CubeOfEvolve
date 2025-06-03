@@ -53,7 +53,7 @@ public class EnemyMove_Assault : EnemyMoveBase
     /// <summary>
     /// ‰Šú‰»
     /// </summary>
-    public override async void InitializeAsync()
+    public override async void Initialize()
     {
         // ƒLƒƒƒ“ƒZƒ‹ˆ—‚ğ‘‚­‚Æ‚±‚ë—v‘Š’k
         await UniTask.Delay(TimeSpan.FromSeconds(_moveDelaySecond), cancellationToken: destroyCancellationToken, delayType: DelayType.DeltaTime)
