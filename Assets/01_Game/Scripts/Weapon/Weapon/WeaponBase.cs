@@ -66,7 +66,7 @@ public abstract class WeaponBase : MonoBehaviour
     // ---------------------------- AbstractMethod
     protected virtual void Initialize()
     {
-
+        _layerSearch.Initialize(_scoutingRange, _targetTag);
     }
 
     // ---------------------------- AbstractMethod

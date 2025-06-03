@@ -24,6 +24,8 @@ public class Weapon_Drill : WeaponBase
 
     protected override void Initialize()
     {
+        base.Initialize();
+
         this.OnTriggerEnterAsObservable()
             .Where(other => other.CompareTag(_targetTag))
             .Subscribe(other =>
