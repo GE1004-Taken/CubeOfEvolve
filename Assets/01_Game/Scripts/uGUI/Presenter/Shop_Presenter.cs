@@ -176,6 +176,9 @@ namespace MVRP.AT.Presenter
                 return;
             }
 
+            // レベルと金額の計算
+            var ModulePrice = ClucPrice(0.5f);
+
             // 購入可能か判定（所持金が足りるか）
             if (_playerCore.Money.CurrentValue >= masterData.BasePrice)
             {
@@ -191,6 +194,25 @@ namespace MVRP.AT.Presenter
             else
             {
                 Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのに金が不足しています。必要: {masterData.BasePrice}、所持: {_playerCore.Money.CurrentValue}。", this);
+            }
+
+            // Local
+            float ClucPrice(float maxDiscountRate)
+            {
+                if (runtimeModule.CurrentLevelValue <= 1)
+                {
+                    return masterData.BasePrice;
+                }
+
+                if (runtimeModule.CurrentLevelValue >= 5)
+                {
+                    return masterData.BasePrice * (1.0f - maxDiscountRate);
+                }
+
+                float discountProgress = (runtimeModule.CurrentLevelValue - 1) / 4.0f;
+                float currentDiscountRate = maxDiscountRate * discountProgress;
+
+                return masterData.BasePrice * (1.0f - currentDiscountRate);
             }
         }
 
