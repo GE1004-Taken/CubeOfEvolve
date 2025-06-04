@@ -14,7 +14,7 @@ namespace App.GameSystem.Modules
         // ----- Singleton
         public static RuntimeModuleManager Instance { get; private set; } 
 
-        // ----- SerializedField 
+        // ----- SerializedField
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを格納するデータストア。
 
         // ----- Private Members (内部データ)
@@ -24,7 +24,7 @@ namespace App.GameSystem.Modules
 
         // ----- Public Properties (公開プロパティ)
         public IReadOnlyList<RuntimeModuleData> AllRuntimeModuleData => _allRuntimeModuleDataInternal;
-        public Observable<Unit> OnAllRuntimeModuleDataChanged => _collectionChangedSubject.AsObservable();
+        public Observable<Unit> OnAllRuntimeModuleDataChanged => _collectionChangedSubject.AsObservable();// 変更があったときの目印
 
         // ----- UnityMessage
         void Awake()

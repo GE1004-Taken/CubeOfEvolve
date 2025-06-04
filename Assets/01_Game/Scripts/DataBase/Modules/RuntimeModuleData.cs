@@ -88,12 +88,14 @@ namespace App.GameSystem.Modules
         /// <summary>
         /// モジュールのレベルを1上げます。
         /// </summary>
-        public void LevelUp() => SetLevel(_currentLevel.Value + 1);
+        public void LevelUp()
+            => SetLevel(_currentLevel.Value + 1);
 
         /// <summary>
         /// モジュールの数量を指定された量だけ変更します。
         /// </summary>
         /// <param name="amount">数量の増減量。</param>
-        public void ChangeQuantity(int amount) => SetQuantity(_quantity.Value + amount);
+        public void ChangeQuantity(int amount)
+            => SetQuantity(_quantity.Value + amount);
     }
 }

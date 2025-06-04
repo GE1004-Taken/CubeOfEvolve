@@ -1,6 +1,5 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
-using AT.uGUI;
 using MVRP.AT.View;
 using R3;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace MVRP.AT.Presenter
         private CompositeDisposable _disposables = new CompositeDisposable(); // 全体の購読解除を管理するCompositeDisposable。
         private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // 各モジュールのレベル・数量変更購読を管理するCompositeDisposable。
 
-        // ----- UnityMessag
+        // ----- UnityMessage
         /// <summary>
         /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
         /// 依存関係の取得と初期設定を行います。
@@ -164,10 +163,12 @@ namespace MVRP.AT.Presenter
                 return;
             }
 
-            // ☆ビルド画面に移行する処理
+            // 選択画面の消去
             _exitButton.onClick.Invoke();
 
+            // ☆注意：ビルド画面に移行する処理
             // ☆注意：設置後に所持数を減らす処理
+
 
             Debug.Log($"Build_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を選択した", this);
 
