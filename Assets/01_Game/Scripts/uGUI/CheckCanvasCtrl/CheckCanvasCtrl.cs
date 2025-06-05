@@ -1,7 +1,3 @@
-// 作成日：   250508
-// 更新日：   250508
-// 作成者： 安中 健人
-
 // 概要説明(AIにより作成)：
 // このスクリプトは、汎用的な確認ダイアログのUIを制御します。
 // 表示するメッセージ、Yes/Noボタンのテキスト、およびYesボタンが押された際の処理は、
@@ -58,7 +54,7 @@ public class CheckCanvasCtrl : MonoBehaviour
         _checkText.text = config.message;             // 確認メッセージを設定
         _YesButtonText.text = config.yesButtonText;   // 「はい」ボタンのテキストを設定
         _NoButtonText.text = config.noButtonText;     // 「いいえ」ボタンのテキストを設定
-        _lastSelectedButton = focusOnCancel;        // キャンセル時にフォーカスを戻すボタンを保存
+        if(focusOnCancel != null) _lastSelectedButton = focusOnCancel;        // キャンセル時にフォーカスを戻すボタンを保存
 
         // CheckDialogConfigに設定された ICheckAction を取得
         _currentAction = config.actionReference?.GetAction();

@@ -33,11 +33,17 @@ namespace MVRP.AT.Presenter
         private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // 各モジュールのレベル・数量変更購読を管理するCompositeDisposable。
 
         // ----- UnityMessage
-        /// <summary>
-        /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
-        /// 依存関係の取得と初期設定を行います。
-        /// </summary>
-        void Awake()
+        private void Start()
+        {
+            _shopView.OnModulePurchaseRequested
+                .Subscribe(moduleId => HandleModulePurchaseRequested(moduleId))
+                .AddTo(_disposables);
+
+            _shopView.OnModuleHovered
+                .Subscribe(x => HandleModuleHovered(x))
+                .AddTo(this);
+        }
+        private void Awake()
         {
             // 依存関係の取得とチェック
             if (_shopView == null) Debug.LogError("Shop_Presenter: ShopViewがInspectorで設定されていません！", this);
@@ -53,39 +59,6 @@ namespace MVRP.AT.Presenter
                 return;
             }
 
-            // Viewからのモジュール購入リクエストを購読
-            _shopView.OnModulePurchaseRequested
-                .Subscribe(moduleId => HandleModulePurchaseRequested(moduleId))
-                .AddTo(_disposables);
-
-            // Playerの所持金を監視
-            _playerCore.Money
-                .Subscribe(x =>
-                {
-                    // Viewに反映
-                    _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f);
-                }).AddTo(this);
-
-            _shopView.OnModuleHovered
-                .Subscribe(x => HandleModuleHovered(x))
-                .AddTo(this);
-
-            // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ショップUIを更新する
-            _runtimeModuleManager.OnAllRuntimeModuleDataChanged
-                .Subscribe(_ => {
-                    Debug.Log("RuntimeModuleDataコレクションが変更されました。モジュールの変更購読を再設定し、ショップUIを更新します。");
-                    // 既存のモジュールレベル・数量変更購読を全て解除
-                    _moduleLevelAndQuantityChangeDisposables.Clear();
-
-                    // 現在の全てのモジュールに対してレベル・数量変更を購読
-                    foreach (var rmd in _runtimeModuleManager.AllRuntimeModuleData)
-                    {
-                        SubscribeToModuleChanges(rmd);
-                    }
-                    PrepareAndShowShopUI(); // ショップを再表示してリストを更新
-                })
-                .AddTo(_disposables);
-
             // 初期表示のためにショップUIを準備して表示
             PrepareAndShowShopUI();
         }
@@ -100,9 +73,10 @@ namespace MVRP.AT.Presenter
             _moduleLevelAndQuantityChangeDisposables.Dispose(); // 各モジュールのレベル・数量変更購読も解除
         }
 
-        // ----- Private Methods (プライベートメソッド)
+
+        #region ModelToView
         /// <summary>
-        /// 各RuntimeModuleDataのレベルと数量変更を購読するヘルパーメソッドです。
+        /// 各RuntimeModuleDataのレベル変更を購読し、ショップUIを更新するヘルパーメソッドです。
         /// </summary>
         /// <param name="runtimeModuleData">購読対象のRuntimeModuleData。</param>
         private void SubscribeToModuleChanges(RuntimeModuleData runtimeModuleData)
@@ -121,6 +95,60 @@ namespace MVRP.AT.Presenter
             {
                 Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はLevelをReactivePropertyとして公開していません。", this);
             }
+        }
+
+        /// <summary>
+        /// ショップ画面を表示する準備をし、Viewに表示を依頼します。
+        /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
+        /// また、RuntimeModuleDataの変更によっても自動的に呼び出されることがあります。
+        /// </summary>
+        private void PrepareAndShowShopUI()
+        {
+            // 参照NullCheck
+            if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
+            {
+                Debug.LogError("Shop_Presenter: ショップUIを準備するための依存関係が満たされていません！Awakeのログを確認してください。", this);
+                return;
+            }
+
+            // Playerの所持金を監視し、Viewに反映
+            _playerCore.Money
+                .Subscribe(x =>
+                {
+                    _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f);
+                }).AddTo(this);
+
+            // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ショップUIを更新する
+            _runtimeModuleManager.OnAllRuntimeModuleDataChanged
+                .Subscribe(_ => {
+                    Debug.Log("RuntimeModuleDataコレクションが変更されました。モジュールの変更購読を再設定し、ショップUIを更新します。");
+                    // 既存のモジュールレベル・数量変更購読を全て解除
+                    _moduleLevelAndQuantityChangeDisposables.Clear();
+
+                    // 現在の全てのモジュールに対してレベル・数量変更を購読
+                    foreach (var rmd in _runtimeModuleManager.AllRuntimeModuleData)
+                    {
+                        SubscribeToModuleChanges(rmd);
+                    }
+                    DisplayShopContent(); // ショップを再表示してリストを更新
+                })
+                .AddTo(_disposables);
+
+            DisplayShopContent();
+        }
+
+        /// <summary>
+        /// ショップに表示するモジュールデータを準備し、Viewに渡して表示を更新します。
+        /// </summary>
+        private void DisplayShopContent()
+        {
+            // レベル1以上のモジュールのみをViewに渡す
+            List<RuntimeModuleData> shopRuntimeModules = _runtimeModuleManager.AllRuntimeModuleData
+                .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0)
+                .ToList();
+
+            _shopView.DisplayShopModules(shopRuntimeModules, _moduleDataStore);
+            UpdatePurchaseButtonsInteractability();
         }
 
         /// <summary>
@@ -148,7 +176,10 @@ namespace MVRP.AT.Presenter
                 _shopView.SetPurchaseButtonInteractable(runtimeData.Id, canAfford);
             }
         }
+        #endregion
 
+       
+        #region ViewToModel
         /// <summary>
         /// モジュール購入リクエストを受け取った際のハンドラです。
         /// </summary>
@@ -176,6 +207,9 @@ namespace MVRP.AT.Presenter
                 return;
             }
 
+            // レベルと金額の計算
+            var ModulePrice = ClucPrice(0.5f);
+
             // 購入可能か判定（所持金が足りるか）
             if (_playerCore.Money.CurrentValue >= masterData.BasePrice)
             {
@@ -192,35 +226,33 @@ namespace MVRP.AT.Presenter
             {
                 Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのに金が不足しています。必要: {masterData.BasePrice}、所持: {_playerCore.Money.CurrentValue}。", this);
             }
+
+            // Local
+            float ClucPrice(float maxDiscountRate)
+            {
+                if (runtimeModule.CurrentLevelValue <= 1)
+                {
+                    return masterData.BasePrice;
+                }
+
+                if (runtimeModule.CurrentLevelValue >= 5)
+                {
+                    return masterData.BasePrice * (1.0f - maxDiscountRate);
+                }
+
+                float discountProgress = (runtimeModule.CurrentLevelValue - 1) / 4.0f;
+                float currentDiscountRate = maxDiscountRate * discountProgress;
+
+                return masterData.BasePrice * (1.0f - currentDiscountRate);
+            }
         }
 
         private void HandleModuleHovered(int EnterModuleId)
         {
-             _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
+            _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
         }
 
-        // ----- Public
-        /// <summary>
-        /// ショップ画面を表示する準備をし、Viewに表示を依頼します。
-        /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
-        /// また、RuntimeModuleDataの変更によっても自動的に呼び出されることがあります。
-        /// </summary>
-        private void PrepareAndShowShopUI()
-        {
-            // 参照NullCheck
-            if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
-            {
-                Debug.LogError("Shop_Presenter: ショップUIを準備するための依存関係が満たされていません！Awakeのログを確認してください。", this);
-                return;
-            }
+        #endregion
 
-            // レベル1以上のモジュールのみをViewに渡す
-            List<RuntimeModuleData> shopRuntimeModules = _runtimeModuleManager.AllRuntimeModuleData
-                .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0)
-                .ToList();
-
-            _shopView.DisplayShopModules(shopRuntimeModules);
-            UpdatePurchaseButtonsInteractability();
-        }
     }
 }

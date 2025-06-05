@@ -24,22 +24,6 @@ namespace App.GameSystem.Modules
         public ReadOnlyReactiveProperty<int> Quantity => _quantity;
         public int CurrentQuantityValue => _quantity.Value;
 
-        private ReactiveProperty<float> _attack;
-        public ReadOnlyReactiveProperty<float> Atk => _attack;
-        public float CurrentAttackValue => _attack.Value;
-
-        private ReactiveProperty<float> _bulletSpeed;
-        public ReadOnlyReactiveProperty<float> Spd => _bulletSpeed;
-        public float CurrentBulletSpeedValue => _bulletSpeed.Value;
-
-        private ReactiveProperty<float> _interval;
-        public ReadOnlyReactiveProperty<float> Interval => _interval;
-        public float CurrentIntervalValue => _interval.Value;
-
-        private ReactiveProperty<float> _searchRange;
-        public ReadOnlyReactiveProperty<float> SearchRange => _searchRange;
-        public float CurrentSearchRangeValue => _searchRange.Value;
-
         // ----- Constructor (コンストラクタ)
         /// <summary>
         /// ModuleDataマスターデータからRuntimeModuleDataのインスタンスを初期化します。
@@ -50,10 +34,6 @@ namespace App.GameSystem.Modules
             Id = masterData.Id; // マスターデータからIDを設定。
             _currentLevel = new ReactiveProperty<int>(masterData.Level); // 初期レベルはマスターデータから代入。
             _quantity = new ReactiveProperty<int>(masterData.Quantity); // 初期数量はマスターデータから代入。
-            _attack = new ReactiveProperty<float>(masterData.ModuleState.Attack);
-            _bulletSpeed = new ReactiveProperty<float>(masterData.ModuleState.BulletSpeed);
-            _interval = new ReactiveProperty<float>(masterData.ModuleState.Interval);
-            _searchRange = new ReactiveProperty<float>(masterData.ModuleState.SearchRange);
         }
 
         // ----- Private
@@ -88,12 +68,14 @@ namespace App.GameSystem.Modules
         /// <summary>
         /// モジュールのレベルを1上げます。
         /// </summary>
-        public void LevelUp() => SetLevel(_currentLevel.Value + 1);
+        public void LevelUp()
+            => SetLevel(_currentLevel.Value + 1);
 
         /// <summary>
         /// モジュールの数量を指定された量だけ変更します。
         /// </summary>
         /// <param name="amount">数量の増減量。</param>
-        public void ChangeQuantity(int amount) => SetQuantity(_quantity.Value + amount);
+        public void ChangeQuantity(int amount)
+            => SetQuantity(_quantity.Value + amount);
     }
 }
