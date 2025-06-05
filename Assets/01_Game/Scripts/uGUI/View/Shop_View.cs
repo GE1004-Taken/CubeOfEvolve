@@ -17,7 +17,6 @@ namespace MVRP.AT.View
         // ----- SerializedField
         [SerializeField] private GameObject _moduleItemPrefab; // 各モジュール表示用のプレハブ (Detailed_ViewとButtonを含む)。
         [SerializeField] private Transform _contentParent; // モジュールリストの親Transform。
-        [SerializeField] private ModuleDataStore _moduleDataStore; // マスターデータを取得するために必要。
 
         // ----- Events
         public Subject<int> OnModulePurchaseRequested { get; private set; } = new Subject<int>(); // モジュール購入リクエストを通知するSubject。
@@ -30,15 +29,6 @@ namespace MVRP.AT.View
 
         // ----- UnityMessage
         
-        private void Awake()
-        {
-            if (_moduleDataStore == null)
-            {
-                Debug.LogError("Shop_View: ModuleDataStoreがInspectorで設定されていません！モジュールの詳細を表示できません。", this);
-                enabled = false;
-            }
-        }
-
         private void OnDestroy()
         {
             _disposables.Dispose(); // オブジェクト破棄時に全ての購読を解除。
@@ -51,7 +41,7 @@ namespace MVRP.AT.View
         /// レベル1以上のモジュールのみ、実際のランタイムデータに基づいて表示されます。
         /// </summary>
         /// <param name="shopRuntimeModules">ショップに表示するRuntimeModuleDataのリスト。</param>
-        public void DisplayShopModules(List<RuntimeModuleData> shopRuntimeModules)
+        public void DisplayShopModules(List<RuntimeModuleData> shopRuntimeModules, ModuleDataStore moduleDataStore)
         {
             // 既存のモジュールアイテムを全てクリア
             foreach (var item in _instantiatedModuleItems)
@@ -72,7 +62,7 @@ namespace MVRP.AT.View
                 }
 
                 // 対応するマスターデータを取得
-                ModuleData masterData = _moduleDataStore.FindWithId(runtimeData.Id);
+                ModuleData masterData = moduleDataStore.FindWithId(runtimeData.Id);
                 if (masterData == null)
                 {
                     Debug.LogError($"Shop_View: ModuleDataStoreにランタイムモジュールID {runtimeData.Id} のマスターデータが見つかりません。モジュールを表示できません。", this);

@@ -5,7 +5,6 @@ using R3;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MVRP.AT.Presenter
 {
@@ -29,13 +28,8 @@ namespace MVRP.AT.Presenter
         private List<int> _candidateModuleIds = new List<int>();
 
         // ----- UnityMessage
-        
-        private void Awake()
+        private void Start()
         {
-            // 依存関係が未設定の場合、シーンから取得を試みる
-            if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
-
-            // ViewからのイベントをR3で購読
             if (_dropView != null)
             {
                 _dropView.OnModuleSelected
@@ -45,20 +39,22 @@ namespace MVRP.AT.Presenter
                     .Subscribe(x => HandleModuleHovered(x))
                     .AddTo(this);
             }
-            else
-            {
-                Debug.LogError("Drop_Presenter: Drop_Viewが設定されていません。ドロップ選択イベントを購読できません。", this);
-            }
+        }
+        private void Awake()
+        {
+            // 依存関係が未設定の場合、シーンから取得を試みる
+            if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
 
             // 必須の依存関係が揃っているかチェック
-            if (_runtimeModuleManager == null || _moduleDataStore == null)
+            if (_runtimeModuleManager == null || _moduleDataStore == null || _dropView == null)
             {
-                Debug.LogError("Drop_Presenter: RuntimeModuleManagerまたはModuleDataStoreが設定されていません。このコンポーネントを無効にします。", this);
+                Debug.LogError("Drop_Presenter: RuntimeModuleManager, ModuleDataStore, またはDrop_Viewが設定されていません。このコンポーネントを無効にします。", this);
                 enabled = false;
             }
         }
 
-        // -----Public
+        #region ModelToView
+
         /// <summary>
         /// ドロップ選択UIを表示する準備をし、Viewに表示を依頼します。
         /// このメソッドは、例えばプレイヤーが特定のアイテムを拾った際にGameManagerなどから呼び出されます。
@@ -105,37 +101,6 @@ namespace MVRP.AT.Presenter
             _dropView.UpdateModuleView(displayDatas);
         }
 
-        // -----Private
-        /// <summary>
-        /// ユーザーがモジュールを選択した際のイベントハンドラ。
-        /// Viewからのイベント（R3で購読）によって呼び出されます。
-        /// </summary>
-        /// <param name="selectedModuleId">選択されたモジュールのID。</param>
-        private void HandleModuleSelected(int selectedModuleId)
-        {
-            if (selectedModuleId == -1) // 何でもないものを選択した場合
-            {
-                Debug.Log("Drop_Presenter: 代替オプションが選択されました。");
-                // ここで経験値獲得やコイン獲得などのロジックを呼び出す
-                // 例: GameManager.Instance.GainExperience(100);
-            }
-            else
-            {
-                Debug.Log($"Drop_Presenter: ユーザーによってモジュールID {selectedModuleId} が選択されました。");
-
-                // RuntimeModuleManager を介してモジュールのレベルアップ処理を実行
-                _runtimeModuleManager.LevelUpModule(selectedModuleId);
-            }
-
-            // 必要であれば、UIの更新など、ゲーム全体の状態に応じた後処理を呼び出す
-            // 例: GameManager.Instance.OnPlayerModuleUpgraded();
-        }
-
-        private void HandleModuleHovered(int EnterModuleId)
-        {
-            _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
-        }
-
         /// <summary>
         /// ランダムにアップグレード可能なモジュールIDを選択するロジック。
         /// </summary>
@@ -175,5 +140,56 @@ namespace MVRP.AT.Presenter
 
             return selectedIds;
         }
+
+        #endregion
+
+        
+        #region ViewToModel
+
+        /// <summary>
+        /// ユーザーがモジュールを選択した際のイベントハンドラ。
+        /// Viewからのイベント（R3で購読）によって呼び出されます。
+        /// </summary>
+        /// <param name="selectedModuleId">選択されたモジュールのID。</param>
+        private void HandleModuleSelected(int selectedModuleId)
+        {
+            if (selectedModuleId == -1) // 何でもないものを選択した場合
+            {
+                Debug.Log("Drop_Presenter: 代替オプションが選択されました。");
+                // ここで経験値獲得やコイン獲得などのロジックを呼び出す
+                // 例: GameManager.Instance.GainExperience(100);
+            }
+            else
+            {
+                Debug.Log($"Drop_Presenter: ユーザーによってモジュールID {selectedModuleId} が選択されました。");
+
+                // RuntimeModuleManager を介してモジュールのレベルアップ処理を実行
+                _runtimeModuleManager.LevelUpModule(selectedModuleId);
+            }
+
+            // 必要であれば、UIの更新など、ゲーム全体の状態に応じた後処理を呼び出す
+            // 例: GameManager.Instance.OnPlayerModuleUpgraded();
+        }
+
+        /// <summary>
+        /// モジュールにマウスオーバーした際のイベントハンドラ。
+        /// 説明文を更新します。
+        /// </summary>
+        /// <param name="EnterModuleId">マウスオーバーされたモジュールのID。</param>
+        private void HandleModuleHovered(int EnterModuleId)
+        {
+            _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 上記のカテゴリに属さない初期設定や共通ヘルパーなどをここに記述します。
+        /// </summary>
+        #region Others
+
+        // 現在、このセクションには特に追加するメソッドはありません。
+
+        #endregion
     }
 }
