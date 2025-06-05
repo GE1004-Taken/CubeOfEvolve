@@ -1,3 +1,4 @@
+using App.GameSystem.Modules;
 using R3;
 using R3.Triggers;
 using UnityEngine;
@@ -8,7 +9,6 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField, Tooltip("データ")] protected WeaponData _data;
 
     [Header("索敵")]
-    [SerializeField, Tooltip("索敵範囲")] protected float _scoutingRange;
     [SerializeField, Tooltip("対象検知用")] protected LayerSearch _layerSearch;
 
     [SerializeField, Tooltip("攻撃対象のタグ")] protected string _targetTag;
@@ -22,25 +22,20 @@ public abstract class WeaponBase : MonoBehaviour
     {
         if (transform.root.CompareTag("Player"))
         {
-            foreach (var i in WeaponLevelManager.Instance.PlayerWeaponLevels)
+            foreach (var i in RuntimeModuleManager.Instance.AllRuntimeModuleData)
             {
-                i.Subscribe(value =>
-                {
-                    _attack = _data.Attack * value;
-                })
+                // レベルアップ時のステータス変化処理
+                i.Level
+                    .Subscribe(value =>
+                    {
+                        _attack = _data.Attack * value;
+                    })
                     .AddTo(this);
             }
         }
         if (transform.root.CompareTag("Enemy"))
         {
-            foreach (var level in WeaponLevelManager.Instance.EnemyWeaponLevels)
-            {
-                level.Subscribe(value =>
-                {
-                    _attack = _data.Attack * value;
-                })
-                    .AddTo(this);
-            }
+            _attack = _data.Attack;
         }
 
         this.UpdateAsObservable()
@@ -66,7 +61,7 @@ public abstract class WeaponBase : MonoBehaviour
     // ---------------------------- AbstractMethod
     protected virtual void Initialize()
     {
-        _layerSearch.Initialize(_scoutingRange, _targetTag);
+        _layerSearch.Initialize(_data.SearchRange, _targetTag);
     }
 
     // ---------------------------- AbstractMethod

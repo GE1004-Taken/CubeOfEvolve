@@ -42,7 +42,7 @@ namespace App.BaseSystem.DataStores.ScriptableObjects.Modules
         [SerializeField] private Sprite _mainSprite;
         [SerializeField] private Sprite _blockSprite;
         [SerializeField] private int _basePrice = 100; // モジュールの基本価格を設定します。
-        [SerializeField] private ModuleParameter _state; // モジュールの基礎ステータス。
+        [SerializeField] private WeaponData _state; // モジュールの基礎ステータス。
         [SerializeField] private WeaponBase _weaponData; // 武器等のデータ。攻撃力など変数と、ダメージ処理の記述が入ってる。
 
         // 可変
@@ -58,7 +58,7 @@ namespace App.BaseSystem.DataStores.ScriptableObjects.Modules
         public Sprite MainSprite => _mainSprite;
         public Sprite BlockSprite => _blockSprite;
         public int BasePrice => _basePrice;
-        public ModuleParameter ModuleState => _state;
+        public WeaponData ModuleState => _state;
         public WeaponBase WeaponData => _weaponData;
 
         public int Level => _level;

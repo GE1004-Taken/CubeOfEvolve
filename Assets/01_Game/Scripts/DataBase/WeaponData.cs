@@ -11,5 +11,6 @@ public class WeaponData : ScriptableObject
 
     public float BulletSpeed;
     public float Interval;
+    public float SearchRange;
 
 }
