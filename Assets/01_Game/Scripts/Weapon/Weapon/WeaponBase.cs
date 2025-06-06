@@ -7,6 +7,7 @@ public abstract class WeaponBase : MonoBehaviour
 {
     // ---------------------------- SerializeField
     [SerializeField, Tooltip("データ")] protected WeaponData _data;
+    [SerializeField, Tooltip("データ")] protected int _id = -1;
 
     [Header("索敵")]
     [SerializeField, Tooltip("対象検知用")] protected LayerSearch _layerSearch;
@@ -22,16 +23,13 @@ public abstract class WeaponBase : MonoBehaviour
     {
         if (transform.root.CompareTag("Player"))
         {
-            foreach (var i in RuntimeModuleManager.Instance.AllRuntimeModuleData)
-            {
-                // レベルアップ時のステータス変化処理
-                i.Level
-                    .Subscribe(value =>
-                    {
-                        _attack = _data.Attack * value;
-                    })
+            // レベルアップ時のステータス変化処理
+            RuntimeModuleManager.Instance.GetRuntimeModuleData(_id).Level
+                .Subscribe(value =>
+                {
+                    _attack = _data.Attack * value;
+                })
                     .AddTo(this);
-            }
         }
         if (transform.root.CompareTag("Enemy"))
         {
