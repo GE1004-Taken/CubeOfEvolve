@@ -23,25 +23,32 @@ namespace MVRP.AT.View
         private List<Info_View> _detailedViews = new List<Info_View>(); // 各オプションの詳細表示ビューリスト。
         private List<int> _currentDisplayedModuleIds = new List<int>(); // 現在表示しているモジュールのIDリスト。
 
+        // R3の購読を管理するためのCompositeDisposable
+        private CompositeDisposable _disposables = new CompositeDisposable();
+
         // ----- Events (PresenterがR3で購読する)
         public Subject<int> OnModuleSelected { get; private set; } = new Subject<int>(); // ユーザーがモジュールを選択した際に、選択されたモジュールのIDを通知するSubject。
         public Subject<int> OnModuleHovered { get; private set; } = new Subject<int>(); // カーソルを合わせたモジュールのIDを通知するSubject。
 
-        // ----- MonoBehaviour Lifecycle (MonoBehaviourライフサイクル)
-        /// <summary>
-        /// Awakeはスクリプトインスタンスがロードされたときに呼び出されます。
-        /// 各オプションUIのコンポーネントを取得し、イベントを購読します。
-        /// </summary>
+        // ----- UnityMessage
+        
         private void Awake()
         {
-            InitOptionViews();
+            InitializeOptionComponents();
+        }
+
+        private void OnDestroy()
+        {
+            _disposables.Dispose(); // オブジェクトが破棄される際に、すべての購読を解除
+            OnModuleSelected.Dispose(); // Subjectも忘れずにDispose
+            OnModuleHovered.Dispose();  // Subjectも忘れずにDispose
         }
 
         // ----- Private Methods (内部処理)
         /// <summary>
-        /// 各モジュールオプションのViewコンポーネントを初期化し、ボタンイベントを購読します。
+        /// 各モジュールオプションのViewコンポーネントを取得します。
         /// </summary>
-        private void InitOptionViews()
+        private void InitializeOptionComponents()
         {
             _buttons.Clear();
             _detailedViews.Clear();
@@ -65,15 +72,6 @@ namespace MVRP.AT.View
                 {
                     _buttons.Add(button);
                     _detailedViews.Add(detailedView);
-
-                    // ボタンクリックイベントをR3で購読
-                    int index = i; // クロージャのためにインデックスをキャプチャ。
-                    button.OnClickAsObservable()
-                          .Subscribe(_ => OnButtonClicked(index))
-                          .AddTo(this); // オブジェクト破棄時に購読を解除。
-                    button.OnPointerEnterAsObservable()
-                        .Subscribe(_ => OnModuleOptionHovered(index))
-                        .AddTo(this);
                 }
             }
         }
@@ -88,11 +86,13 @@ namespace MVRP.AT.View
             {
                 Debug.LogWarning($"無効なオプションインデックスがクリックされました: {index}");
                 return;
-            } // 範囲確認
+            }
 
             int selectedModuleId = _currentDisplayedModuleIds[index];
             OnModuleSelected.OnNext(selectedModuleId); // 選択されたモジュールIDをイベントとして発火。
 
+            // アイテム選択後、画面が閉じる直前に購読を解除
+            HideModuleView();
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace MVRP.AT.View
             {
                 Debug.LogWarning($"無効なオプションインデックスがクリックされました: {index}");
                 return;
-            } // 範囲確認
+            }
 
             int selectedModuleId = _currentDisplayedModuleIds[index];
             OnModuleHovered.OnNext(selectedModuleId); // 選択されたモジュールIDをイベントとして発火。
@@ -117,22 +117,60 @@ namespace MVRP.AT.View
         /// Presenterから提供されるモジュールデータに基づいてUIを更新します。
         /// </summary>
         /// <param name="moduleDatas">表示するモジュールのデータリスト（ModuleDataとRuntimeModuleDataを結合したデータ）。</param>
-        /// <param name="showDefaultOption">代替オプションを表示するかどうか。</param>
         public void UpdateModuleView(List<(ModuleData master, RuntimeModuleData runtime)> moduleDatas)
         {
-            _currentDisplayedModuleIds.Clear(); // 表示IDリストをクリア。
+            // 前回の購読をすべて解除
+            _disposables.Clear();
+
+            _currentDisplayedModuleIds.Clear();
 
             // 渡されたデータに基づいて各オプションUIを設定
-            for (int i = 0; i < moduleDatas.Count && i < _detailedViews.Count; i++)
+            for (int i = 0; i < _moduleOptionObjects.Length; i++) // _moduleOptionObjectsの長さでループ
             {
-                var (master, runtime) = moduleDatas[i];
-                if (master != null && runtime != null)
+                GameObject obj = _moduleOptionObjects[i];
+                if (obj == null) continue; // nullチェック
+
+                // まずは全て非表示にする
+                obj.SetActive(false);
+
+                if (i < moduleDatas.Count) // データがある場合のみ設定
                 {
-                    _moduleOptionObjects[i].SetActive(true);
-                    _detailedViews[i].SetInfo(master, runtime); // MasterDataとRuntimeDataの両方を渡す。
-                    _currentDisplayedModuleIds.Add(master.Id); // 表示中のモジュールIDを記録。
+                    var (master, runtime) = moduleDatas[i];
+                    if (master != null && runtime != null)
+                    {
+                        obj.SetActive(true);
+                        _detailedViews[i].SetInfo(master, runtime);
+                        _currentDisplayedModuleIds.Add(master.Id);
+
+                        // ここでボタンイベントを再購読
+                        // クロージャのためにインデックスをキャプチャ
+                        int index = i;
+                        _buttons[i].OnClickAsObservable()
+                                 .Subscribe(_ => OnButtonClicked(index))
+                                 .AddTo(_disposables); // CompositeDisposableに追加
+                        _buttons[i].OnPointerEnterAsObservable()
+                                 .Subscribe(_ => OnModuleOptionHovered(index))
+                                 .AddTo(_disposables); // CompositeDisposableに追加
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// ドロップ選択UIを非表示にし、購読を解除します。
+        /// 画面が閉じられる際や、不要になった際に呼び出してください。
+        /// </summary>
+        public void HideModuleView()
+        {
+            _disposables.Clear(); // 購読をすべて解除
+            foreach (GameObject obj in _moduleOptionObjects)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(false); // UIを非表示にする
+                }
+            }
+            _currentDisplayedModuleIds.Clear();
         }
     }
 }

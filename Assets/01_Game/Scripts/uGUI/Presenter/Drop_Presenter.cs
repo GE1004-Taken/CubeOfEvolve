@@ -183,13 +183,5 @@ namespace MVRP.AT.Presenter
 
         #endregion
 
-        /// <summary>
-        /// 上記のカテゴリに属さない初期設定や共通ヘルパーなどをここに記述します。
-        /// </summary>
-        #region Others
-
-        // 現在、このセクションには特に追加するメソッドはありません。
-
-        #endregion
     }
 }
