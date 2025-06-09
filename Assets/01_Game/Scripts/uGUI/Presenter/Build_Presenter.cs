@@ -1,5 +1,6 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
+using Assets.IGC2025.Scripts.GameManagers;
 using MVRP.AT.View;
 using R3;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace MVRP.AT.Presenter
         // ----- SerializedField
 
         // Models
+        [SerializeField] private PlayerBuilder _builder;
         [SerializeField] private Build_View _buildView; // ビルドUIを表示するViewコンポーネント。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
@@ -36,6 +38,7 @@ namespace MVRP.AT.Presenter
         private void Awake()
         {
             // 依存関係の取得とチェック
+            if (_builder == null) Debug.LogError("Build_Presenter: PlayerBuilderがアタッチされていません！", this);
             if (_buildView == null) Debug.LogError("Build_Presenter: BuildViewがInspectorで設定されていません！", this);
             if (_moduleDataStore == null) Debug.LogError("Build_Presenter: ModuleDataStoreがInspectorで設定されていません！", this);
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
@@ -204,6 +207,8 @@ namespace MVRP.AT.Presenter
 
             // ☆注意：ビルド画面に移行する処理
             // ☆注意：設置後に所持数を減らす処理
+
+            _builder?.SetModuleData(masterData);
 
             Debug.Log($"Build_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を選択しました。", this);
 
