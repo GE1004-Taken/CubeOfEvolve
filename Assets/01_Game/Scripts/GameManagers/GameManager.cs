@@ -86,8 +86,23 @@ public class GameManager : MonoBehaviour
     }
 
     // ---------- Event
+    /// <summary>
+    /// ゲームステートを変更
+    /// </summary>
+    /// <param name="state"></param>
     public void ChangeGameState(GameState state)
     {
+        _currentGameState.Value = state;
+    }
+
+    /// <summary>
+    /// ゲームステート変更(インスペクター用)
+    /// </summary>
+    /// <param name="stateNum"></param>
+    [EnumAction(typeof(GameState))]
+    public void ChangeGameState(int stateNum)
+    {
+        var state = (GameState)stateNum;
         _currentGameState.Value = state;
     }
 
