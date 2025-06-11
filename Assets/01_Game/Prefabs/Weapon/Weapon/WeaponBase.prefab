@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 461157199515958589}
   - component: {fileID: 5420891981515910473}
   - component: {fileID: -1856814355798891997}
+  - component: {fileID: 1568908392873123305}
   m_Layer: 8
   m_Name: WeaponBase
   m_TagString: Player
@@ -126,6 +127,25 @@ MonoBehaviour:
   _isActived:
     value: 0
   _collider: {fileID: 5420891981515910473}
+--- !u!114 &1568908392873123305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3767028282445145877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32f913b3e5dd8604caf872564f8ab366, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cubes:
+  - {fileID: -1856814355798891997}
+  _normalMaterial: {fileID: 2100000, guid: 0e2d96556f6f65c4fb8dca5f2b676954, type: 2}
+  _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
+  _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
+  _isActived:
+    value: 0
 --- !u!1001 &5332465990400963834
 PrefabInstance:
   m_ObjectHideFlags: 0
