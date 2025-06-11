@@ -22,7 +22,7 @@ public class Weapon_Missile : WeaponBase
 
             bullet.Initialize(
                 _targetTag,
-                _attack,
+                _currentAttack,
                 velocity,
                 _layerSearch.NearestEnemyObj.transform,
                 2);

@@ -15,7 +15,7 @@ public class Weapon_Turret : WeaponBase
 
         bullet.Initialize(
             _targetTag,
-            _attack,
+            _currentAttack,
             _data.BulletSpeed,
             dir);
     }
