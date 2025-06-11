@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,15 +9,22 @@ public class LayerSearch : MonoBehaviour
     private string _maskName;
 
     private GameObject _nearestEnemyObj;
+    private List<GameObject> _nearestEnemyList = new();
 
     // ---------------------------- Property
     public GameObject NearestEnemyObj => _nearestEnemyObj;
+    public List<GameObject> NearestEnemyList => _nearestEnemyList;
 
     // ---------------------------- UnityMassage
     private void Update()
     {
         float nearestEnemyDis = 0;
         _nearestEnemyObj = null;
+
+        if (_nearestEnemyList.Count > 0)
+        {
+            _nearestEnemyList.RemoveAll(x => x == null);
+        }
 
         // ˆê”Ô‹ß‚¢“G‚ðŽæ“¾
         foreach (RaycastHit hit in Physics.SphereCastAll(
@@ -28,6 +36,11 @@ public class LayerSearch : MonoBehaviour
         {
 
             if (hit.transform == null) continue;
+
+            if (!_nearestEnemyList.Contains(hit.transform.root.gameObject))
+            {
+                _nearestEnemyList.Add(hit.transform.root.gameObject);
+            }
 
             var dis = Vector3.Distance(
                 transform.position,
