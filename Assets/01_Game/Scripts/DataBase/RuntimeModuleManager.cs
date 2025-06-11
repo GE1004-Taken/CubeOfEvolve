@@ -1,4 +1,5 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using ObservableCollections;
 using R3;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace App.GameSystem.Modules
     public class RuntimeModuleManager : MonoBehaviour
     {
         // ----- Singleton
-        public static RuntimeModuleManager Instance { get; private set; } 
+        public static RuntimeModuleManager Instance { get; private set; }
 
         // ----- SerializedField
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを格納するデータストア。
@@ -22,18 +23,21 @@ namespace App.GameSystem.Modules
         private readonly Subject<Unit> _collectionChangedSubject = new Subject<Unit>(); // モジュールコレクションの変更を通知するためのSubject。
         private Dictionary<int, RuntimeModuleData> _runtimeModuleDictionary = new Dictionary<int, RuntimeModuleData>(); // モジュールIDをキーとしたRuntimeModuleDataの高速アクセス用辞書。
 
+        private ObservableList<StatusEffectData> _currentStatusEffectList = new(); // バフ・デバフをまとめる
+
         // ----- Public Properties (公開プロパティ)
         public IReadOnlyList<RuntimeModuleData> AllRuntimeModuleData => _allRuntimeModuleDataInternal;
         public Observable<Unit> OnAllRuntimeModuleDataChanged => _collectionChangedSubject.AsObservable();// 変更があったときの目印
+        public IReadOnlyObservableList<StatusEffectData> CurrentCurrentStatusEffectList => _currentStatusEffectList;
 
         // ----- UnityMessage
-        void Awake()
+        private void Awake()
         {
             // シングルトン初期化
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
+                //DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -50,7 +54,7 @@ namespace App.GameSystem.Modules
             InitializeAllModules();
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             _collectionChangedSubject.Dispose(); // リソース開放
         }
@@ -113,6 +117,25 @@ namespace App.GameSystem.Modules
             else
             {
                 Debug.LogWarning($"RuntimeModuleManager: ID {moduleId} のモジュールが見つかりません。数量を変更できません。", this);
+            }
+        }
+
+        /// <summary>
+        /// オプションを追加
+        /// </summary>
+        public void AddOption(StatusEffectData optionData)
+        {
+            _currentStatusEffectList.Add(optionData);
+        }
+
+        /// <summary>
+        /// オプションを減らす
+        /// </summary>
+        public void RemoveOption(StatusEffectData optionData)
+        {
+            if (_currentStatusEffectList.Contains(optionData))
+            {
+                _currentStatusEffectList.Remove(optionData);
             }
         }
 
