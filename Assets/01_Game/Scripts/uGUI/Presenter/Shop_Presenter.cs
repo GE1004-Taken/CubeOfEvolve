@@ -10,48 +10,35 @@ using UnityEngine;
 namespace MVRP.AT.Presenter
 {
     /// <summary>
-    /// ショップ画面のプレゼンターを担当するクラス。
-    /// ViewからのイベントをR3で購読し、Model（RuntimeModuleManager, PlayerCore）を操作し、
-    /// Viewに表示データを渡します。また、RuntimeModuleのレベル変更を監視し、ショップ表示を更新します。
+    /// ショップ画面のプレゼンタークラスです。
+    /// ショップの表示ロジック、プレイヤーの所持金やモジュールデータとの連携、購入処理などを担当します。
     /// </summary>
     public class Shop_Presenter : MonoBehaviour
     {
-        // ----- SerializedField
+        // ----- Serializable Fields (シリアライズフィールド)
+        [SerializeField] private Shop_View _shopView; // ショップのUI表示を管理するViewへの参照。
+        [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールのマスターデータを保持するデータストアへの参照。
+        [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャーへの参照。
+        [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）への参照。
 
-        // Models
-        [SerializeField] private Shop_View _shopView; // ショップUIを表示するViewコンポーネント。
-        [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
-        [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
-        [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）を管理するコンポーネント。
+        [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
+        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // ホバー中のモジュール情報テキスト。
 
-        // Views
-        [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
-        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText;
+        // ----- Private Fields (プライベートフィールド)
+        private CompositeDisposable _disposables = new CompositeDisposable(); // オブジェクト破棄時に購読をまとめて解除するためのDisposable。
+        private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // モジュールレベルや数量変更の購読を管理するためのDisposable。
 
-        // ----- Private Members (内部データ)
-        private CompositeDisposable _disposables = new CompositeDisposable(); // 全体の購読解除を管理するCompositeDisposable。
-        private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // 各モジュールのレベル・数量変更購読を管理するCompositeDisposable。
-
-        // ----- UnityMessage
-        private void Start()
-        {
-            _shopView.OnModulePurchaseRequested
-                .Subscribe(moduleId => HandleModulePurchaseRequested(moduleId))
-                .AddTo(_disposables);
-
-            _shopView.OnModuleHovered
-                .Subscribe(x => HandleModuleHovered(x))
-                .AddTo(this);
-        }
+        // ----- Unity Messages (Unityイベントメッセージ)
+        
         private void Awake()
         {
-            // 依存関係の取得とチェック
+            // 依存関係のチェックとエラーログ
             if (_shopView == null) Debug.LogError("Shop_Presenter: ShopViewがInspectorで設定されていません！", this);
             if (_moduleDataStore == null) Debug.LogError("Shop_Presenter: ModuleDataStoreがInspectorで設定されていません！", this);
-            if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
+            if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance; // インスタンスを自動取得
             if (_playerCore == null) Debug.LogError("Shop_Presenter: PlayerCoreがInspectorで設定されていません！", this);
 
-            // 各依存関係が揃っているか最終チェック
+            // 必須の依存関係が一つでも不足している場合、コンポーネントを無効にします。
             if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
             {
                 Debug.LogError("Shop_Presenter: 依存関係が不足しています。Inspectorの設定とシーンのセットアップを確認してください。このコンポーネントを無効にします。", this);
@@ -59,200 +46,201 @@ namespace MVRP.AT.Presenter
                 return;
             }
 
-            // 初期表示のためにショップUIを準備して表示
+            // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
+            _playerCore.Money
+                .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
+                .AddTo(_disposables);
+
+            // ランタイムモジュールデータ全体が変更された際に、モジュールの変更購読を再設定し、ショップUIを更新します。
+            _runtimeModuleManager.OnAllRuntimeModuleDataChanged
+                .Subscribe(_ => {
+                    Debug.Log("Shop_Presenter: ランタイムモジュールデータコレクションが変更されました。モジュールの変更購読を再設定し、ショップUIを更新します。");
+                    _moduleLevelAndQuantityChangeDisposables.Clear(); // 既存の購読をクリア
+                    foreach (var rmd in _runtimeModuleManager.AllRuntimeModuleData)
+                    {
+                        SubscribeToModuleChanges(rmd); // 各モジュールの変更を購読
+                    }
+                    DisplayShopContent(); // ショップ内容を再表示
+                })
+                .AddTo(_disposables);
+
+            // ショップUIの初期準備と表示を行います。
             PrepareAndShowShopUI();
         }
 
-        /// <summary>
-        /// OnDestroyはゲームオブジェクトが破棄されるときに呼び出されます。
-        /// 全ての購読を解除し、リソースを解放します。
-        /// </summary>
-        private void OnDestroy()
+        
+        private void Start()
         {
-            _disposables.Dispose();
-            _moduleLevelAndQuantityChangeDisposables.Dispose(); // 各モジュールのレベル・数量変更購読も解除
+            // Viewからのモジュール購入要求イベントを購読し、購入処理を呼び出します。
+            _shopView.OnModulePurchaseRequested
+                .Subscribe(moduleId => HandleModulePurchaseRequested(moduleId))
+                .AddTo(_disposables);
+
+            // Viewからのモジュールホバーイベントを購読し、ホバー情報を表示します。
+            _shopView.OnModuleHovered
+                .Subscribe(x => HandleModuleHovered(x))
+                .AddTo(this); // このGameObjectが破棄されたら自動的に購読解除
         }
 
+        
+        private void OnDestroy()
+        {
+            _disposables.Dispose(); // メインの購読を解除
+            _moduleLevelAndQuantityChangeDisposables.Dispose(); // モジュール変更に関する購読を解除
+        }
 
-        #region ModelToView
+        // ----- Private Methods (プライベートメソッド)
         /// <summary>
-        /// 各RuntimeModuleDataのレベル変更を購読し、ショップUIを更新するヘルパーメソッドです。
+        /// 指定されたランタイムモジュールデータの変更（レベルなど）を購読し、ショップUIを更新します。
         /// </summary>
-        /// <param name="runtimeModuleData">購読対象のRuntimeModuleData。</param>
+        /// <param name="runtimeModuleData">購読対象のランタイムモジュールデータ。</param>
         private void SubscribeToModuleChanges(RuntimeModuleData runtimeModuleData)
         {
-            // Levelの変更を購読
             if (runtimeModuleData.Level != null)
             {
                 runtimeModuleData.Level
                     .Subscribe(level => {
-                        Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) のレベルが {level} に変更されました。ショップUIを更新します。");
-                        PrepareAndShowShopUI(); // レベルが変更されたらショップを再表示
+                        Debug.Log($"Shop_Presenter: モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) のレベルが {level} に変更されました。ショップUIを更新します。");
+                        PrepareAndShowShopUI(); // レベル変更時にショップUIを再準備・表示
                     })
-                    .AddTo(_moduleLevelAndQuantityChangeDisposables); // 個別モジュールの購読は専用のDisposableBagに追加
+                    .AddTo(_moduleLevelAndQuantityChangeDisposables); // モジュールレベル変更購読用のDisposableに追加
             }
             else
             {
-                Debug.LogWarning($"RuntimeModuleData ID {runtimeModuleData.Id} はLevelをReactivePropertyとして公開していません。", this);
+                Debug.LogWarning($"Shop_Presenter: ランタイムモジュールデータID {runtimeModuleData.Id} はLevelをReactivePropertyとして公開していません。", this);
             }
         }
 
         /// <summary>
-        /// ショップ画面を表示する準備をし、Viewに表示を依頼します。
-        /// このメソッドは外部から呼び出されます（例: GameManagerやUIController）。
-        /// また、RuntimeModuleDataの変更によっても自動的に呼び出されることがあります。
+        /// ショップUIの準備と表示を行います。
+        /// 主にショップに表示するモジュールのデータ取得とViewへの引き渡しを行います。
         /// </summary>
         private void PrepareAndShowShopUI()
         {
-            // 参照NullCheck
             if (_shopView == null || _moduleDataStore == null || _runtimeModuleManager == null || _playerCore == null)
             {
                 Debug.LogError("Shop_Presenter: ショップUIを準備するための依存関係が満たされていません！Awakeのログを確認してください。", this);
                 return;
             }
 
-            // Playerの所持金を監視し、Viewに反映
-            _playerCore.Money
-                .Subscribe(x =>
-                {
-                    _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f);
-                }).AddTo(this);
-
-            // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ショップUIを更新する
-            _runtimeModuleManager.OnAllRuntimeModuleDataChanged
-                .Subscribe(_ => {
-                    Debug.Log("RuntimeModuleDataコレクションが変更されました。モジュールの変更購読を再設定し、ショップUIを更新します。");
-                    // 既存のモジュールレベル・数量変更購読を全て解除
-                    _moduleLevelAndQuantityChangeDisposables.Clear();
-
-                    // 現在の全てのモジュールに対してレベル・数量変更を購読
-                    foreach (var rmd in _runtimeModuleManager.AllRuntimeModuleData)
-                    {
-                        SubscribeToModuleChanges(rmd);
-                    }
-                    DisplayShopContent(); // ショップを再表示してリストを更新
-                })
-                .AddTo(_disposables);
-
-            DisplayShopContent();
+            DisplayShopContent(); // ショップの内容を表示
         }
 
         /// <summary>
-        /// ショップに表示するモジュールデータを準備し、Viewに渡して表示を更新します。
+        /// 現在のランタイムモジュールデータに基づいてショップのコンテンツを表示します。
         /// </summary>
         private void DisplayShopContent()
         {
-            // レベル1以上のモジュールのみをViewに渡す
+            // ショップに表示するランタイムモジュールデータをフィルタリングします。（例: レベルが0より大きいモジュール）
             List<RuntimeModuleData> shopRuntimeModules = _runtimeModuleManager.AllRuntimeModuleData
                 .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0)
                 .ToList();
 
+            // Viewにモジュール表示を依頼します。
             _shopView.DisplayShopModules(shopRuntimeModules, _moduleDataStore);
+            // 購入ボタンのインタラクト可能性を更新します。
             UpdatePurchaseButtonsInteractability();
         }
 
         /// <summary>
-        /// 各モジュールの購入ボタンのインタラクト可能状態を更新します。
+        /// プレイヤーの所持金と各モジュールの価格に基づいて、購入ボタンのインタラクト可能性を更新します。
         /// </summary>
         private void UpdatePurchaseButtonsInteractability()
         {
-            if (_playerCore == null || _moduleDataStore == null || _moduleDataStore.DataBase == null || _moduleDataStore.DataBase.ItemList == null)
+            if (_playerCore == null || _moduleDataStore == null || _moduleDataStore.DataBase?.ItemList == null)
             {
                 Debug.LogError("Shop_Presenter: 購入ボタンのインタラクト可能性を更新するための必要なデータが不足しています。", this);
                 return;
             }
 
-            // ショップに表示されているすべてのモジュール（レベル1以上のもの）についてチェック
+            // 現在プレイヤーが所持している（レベルが1以上の）モジュールについて、購入ボタンの状態を更新します。
             foreach (var runtimeData in _runtimeModuleManager.AllRuntimeModuleData
-                                                             .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0))
+                .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0))
             {
                 ModuleData masterData = _moduleDataStore.FindWithId(runtimeData.Id);
                 if (masterData == null) continue;
 
-                bool canAfford = _playerCore.Money.CurrentValue >= masterData.BasePrice;
-
-                // レベルが1以上でショップに表示されているモジュールは、所持金が足りれば購入可能
-                // 複数回購入できるため、常にインタラクト可能とする（所持金が足りる限り）。
-                _shopView.SetPurchaseButtonInteractable(runtimeData.Id, canAfford);
+                // プレイヤーが購入できるかどうかを判断します。
+                bool canAfford = _playerCore.Money.CurrentValue >= masterData.BasePrice; // ここでは簡略化のため定価を使用。後述の割引計算を適用することも可能。
+                _shopView.SetPurchaseButtonInteractable(runtimeData.Id, canAfford); // Viewにボタンの状態更新を依頼します。
             }
         }
-        #endregion
 
-       
-        #region ViewToModel
         /// <summary>
-        /// モジュール購入リクエストを受け取った際のハンドラです。
+        /// モジュールの購入要求がViewからあった際に処理します。
+        /// プレイヤーの所持金チェック、価格計算、購入処理、およびUI更新を行います。
         /// </summary>
-        /// <param name="moduleId">購入がリクエストされたモジュールのID。</param>
+        /// <param name="moduleId">購入が要求されたモジュールのID。</param>
         private void HandleModulePurchaseRequested(int moduleId)
         {
             ModuleData masterData = _moduleDataStore.FindWithId(moduleId);
             if (masterData == null)
             {
-                Debug.LogError($"Shop_Presenter: モジュールID {moduleId} のマスターデータが見つかりません。購入を処理できません。", this);
+                Debug.LogError($"Shop_Presenter: モジュールID {moduleId} のマスターデータが見つかりません。購入できません。", this);
                 return;
             }
 
             RuntimeModuleData runtimeModule = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
             if (runtimeModule == null)
             {
-                Debug.LogError($"Shop_Presenter: モジュールID {moduleId} のランタイムデータが見つかりません。これは全てのプレイヤーにモジュールが初期化されている場合は発生しないはずです。", this);
+                Debug.LogError($"Shop_Presenter: モジュールID {moduleId} のランタイムデータが見つかりません。購入できません。", this);
                 return;
             }
 
-            // レベルが0のモジュールは購入できない
+            // レベル0のモジュールは購入できないというロジック (例: 未開放のモジュールはショップに表示されない、あるいは購入できない)
             if (runtimeModule.CurrentLevelValue == 0)
             {
-                Debug.LogWarning($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) はレベル0です。ショップから購入できません。まずアップグレードしてください（例: ドロップ経由で）。", this);
+                Debug.LogWarning($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) はレベル0です。購入できません。", this);
                 return;
             }
 
-            // レベルと金額の計算
-            var ModulePrice = ClucPrice(0.5f);
-
-            // 購入可能か判定（所持金が足りるか）
-            if (_playerCore.Money.CurrentValue >= masterData.BasePrice)
+            /// <summary>
+            /// モジュールの購入価格を計算します。
+            /// レベルに応じて割引を適用するロジックの例です。
+            /// </summary>
+            /// <param name="maxDiscountRate">最大割引率 (例: 0.5fで50%割引)。</param>
+            /// <returns>計算された購入価格。</returns>
+            float CalculatePrice(float maxDiscountRate)
             {
-                _playerCore.PayMoney(masterData.BasePrice);
-                Debug.Log($"Shop_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を {masterData.BasePrice} 金で購入しました。残り金: {_playerCore.Money.CurrentValue}。", this);
+                // レベル1の場合は定価
+                if (runtimeModule.CurrentLevelValue <= 1) return masterData.BasePrice;
+                // レベル5以上の場合は最大割引
+                if (runtimeModule.CurrentLevelValue >= 5) return masterData.BasePrice * (1f - maxDiscountRate);
 
-                // モジュールをプレイヤーのランタイムモジュールに追加（数量を1増やす）
-                _runtimeModuleManager.ChangeModuleQuantity(moduleId, 1);
+                // レベル2から4の間で割引率を線形補間
+                float discountProgress = (runtimeModule.CurrentLevelValue - 1) / 4f; // 1 (Lv2) から 4 (Lv5) まで進捗
+                float currentDiscountRate = maxDiscountRate * discountProgress;
+                return masterData.BasePrice * (1f - currentDiscountRate);
+            }
 
-                // 購入成功のフィードバック (UI更新など)
-                UpdatePurchaseButtonsInteractability();
+            var payPrice = CalculatePrice(0.5f); // 最大50%の割引を適用して価格を計算
+
+            // プレイヤーがモジュールを購入できるかチェックします。
+            if (_playerCore.Money.CurrentValue >= payPrice)
+            {
+                _playerCore.PayMoney((int)payPrice); // プレイヤーから代金を支払います。
+                Debug.Log($"Shop_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を {payPrice:F0} 金で購入しました。残り金: {_playerCore.Money.CurrentValue}。", this);
+                _runtimeModuleManager.ChangeModuleQuantity(moduleId, 1); // モジュールの数量を増やします。
+                UpdatePurchaseButtonsInteractability(); // 購入ボタンのインタラクト可能性を更新します。
             }
             else
             {
-                Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのに金が不足しています。必要: {masterData.BasePrice}、所持: {_playerCore.Money.CurrentValue}。", this);
-            }
-
-            // Local
-            float ClucPrice(float maxDiscountRate)
-            {
-                if (runtimeModule.CurrentLevelValue <= 1)
-                {
-                    return masterData.BasePrice;
-                }
-
-                if (runtimeModule.CurrentLevelValue >= 5)
-                {
-                    return masterData.BasePrice * (1.0f - maxDiscountRate);
-                }
-
-                float discountProgress = (runtimeModule.CurrentLevelValue - 1) / 4.0f;
-                float currentDiscountRate = maxDiscountRate * discountProgress;
-
-                return masterData.BasePrice * (1.0f - currentDiscountRate);
+                Debug.Log($"Shop_Presenter: モジュールID {moduleId} ({masterData.ViewName}) を購入するのに金が不足しています。現在の所持金: {_playerCore.Money.CurrentValue}、必要金額: {payPrice:F0}。", this);
             }
         }
 
-        private void HandleModuleHovered(int EnterModuleId)
+        /// <summary>
+        /// モジュールにマウスがホバーされた際に、そのモジュールの詳細情報をテキストで表示します。
+        /// </summary>
+        /// <param name="hoveredModuleId">ホバーされたモジュールのID。</param>
+        private void HandleModuleHovered(int hoveredModuleId)
         {
-            _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
+            // ホバー情報テキストが設定されていれば、モジュールの説明文を表示します。
+            if (_hoveredModuleInfoText != null)
+            {
+                ModuleData hoveredMasterData = _moduleDataStore.FindWithId(hoveredModuleId);
+                _hoveredModuleInfoText.text = hoveredMasterData?.Description ?? "情報なし"; // 説明がなければ「情報なし」と表示
+            }
         }
-
-        #endregion
-
     }
 }
