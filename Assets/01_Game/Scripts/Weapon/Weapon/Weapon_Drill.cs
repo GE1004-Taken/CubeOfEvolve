@@ -17,7 +17,7 @@ public class Weapon_Drill : WeaponBase
             if (enemy
                 .TryGetComponent<IDamageble>(out var damageble))
             {
-                damageble.TakeDamage(_attack);
+                damageble.TakeDamage(_currentAttack);
             }
         }
     }
