@@ -9,6 +9,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace AT.uGUI
@@ -20,6 +21,9 @@ namespace AT.uGUI
         [SerializeField] private List<Button> _openBtnList = new List<Button> ();
         //[SerializeField] private Button _closeBtn;
         [SerializeField] private List<Button> _closeBtnList = new List<Button> ();
+        [Header("イベント")]
+        [SerializeField] private UnityEvent _openEvent = new();
+        [SerializeField] private UnityEvent _closeEvent = new();
         // ---------------------------- Field
         private Button _saveBtn; // 一時変数
         private Canvas _canvas;
@@ -30,6 +34,7 @@ namespace AT.uGUI
             _canvas.enabled = true;
             _closeBtnList[0].Select();
             _saveBtn = clickedButton;
+            _openEvent?.Invoke();
         }
         private void OnCloseCanvas()
         {
@@ -38,6 +43,7 @@ namespace AT.uGUI
             if (_saveBtn != null) // _saveBtn がnullでないか確認
             {
                 _saveBtn.Select();
+                _closeEvent?.Invoke();
             }
         }
 
