@@ -136,7 +136,7 @@ public class PlayerBuilder : BasePlayerComponent
             .DistinctUntilChanged()
             .Subscribe(x =>
             {
-                RotateWeapon(90f * (int)x.y, -90f * (int)x.x, 0f);
+                RotatePredictCube(90f * (int)x.y, -90f * (int)x.x, 0f);
             })
             .AddTo(this);
 
@@ -155,15 +155,33 @@ public class PlayerBuilder : BasePlayerComponent
     }
 
     // ---------- PublicMethod
-    public void RotateWeapon(float x, float y, float z)
+    /// <summary>
+    /// 生成予測キューブを回転させる
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    public void RotatePredictCube(float x, float y, float z)
     {
         if (_predictCube == null) return;
 
         _predictCube.transform.Rotate(new Vector3(x, y, z));
     }
 
+    /// <summary>
+    /// 現在選択しているモジュールを変更する
+    /// </summary>
+    /// <param name="moduleData"></param>
     public void SetModuleData(ModuleData moduleData)
     {
         _selectModuleData.OnNext(moduleData);
+    }
+
+    /// <summary>
+    /// 生成するものをキューブに変更する
+    /// </summary>
+    public void SetCube()
+    {
+        _selectModuleData.OnNext(null);
     }
 }
