@@ -40,7 +40,8 @@ public class Cube : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
-            });
+            })
+            .AddTo(this);
     }
 
     // ---------- Event

@@ -38,6 +38,7 @@ public class PlayerMover : BasePlayerComponent
                         to,
                         Core.RotateSpeed.CurrentValue * Time.deltaTime);
                 }
-            });
+            })
+            .AddTo(this);
     }
 }

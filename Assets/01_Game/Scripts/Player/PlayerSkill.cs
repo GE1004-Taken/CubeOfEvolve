@@ -11,6 +11,7 @@ public class PlayerSkill : BasePlayerComponent
             .Subscribe(_ =>
             {
                 Core.Skill.CurrentValue.ActiveSkill();
-            });
+            })
+            .AddTo(this);
     }
 }

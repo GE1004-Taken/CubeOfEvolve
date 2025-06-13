@@ -45,7 +45,8 @@ public class PlayerCore : MonoBehaviour, IDamageble
 
                 // レベルを上げる
                 _level.Value++;
-            });
+            })
+            .AddTo(this);
 
         // レベル処理(仮)
         _level
@@ -53,7 +54,8 @@ public class PlayerCore : MonoBehaviour, IDamageble
             .Subscribe(x =>
             {
                 _maxCubeCount.Value += 3;
-            });
+            })
+            .AddTo(this);
 
         // 前回のキューブの値を初期化
         _prevCubeCount = _cubeCount.Value;
@@ -76,7 +78,8 @@ public class PlayerCore : MonoBehaviour, IDamageble
                 }
 
                 _prevCubeCount = x;
-            });
+            })
+            .AddTo(this);
     }
 
     // ---------- Interface
