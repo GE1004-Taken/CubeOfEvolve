@@ -69,5 +69,10 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
         this.UpdateAsObservable()
             .Select(x => _moveContextReadValue)
             .Subscribe(x => _moveInput.OnNext(x));
+
+        _moveInput.AddTo(this);
+        _isPushedSkillButton.AddTo(this);
+        _isPushedCreateButton.AddTo(this);
+        _isPushedPauseButton.AddTo(this);
     }
 }

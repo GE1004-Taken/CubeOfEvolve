@@ -49,7 +49,8 @@ public class CreatePrediction : MonoBehaviour
                         cube.GetComponent<Renderer>().material = _falseMaterial;
                     }
                 }
-            });
+            })
+            .AddTo(this);
 
         // 設置や削除処理
         _isActived
@@ -68,7 +69,8 @@ public class CreatePrediction : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
-            });
+            })
+            .AddTo(this);
     }
 
     // ---------- PrivateMethod
@@ -128,12 +130,18 @@ public class CreatePrediction : MonoBehaviour
     }
 
     // ---------- Event
-    public void ActiveWeapon()
+    /// <summary>
+    /// このスクリプトがアタッチされているオブジェクトを生成する
+    /// </summary>
+    public void CreateObject()
     {
         _isActived.Value = true;
     }
 
-    public void InactiveWeapon()
+    /// <summary>
+    /// このスクリプトがアタッチされているオブジェクトを消去する
+    /// </summary>
+    public void RemoveObject()
     {
         _isActived.Value = false;
     }

@@ -120,16 +120,6 @@ public class PlayerBuilder : BasePlayerComponent
                 }
             });
 
-        // 武器が変わったら予測キューブ更新
-        //_selectedWeapon
-        //    .Where(_ => currentState.CurrentValue == GameState.BUILD)
-        //    .Where(_ => _predictCube != null)
-        //    .Subscribe(_ =>
-        //    {
-        //        Destroy(_predictCube.gameObject);
-        //    })
-        //    .AddTo(this);
-
         // 回転処理
         InputEventProvider.Move
             .Where(_ => currentState.CurrentValue == GameState.BUILD)
@@ -148,7 +138,7 @@ public class PlayerBuilder : BasePlayerComponent
             .Where(_ => _predictCube.CanCreated.CurrentValue)
             .Subscribe(_ =>
             {
-                _predictCube.ActiveWeapon();
+                _predictCube.CreateObject();
                 _predictCube = null;
             })
             .AddTo(this);
