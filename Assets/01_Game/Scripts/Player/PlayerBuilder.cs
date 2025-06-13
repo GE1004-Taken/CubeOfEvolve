@@ -138,7 +138,7 @@ public class PlayerBuilder : BasePlayerComponent
             .Where(_ => _predictCube.CanCreated.CurrentValue)
             .Subscribe(_ =>
             {
-                _predictCube.ActiveWeapon();
+                _predictCube.CreateObject();
                 _predictCube = null;
             })
             .AddTo(this);
