@@ -38,8 +38,8 @@ public class CheckCanvasCtrl : MonoBehaviour
         _checkCanvas.enabled = false; // 初期状態では非表示
 
         // 各ボタンの子からTextMeshProUGUIコンポーネントを取得
-        _YesButtonText = _YesButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        _NoButtonText = _NoButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        _YesButtonText = _YesButton.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        _NoButtonText = _NoButton.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
     }
 
     // ---------------------------- Public
