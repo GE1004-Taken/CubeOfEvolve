@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebc5366a88257ff4c9c273467cbec80a, type: 3}
-  m_Name: aaaCDC
+  m_Name: ResetDialog
   m_EditorClassIdentifier: 
-  message: 
+  message: "\u30C7\u30FC\u30BF\u3092\u6D88\u53BB\u3057\u307E\u3059\u3002\\n<color=#ff0000>\u6D88\u3057\u305F\u30C7\u30FC\u30BF\u306F\u5143\u306B\u623B\u308A\u307E\u305B\u3093</color>"
   yesButtonText: "\u306F\u3044"
   noButtonText: "\u3044\u3044\u3048"
   actionReference:
-    actionObject: {fileID: 11400000, guid: 8931e6b7655e7fe44976b615cb3d7a82, type: 2}
+    actionObject: {fileID: 11400000, guid: 51282bef40398be42bee7899982acf15, type: 2}
