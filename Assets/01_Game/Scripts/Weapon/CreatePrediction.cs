@@ -49,7 +49,8 @@ public class CreatePrediction : MonoBehaviour
                         cube.GetComponent<Renderer>().material = _falseMaterial;
                     }
                 }
-            });
+            })
+            .AddTo(this);
 
         // İ’u‚âíœˆ—
         _isActived
@@ -68,7 +69,8 @@ public class CreatePrediction : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
-            });
+            })
+            .AddTo(this);
     }
 
     // ---------- PrivateMethod
