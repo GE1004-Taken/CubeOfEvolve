@@ -18,9 +18,9 @@ namespace AT.uGUI
     {
         // ---------------------------- SerializeField
         [Header("ボタン")]
-        [SerializeField] private List<Button> _openBtnList = new List<Button> ();
+        [SerializeField] private List<Button> _openBtnList = new List<Button>();
         //[SerializeField] private Button _closeBtn;
-        [SerializeField] private List<Button> _closeBtnList = new List<Button> ();
+        [SerializeField] private List<Button> _closeBtnList = new List<Button>();
         [Header("イベント")]
         [SerializeField] private UnityEvent _openEvent = new();
         [SerializeField] private UnityEvent _closeEvent = new();
@@ -28,7 +28,7 @@ namespace AT.uGUI
         private Button _saveBtn; // 一時変数
         private Canvas _canvas;
         // ---------------------------- button
-        private void OnOpenCanvas(Button clickedButton) // 引数として押されたボタンを受け取る
+        public void OnOpenCanvas(Button clickedButton = null) // 引数として押されたボタンを受け取る
         {
             Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
             _canvas.enabled = true;
@@ -36,15 +36,12 @@ namespace AT.uGUI
             _saveBtn = clickedButton;
             _openEvent?.Invoke();
         }
-        private void OnCloseCanvas()
+        public void OnCloseCanvas()
         {
             Debug.Log("ボタン処理：out");
             _canvas.enabled = false;
-            if (_saveBtn != null) // _saveBtn がnullでないか確認
-            {
-                _saveBtn.Select();
-                _closeEvent?.Invoke();
-            }
+            if (_saveBtn != null) _saveBtn.Select();
+            _closeEvent?.Invoke();
         }
 
         // ---------------------------- UnityMessage
@@ -52,6 +49,7 @@ namespace AT.uGUI
         private void Start()
         {
             _canvas = GetComponent<Canvas>();
+
             if (_openBtnList == null)
                 return;
             else
@@ -60,8 +58,9 @@ namespace AT.uGUI
                     // ラムダ式を使って、ボタンがクリックされたときに OnOpenCanvas メソッドに自身を渡す
                     button.onClick.AddListener(() => OnOpenCanvas(button));
                 }
-            if(_closeBtnList == null)
-                return ;
+
+            if (_closeBtnList == null)
+                return;
             else
                 foreach (var button in _closeBtnList)
                 {
