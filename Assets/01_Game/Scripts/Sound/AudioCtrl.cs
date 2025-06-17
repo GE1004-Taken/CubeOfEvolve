@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -56,7 +55,7 @@ public class AudioCtrl : MonoBehaviour
                     slider.value = sliderValue;
 
                     // 既存のリスナーを削除して新しいリスナーを追加
-                    slider.onValueChanged.RemoveAllListeners();
+                    //slider.onValueChanged.RemoveAllListeners();
                     slider.onValueChanged.AddListener(value => OnValueChangedGroup(groupName, value));
                 }
                 else
