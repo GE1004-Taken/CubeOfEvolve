@@ -6,6 +6,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq; // For LINQ's Where and ToList
+using static UnityEngine.EventSystems.EventTrigger;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -132,7 +134,8 @@ namespace AT.uGUI
                 // CanvasCtrlがnullでないことを確認
                 if (entry.canvasCtrl != null)
                 {
-                    entry.canvasCtrl.OnCloseCanvas(); // CanvasCtrlのHide()メソッドを使用
+                    entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
+                    // entry.canvasCtrl.OnCloseCanvas(); // CanvasCtrlのHide()メソッドを使用
                 }
             }
 
@@ -146,7 +149,8 @@ namespace AT.uGUI
             }
             else
             {
-                initialCanvas.OnOpenCanvas(); // CanvasCtrlのShow()メソッドを使用
+                initialCanvas.GetComponent<Canvas>().enabled = true;
+                //initialCanvas.OnOpenCanvas(); // CanvasCtrlのShow()メソッドを使用
                 Debug.Log($"CanvasCtrlList: 初期化成功。'{initialShowCanvasKey}' が表示されました。");
                 return true;
             }
@@ -188,7 +192,8 @@ namespace AT.uGUI
             {
                 if (entry.canvasCtrl != null)
                 {
-                    entry.canvasCtrl.OnCloseCanvas();
+                    entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
+                    //entry.canvasCtrl.OnCloseCanvas();
                 }
             }
             Debug.Log("CanvasCtrlList: 全てのキャンバスが非表示になりました。");
@@ -218,14 +223,16 @@ namespace AT.uGUI
                     }
                     else
                     {
-                        entry.canvasCtrl.OnCloseCanvas(); // 他のキャンバスを非表示
+                        //entry.canvasCtrl.OnCloseCanvas(); // 他のキャンバスを非表示
+                        entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
                     }
                 }
             }
 
             if (canvasToActivate != null)
             {
-                canvasToActivate.OnOpenCanvas(); // 目的のキャンバスを表示
+                // canvasToActivate.OnOpenCanvas(); // 目的のキャンバスを表示
+                canvasToActivate.GetComponent<Canvas>().enabled = true;
                 Debug.Log($"CanvasCtrlList: '{keyToShow}' が表示されました。他のキャンバスは非表示です。");
             }
             else
