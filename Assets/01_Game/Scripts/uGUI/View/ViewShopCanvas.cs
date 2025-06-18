@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.View
+namespace Assets.IGC2025.Scripts.View
 {
     /// <summary>
     /// ショップ画面のビューを担当するクラス。
     /// モジュールリストの表示、UIの表示・非表示、購入ボタンクリックイベントの通知を行います。
     /// </summary>
-    public class Shop_View : MonoBehaviour
+    public class ViewShopCanvas : MonoBehaviour
     {
         // ----- SerializedField
         [SerializeField] private GameObject _moduleItemPrefab; // 各モジュール表示用のプレハブ (Detailed_ViewとButtonを含む)。

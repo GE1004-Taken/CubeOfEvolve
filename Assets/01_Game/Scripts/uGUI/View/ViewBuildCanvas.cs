@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.View
+namespace Assets.IGC2025.Scripts.View
 {
-    public class Build_View : MonoBehaviour
+    public class ViewBuildCanvas : MonoBehaviour
     {
         // ----- SerializedField
         [SerializeField] private GameObject _moduleItemPrefab; // 各モジュール表示用のプレハブ (Detailed_ViewとButtonを含む)。

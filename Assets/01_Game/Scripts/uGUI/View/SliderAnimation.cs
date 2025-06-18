@@ -2,7 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.View
+namespace Assets.AT
 {
     public class SliderAnimation : MonoBehaviour
     {

@@ -7,13 +7,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.View
+namespace Assets.IGC2025.Scripts.View
 {
-    /// <summary>
-    /// ドロップ選択画面のビューを担当するクラス。
-    /// モジュールオプションの表示、UIの表示・非表示、選択ボタンクリックイベントの通知を行います。
-    /// </summary>
-    public class Drop_View : MonoBehaviour
+    public class ViewDropCanvas : MonoBehaviour
     {
         // ----- SerializedField (Unity Inspectorで設定)
         [SerializeField] private GameObject[] _moduleOptionObjects = new GameObject[3]; // 各モジュール選択肢のルートGameObject。
@@ -31,7 +27,7 @@ namespace MVRP.AT.View
         public Subject<int> OnModuleHovered { get; private set; } = new Subject<int>(); // カーソルを合わせたモジュールのIDを通知するSubject。
 
         // ----- UnityMessage
-        
+
         private void Awake()
         {
             InitializeOptionComponents();

@@ -1,7 +1,6 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
-using Assets.IGC2025.Scripts.GameManagers;
-using MVRP.AT.View;
+using Assets.IGC2025.Scripts.View;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +10,13 @@ using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
-    /// <summary>
-    /// ビルド画面のプレゼンターを担当するクラス。
-    /// ViewからのイベントをR3で購読し、Model（RuntimeModuleManager, ModuleDataStore）を操作し、
-    /// Viewに表示データを渡します。
-    /// </summary>
     public class PresenterBuildCanvas : MonoBehaviour
     {
         // ----- SerializedField
 
-        [Header("Modules")]
+        [Header("Models")]
         [SerializeField] private PlayerBuilder _builder;
-        [SerializeField] private Build_View _buildView; // ビルドUIを表示するViewコンポーネント。
+        [SerializeField] private ViewBuildCanvas _buildView; // ビルドUIを表示するViewコンポーネント。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
 

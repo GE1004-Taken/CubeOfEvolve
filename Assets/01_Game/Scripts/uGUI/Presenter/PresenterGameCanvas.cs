@@ -1,22 +1,22 @@
-using AT.EVENT;
-using MVRP.AT.View;
+using Assets.IGC2025.Scripts.Event;
+using Assets.AT;
 using R3;
 using UnityEngine;
 
-namespace MVRP.AT.Presenter
+namespace Assets.IGC2025.Scripts.Presenter
 {
     /// <summary>
     /// Playerの体力をViewに反映するPresenter
     /// </summary>
-    public sealed class Game_Presenter : MonoBehaviour
+    public sealed class PresenterGameCanvas : MonoBehaviour
     {
-        // Model
+        [Header("Models")]
         [SerializeField] private PlayerCore _models;
 
-        // View
+        [Header("Views")]
         [SerializeField] private SliderAnimation _hpSliderAnimation;
         [SerializeField] private SliderAnimation _expSliderAnimation;
-        [SerializeField]private  Event_Levelup _levelup;
+        [SerializeField] private EventLevelUp _levelUp;
         [SerializeField] private TextScaleAnimation _cubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _maxCubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
@@ -45,7 +45,7 @@ namespace MVRP.AT.Presenter
                 .Subscribe(_ =>
                 {
                     // Event実行
-                    _levelup.event_Levelup();
+                    _levelUp.event_Levelup();
                 }).AddTo(this);
 
             // Playerの所持キューブ数を監視
@@ -53,7 +53,7 @@ namespace MVRP.AT.Presenter
                 .Subscribe(x =>
                 {
                     // Viewに反映
-                    _cubeCountTextScaleAnimation.AnimateFloatAndText(x,1f);
+                    _cubeCountTextScaleAnimation.AnimateFloatAndText(x, 1f);
                 }).AddTo(this);
 
             // Playerの所持キューブ数を監視

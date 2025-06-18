@@ -3,9 +3,9 @@
 
 using UnityEngine;
 
-namespace MVRP.AT.View
+namespace Assets.IGC2025.Scripts.View
 {
-    public class TitleView : MonoBehaviour
+    public class ViewTitleCanvas : MonoBehaviour
     {
         // -----
         // -----SerializeField

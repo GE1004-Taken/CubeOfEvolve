@@ -1,26 +1,21 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
-using MVRP.AT.View;
+using Assets.IGC2025.Scripts.View;
 using R3;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace MVRP.AT.Presenter
+namespace Assets.IGC2025.Scripts.Presenter
 {
-    /// <summary>
-    /// ドロップ選択画面のプレゼンターを担当するクラス。
-    /// ViewからのイベントをR3で購読し、Model（RuntimeModuleManager, ModuleDataStore）を操作し、
-    /// Viewに表示データを渡します。
-    /// </summary>
-    public class Drop_Presenter : MonoBehaviour
+    public class PresenterDropCanvas : MonoBehaviour
     {
         // ----- SerializedField
-        // -----Models
+        [Header("Models")]
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
-        // -----Views
-        [SerializeField] private Drop_View _dropView; // ドロップUIを表示するViewコンポーネント。
+        [Header("Views")]
+        [SerializeField] private ViewDropCanvas _dropView; // ドロップUIを表示するViewコンポーネント。
         [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // 説明文
 
         // ----- Private Members (内部データ)
@@ -143,7 +138,7 @@ namespace MVRP.AT.Presenter
 
         #endregion
 
-        
+
         #region ViewToModel
 
         /// <summary>
