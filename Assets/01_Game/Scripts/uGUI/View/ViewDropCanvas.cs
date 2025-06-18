@@ -16,7 +16,7 @@ namespace Assets.IGC2025.Scripts.View
 
         // ----- Private Members (内部データ)
         private List<Button> _buttons = new List<Button>(); // 各オプションのボタンリスト。
-        private List<Info_View> _detailedViews = new List<Info_View>(); // 各オプションの詳細表示ビューリスト。
+        private List<ViewInfo> _detailedViews = new List<ViewInfo>(); // 各オプションの詳細表示ビューリスト。
         private List<int> _currentDisplayedModuleIds = new List<int>(); // 現在表示しているモジュールのIDリスト。
 
         // R3の購読を管理するためのCompositeDisposable
@@ -59,7 +59,7 @@ namespace Assets.IGC2025.Scripts.View
                 }
 
                 Button button = obj.GetComponent<Button>();
-                Info_View detailedView = obj.GetComponent<Info_View>();
+                ViewInfo detailedView = obj.GetComponent<ViewInfo>();
 
                 if (button == null) Debug.LogError($"_moduleOptionObjects[{i}]にButtonコンポーネントが見つかりません。");
                 if (detailedView == null) Debug.LogError($"_moduleOptionObjects[{i}]にDetailed_Viewコンポーネントが見つかりません。");

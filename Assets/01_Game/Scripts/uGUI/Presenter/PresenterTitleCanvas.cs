@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.Presenter
+namespace Assets.IGC2025.Scripts.Presenter
 {
-    public class TitlePresenter : MonoBehaviour
+    public class PresenterTitleCanvas : MonoBehaviour
     {
         // -----
         // -----SerializeField
@@ -36,7 +36,7 @@ namespace MVRP.AT.Presenter
                 Debug.Log($"TitlePresenter: ˆË‘¶‚ª•s‘«‚Ì‚½‚ßˆ—’†Ž~");
             else isSuccess = true;
 
-            if(_resetButton == null) Debug.Log($"TitlePresenter: _resetButton ‚ªnull ‚Å‚·");
+            if (_resetButton == null) Debug.Log($"TitlePresenter: _resetButton ‚ªnull ‚Å‚·");
             else
             {
                 _resetButton.onClick.AddListener(() => _checkCanvasCtrl.ShowCheckCanvas(_resetEvent, _resetButton));

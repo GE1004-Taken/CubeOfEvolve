@@ -72,7 +72,7 @@ namespace Assets.IGC2025.Scripts.View
                 GameObject moduleItem = Instantiate(_moduleItemPrefab, _contentParent);
                 _instantiatedModuleItems.Add(moduleItem);
 
-                Info_View detailedView = moduleItem.GetComponent<Info_View>();
+                ViewInfo detailedView = moduleItem.GetComponent<ViewInfo>();
                 Button purchaseButton = moduleItem.GetComponentInChildren<Button>(); // 子要素からボタンを探す。
 
                 if (detailedView == null)
