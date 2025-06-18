@@ -9,24 +9,24 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.Presenter
+namespace Assets.IGC2025.Scripts.Presenter
 {
     /// <summary>
     /// ビルド画面のプレゼンターを担当するクラス。
     /// ViewからのイベントをR3で購読し、Model（RuntimeModuleManager, ModuleDataStore）を操作し、
     /// Viewに表示データを渡します。
     /// </summary>
-    public class Build_Presenter : MonoBehaviour
+    public class PresenterBuildCanvas : MonoBehaviour
     {
         // ----- SerializedField
 
-        // Models
+        [Header("Modules")]
         [SerializeField] private PlayerBuilder _builder;
         [SerializeField] private Build_View _buildView; // ビルドUIを表示するViewコンポーネント。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
 
-        // Views
+        [Header("Views")]
         [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText;
         [SerializeField] private Button _exitButton;
 
@@ -63,7 +63,8 @@ namespace MVRP.AT.Presenter
 
             // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ビルドUIを更新する
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
-                .Subscribe(_ => {
+                .Subscribe(_ =>
+                {
                     Debug.Log("RuntimeModuleDataコレクションが変更されました。モジュールの変更購読を再設定し、ビルドUIを更新します。");
                     // 既存のモジュールレベル・数量変更購読を全て解除
                     _moduleLevelAndQuantityChangeDisposables.Clear();
@@ -102,7 +103,8 @@ namespace MVRP.AT.Presenter
             if (runtimeModuleData.Level != null)
             {
                 runtimeModuleData.Level
-                    .Subscribe(level => {
+                    .Subscribe(level =>
+                    {
                         Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) のレベルが {level} に変更されました。ビルドUIを更新します。");
                         DisplayBuildUI(); // レベルが変更されたらビルド画面を再表示
                     })
@@ -111,7 +113,8 @@ namespace MVRP.AT.Presenter
             if (runtimeModuleData.Quantity != null) // 数量の監視も重要なので追加
             {
                 runtimeModuleData.Quantity
-                    .Subscribe(quantity => {
+                    .Subscribe(quantity =>
+                    {
                         Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) の数量が {quantity} に変更されました。ビルドUIを更新します。");
                         DisplayBuildUI(); // 数量が変更されたらビルド画面を再表示
                     })
