@@ -7,22 +7,26 @@ namespace Assets.AT
     {
         [SerializeField] private GameObject _soundSourceObj;
 
-        private SoundManager SM = SoundManager.Instance;
+        private GameSoundManager SM;
         private bool _isPlay = true;
 
+        private void Start()
+        {
+            SM = GameSoundManager.Instance;
+        }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.R) && _isPlay) // 音鳴らす
             {
-                SM.Play("SampleSE", "SE");
+                SM.PlaySE("SampleSE", "SE");
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
             }
 
             if (Input.GetKeyDown(KeyCode.F) && _isPlay) // ブッピガン！ 指定箇所から
             {
-                SM.PlaySFXAt("SampleSE", _soundSourceObj, "SE");
+                _soundSourceObj.GetComponent<SFXManagerComponent>().PlaySFX("SampleSE", "SE", false);
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
             }

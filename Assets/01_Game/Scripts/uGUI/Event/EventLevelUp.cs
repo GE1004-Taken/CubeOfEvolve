@@ -30,7 +30,7 @@ namespace Assets.IGC2025.Scripts.Event
         /// <summary>
         /// 
         /// </summary>
-        public void event_Levelup()
+        public void PlayLevelUpEvent()
         {
             StartCoroutine(CreateLevelup());
             _particleSystem.Play();

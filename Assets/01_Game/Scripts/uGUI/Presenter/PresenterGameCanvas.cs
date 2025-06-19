@@ -45,7 +45,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                 .Subscribe(_ =>
                 {
                     // Event実行
-                    _levelUp.event_Levelup();
+                    _levelUp.PlayLevelUpEvent();
                 }).AddTo(this);
 
             // Playerの所持キューブ数を監視
