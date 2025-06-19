@@ -7,20 +7,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVRP.AT.View
+namespace Assets.IGC2025.Scripts.View
 {
-    /// <summary>
-    /// ドロップ選択画面のビューを担当するクラス。
-    /// モジュールオプションの表示、UIの表示・非表示、選択ボタンクリックイベントの通知を行います。
-    /// </summary>
-    public class Drop_View : MonoBehaviour
+    public class ViewDropCanvas : MonoBehaviour
     {
         // ----- SerializedField (Unity Inspectorで設定)
         [SerializeField] private GameObject[] _moduleOptionObjects = new GameObject[3]; // 各モジュール選択肢のルートGameObject。
 
         // ----- Private Members (内部データ)
         private List<Button> _buttons = new List<Button>(); // 各オプションのボタンリスト。
-        private List<Info_View> _detailedViews = new List<Info_View>(); // 各オプションの詳細表示ビューリスト。
+        private List<ViewInfo> _detailedViews = new List<ViewInfo>(); // 各オプションの詳細表示ビューリスト。
         private List<int> _currentDisplayedModuleIds = new List<int>(); // 現在表示しているモジュールのIDリスト。
 
         // R3の購読を管理するためのCompositeDisposable
@@ -31,7 +27,7 @@ namespace MVRP.AT.View
         public Subject<int> OnModuleHovered { get; private set; } = new Subject<int>(); // カーソルを合わせたモジュールのIDを通知するSubject。
 
         // ----- UnityMessage
-        
+
         private void Awake()
         {
             InitializeOptionComponents();
@@ -63,7 +59,7 @@ namespace MVRP.AT.View
                 }
 
                 Button button = obj.GetComponent<Button>();
-                Info_View detailedView = obj.GetComponent<Info_View>();
+                ViewInfo detailedView = obj.GetComponent<ViewInfo>();
 
                 if (button == null) Debug.LogError($"_moduleOptionObjects[{i}]にButtonコンポーネントが見つかりません。");
                 if (detailedView == null) Debug.LogError($"_moduleOptionObjects[{i}]にDetailed_Viewコンポーネントが見つかりません。");

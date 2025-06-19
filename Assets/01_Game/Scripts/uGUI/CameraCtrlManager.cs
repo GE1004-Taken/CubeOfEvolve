@@ -1,21 +1,17 @@
 using Unity.Cinemachine;
 using System.Collections.Generic;
 using UnityEngine;
-using R3; // R3 (UniRx.Async) を使用するため
-using System.Linq; // LINQを使用するため
+using R3;
+using System.Linq;
 
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace AT.CameraSystem // 適切なNamespaceに変更
+namespace Assets.AT
 {
-    /// <summary>
-    /// シーン上のCinemachineCameraインスタンスを管理し、切り替えや初期化を行うためのコンポーネント。
-    /// Singletonパターンにより、どこからでもアクセス可能です。
-    /// </summary>
-    public class CameraCtrl : MonoBehaviour
+    public class CameraCtrlManager : MonoBehaviour
     {
         // --- 定数
         private const int BASE_PRIORITY = 10; // カメラの基本プライオリティ
@@ -35,20 +31,19 @@ namespace AT.CameraSystem // 適切なNamespaceに変更
             }
         }
 
-        // --- Field
-        [SerializeField]
-        private List<CameraEntry> _cameraEntries = new List<CameraEntry>(); // カメラエントリのリスト
+        // --- SerializeField
+        [SerializeField] private List<CameraEntry> _cameraEntries = new List<CameraEntry>(); // カメラエントリのリスト
 
         [Header("初期設定")]
-        [SerializeField]
-        private string _initialActiveCameraKey = ""; // 初期表示するカメラのキー
+        [SerializeField] private string _initialActiveCameraKey = ""; // 初期表示するカメラのキー
 
+        // --- Field
         private CinemachineBrain _cinemachineBrain;
         private float _cameraBlendTime; // CinemachineBrainから取得したブレンド時間
         private string _currentActiveCameraKey = null; // 現在アクティブなカメラのキー
 
-        // --- Singleton Pattern
-        public static CameraCtrl Instance { get; private set; }
+        // ----- Singleton Pattern
+        public static CameraCtrlManager Instance { get; private set; }
 
         // カメラ切り替えの待機時間（ブレンド時間）を外部から取得するためのプロパティ
         public float CameraBlendTime => _cameraBlendTime;
@@ -223,6 +218,8 @@ namespace AT.CameraSystem // 適切なNamespaceに変更
             }
         }
 
+        // --- Public Methods
+
         /// <summary>
         /// キーに基づいてCinemachineCameraを取得します。
         /// </summary>
@@ -244,8 +241,6 @@ namespace AT.CameraSystem // 適切なNamespaceに変更
             }
             return entry.Camera;
         }
-
-        // --- Public Methods
 
         /// <summary>
         /// 指定されたキーのカメラに切り替えます。
@@ -291,7 +286,7 @@ namespace AT.CameraSystem // 適切なNamespaceに変更
 
         // --- Editor Integration
 #if UNITY_EDITOR
-        [CustomEditor(typeof(CameraCtrl))]
+        [CustomEditor(typeof(CameraCtrlManager))]
         public class CameraCtrlEditor : Editor
         {
             public override void OnInspectorGUI()
@@ -299,7 +294,7 @@ namespace AT.CameraSystem // 適切なNamespaceに変更
                 // デフォルトのInspectorを表示
                 DrawDefaultInspector();
 
-                CameraCtrl cameraCtrl = (CameraCtrl)target;
+                CameraCtrlManager cameraCtrl = (CameraCtrlManager)target;
 
                 EditorGUILayout.Space();
 

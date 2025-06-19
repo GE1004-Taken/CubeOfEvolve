@@ -10,9 +10,9 @@
 using System.Collections;
 using UnityEngine;
 
-namespace AT.EVENT
+namespace Assets.IGC2025.Scripts.Event
 {
-    public class Event_Levelup : MonoBehaviour
+    public class EventLevelUp : MonoBehaviour
     {
         // -----SerializeField
         [SerializeField] private ParticleSystem _particleSystem;
@@ -30,9 +30,8 @@ namespace AT.EVENT
         /// <summary>
         /// 
         /// </summary>
-        public void event_Levelup()
+        public void PlayLevelUpEvent()
         {
-            //StartCoroutine(ShowLevelup());
             StartCoroutine(CreateLevelup());
             _particleSystem.Play();
         }
@@ -44,7 +43,7 @@ namespace AT.EVENT
         /// </summary>
         private void Initialize()
         {
-            if (!_LevelupFlame||!_particleSystem)
+            if (!_LevelupFlame || !_particleSystem)
             {
                 Destroy(this);
                 return;
@@ -67,7 +66,7 @@ namespace AT.EVENT
 
         private IEnumerator CreateLevelup()
         {
-            var obj = Instantiate(_LevelupFlame,_LevelupFlame.transform.position,Quaternion.identity,_LevelupFlame.transform.parent);
+            var obj = Instantiate(_LevelupFlame, _LevelupFlame.transform.position, Quaternion.identity, _LevelupFlame.transform.parent);
             obj.transform.localScale = Vector3.one;
             yield return new WaitForSeconds(3f);
             Destroy(obj);

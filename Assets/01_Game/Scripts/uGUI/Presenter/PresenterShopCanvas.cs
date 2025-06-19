@@ -1,22 +1,23 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
-using MVRP.AT.View;
+using Assets.AT;
+using Assets.IGC2025.Scripts.View;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 
-namespace MVRP.AT.Presenter
+namespace Assets.IGC2025.Scripts.Presenter
 {
     /// <summary>
     /// ショップ画面のプレゼンタークラスです。
     /// ショップの表示ロジック、プレイヤーの所持金やモジュールデータとの連携、購入処理などを担当します。
     /// </summary>
-    public class Shop_Presenter : MonoBehaviour
+    public class PresenterShopCanvas : MonoBehaviour
     {
         // ----- Serializable Fields (シリアライズフィールド)
-        [SerializeField] private Shop_View _shopView; // ショップのUI表示を管理するViewへの参照。
+        [SerializeField] private ViewShopCanvas _shopView; // ショップのUI表示を管理するViewへの参照。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールのマスターデータを保持するデータストアへの参照。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャーへの参照。
         [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）への参照。
@@ -29,7 +30,7 @@ namespace MVRP.AT.Presenter
         private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // モジュールレベルや数量変更の購読を管理するためのDisposable。
 
         // ----- Unity Messages (Unityイベントメッセージ)
-        
+
         private void Awake()
         {
             // 依存関係のチェックとエラーログ
@@ -53,7 +54,8 @@ namespace MVRP.AT.Presenter
 
             // ランタイムモジュールデータ全体が変更された際に、モジュールの変更購読を再設定し、ショップUIを更新します。
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
-                .Subscribe(_ => {
+                .Subscribe(_ =>
+                {
                     Debug.Log("Shop_Presenter: ランタイムモジュールデータコレクションが変更されました。モジュールの変更購読を再設定し、ショップUIを更新します。");
                     _moduleLevelAndQuantityChangeDisposables.Clear(); // 既存の購読をクリア
                     foreach (var rmd in _runtimeModuleManager.AllRuntimeModuleData)
@@ -68,7 +70,7 @@ namespace MVRP.AT.Presenter
             PrepareAndShowShopUI();
         }
 
-        
+
         private void Start()
         {
             // Viewからのモジュール購入要求イベントを購読し、購入処理を呼び出します。
@@ -82,7 +84,7 @@ namespace MVRP.AT.Presenter
                 .AddTo(this); // このGameObjectが破棄されたら自動的に購読解除
         }
 
-        
+
         private void OnDestroy()
         {
             _disposables.Dispose(); // メインの購読を解除
@@ -99,7 +101,8 @@ namespace MVRP.AT.Presenter
             if (runtimeModuleData.Level != null)
             {
                 runtimeModuleData.Level
-                    .Subscribe(level => {
+                    .Subscribe(level =>
+                    {
                         Debug.Log($"Shop_Presenter: モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) のレベルが {level} に変更されました。ショップUIを更新します。");
                         PrepareAndShowShopUI(); // レベル変更時にショップUIを再準備・表示
                     })

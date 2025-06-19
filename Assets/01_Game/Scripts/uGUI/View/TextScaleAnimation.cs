@@ -1,14 +1,13 @@
 using DG.Tweening;
+using R3;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using R3;
 
-namespace MVRP.AT.View
+namespace Assets.AT
 {
     public class TextScaleAnimation : MonoBehaviour
     {
-        
+
         [SerializeField] private TextMeshProUGUI _text;
 
         private float _currentValue = 0f;
