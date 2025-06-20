@@ -1,3 +1,4 @@
+using R3;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,7 +34,10 @@ public abstract class EnemySpawnBase : MonoBehaviour
     {
         _targetObj = PlayerMonitoring.Instance.PlayerObj;
 
-        StartMethod();
+        GameManager.Instance.CurrentGameState
+            .Where(value => value == Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+            .Subscribe(_ => StartMethod())
+            .AddTo(this);
     }
 
     // ---------------------------- AbstractMethod
