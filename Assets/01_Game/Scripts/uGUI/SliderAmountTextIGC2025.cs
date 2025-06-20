@@ -1,5 +1,5 @@
 using System;
-using UltimateClean;
+using Assets.AT;
 
 public class SliderAmountTextIGC2025 : SliderAmountText
 {

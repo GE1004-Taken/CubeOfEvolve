@@ -32,7 +32,7 @@ namespace AT.uGUI
         {
             Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
             _canvas.enabled = true;
-            _closeBtnList[0].Select();
+            if (_closeBtnList.Count != 0) _closeBtnList[0].Select();
             _saveBtn = clickedButton;
             _openEvent?.Invoke();
         }
