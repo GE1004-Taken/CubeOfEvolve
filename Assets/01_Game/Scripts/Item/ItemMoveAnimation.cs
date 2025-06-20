@@ -18,7 +18,7 @@ public class ItemMoveAnimation : MonoBehaviour
     // ---------------------------- UnityMessage
     private void Awake()
     {
-        _material.material.color = new Color(Random.Range(0, 255), Random.Range(0, 255), Random.Range(0, 255));
+        _material.material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
     }
 
     private async void OnTriggerEnter(Collider other)
