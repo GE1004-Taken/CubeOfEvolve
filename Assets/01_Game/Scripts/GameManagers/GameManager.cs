@@ -71,11 +71,11 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.INITIALIZE:
-                        ResetGame();
                         break;
 
                     case GameState.READY:
                         StartCoroutine(ReadyGame());
+                        ResetGame();
                         break;
 
                     case GameState.BATTLE:
@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         _timeManager.StartTimer();
-
+        Time.timeScale = 1;
     }
 
     /// <summary>
@@ -166,6 +166,7 @@ public class GameManager : MonoBehaviour
     private void StopGame()
     {
         _timeManager.StopTimer();
+        Time.timeScale = 0;
     }
 
     /// <summary>
@@ -174,5 +175,6 @@ public class GameManager : MonoBehaviour
     private void ResetGame()
     {
         _timeManager.ResetTimer();
+        Time.timeScale = 1;
     }
 }
