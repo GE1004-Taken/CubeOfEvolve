@@ -26,7 +26,7 @@ public class Bullet_Linear : BulletBase
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
-                if (other.transform.TryGetComponent<IDamageble>(out var damageble)
+                if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
                 && other.CompareTag(_targetTag))
                 {
                     damageble.TakeDamage(_attack);

@@ -7,16 +7,17 @@ using UnityEngine;
 public class Weapon_Drill : WeaponBase
 {
     // ---------------------------- Field
-    private readonly List<GameObject> _enemyList = new();
 
     // ---------------------------- OverrideMethod
     protected override void Attack()
     {
-        foreach (var enemy in _enemyList)
+        
+        foreach (var enemy in _layerSearch.NearestEnemyList)
         {
-            if (enemy
-                .TryGetComponent<IDamageble>(out var damageble))
+            if (enemy.transform.root.TryGetComponent<IDamageble>(out var damageble)
+            && enemy.CompareTag(_targetTag))
             {
+
                 damageble.TakeDamage(_currentAttack);
             }
         }
@@ -25,32 +26,5 @@ public class Weapon_Drill : WeaponBase
     protected override void Initialize()
     {
         base.Initialize();
-
-        this.OnTriggerEnterAsObservable()
-            .Where(other => other.CompareTag(_targetTag))
-            .Subscribe(other =>
-            {
-                _enemyList.Add(other.gameObject);
-            })
-            .AddTo(this);
-
-        this.OnTriggerExitAsObservable()
-            .Where(other => other.CompareTag(_targetTag))
-            .Subscribe(other =>
-            {
-                _enemyList.Remove(_enemyList[_enemyList.IndexOf(other.gameObject)]);
-            })
-            .AddTo(this);
-
-        this.UpdateAsObservable()
-            .Subscribe(_ =>
-            {
-                // デストロイされた要素をRemoveする
-                if (_enemyList.Count > 0)
-                {
-                    _enemyList.RemoveAll(x => x == null);
-                }
-            })
-            .AddTo(this);
     }
 }
