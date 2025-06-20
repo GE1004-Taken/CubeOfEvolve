@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     private SceneLoader _sceneLoader;
 
     // ---------- Field
-
     private CameraCtrlManager _cameraCtrlManager;
     private CanvasCtrlManager _canvasCtrlManager;
 
@@ -31,6 +30,7 @@ public class GameManager : MonoBehaviour
     public TimeManager TimeManager => _timeManager;
     public SceneLoader SceneLoader => _sceneLoader;
     public GameState PrevGameState => _prevGameState;
+
     // ---------- UnityMessage
     private void Awake()
     {
@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
         // 初期化
         _timeManager = GetComponent<TimeManager>();
         _sceneLoader = GetComponent<SceneLoader>();
+        _prevGameState = _currentGameState.Value;
 
     }
 
@@ -57,10 +58,12 @@ public class GameManager : MonoBehaviour
         _cameraCtrlManager = CameraCtrlManager.Instance;
         _canvasCtrlManager = CanvasCtrlManager.Instance;
 
+        // ゲームステート変更時の処理
         _currentGameState
+            .Skip(1)
             .Subscribe(x =>
             {
-                _prevGameState = x;
+                Debug.Log($"【GameManager】 ゲームステートが変更されました {_prevGameState} -> {x}");
 
                 switch (x)
                 {
@@ -68,11 +71,11 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.INITIALIZE:
-                        ResetGame();
                         break;
 
                     case GameState.READY:
                         StartCoroutine(ReadyGame());
+                        ResetGame();
                         break;
 
                     case GameState.BATTLE:
@@ -110,6 +113,10 @@ public class GameManager : MonoBehaviour
     /// <param name="state"></param>
     public void ChangeGameState(GameState state)
     {
+        // 前のステートを更新
+        _prevGameState = _currentGameState.Value;
+
+        // 現在のステートを更新
         _currentGameState.Value = state;
     }
 
@@ -121,11 +128,19 @@ public class GameManager : MonoBehaviour
     public void ChangeGameState(int stateNum)
     {
         var state = (GameState)stateNum;
+
+        // 前のステートを更新
+        _prevGameState = _currentGameState.Value;
+
+        // 現在のステートを更新
         _currentGameState.Value = state;
     }
 
     // ---------- PrivateMethod
-
+    /// <summary>
+    /// ゲーム開始前の処理
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ReadyGame()
     {
         // カメラ移動
@@ -142,7 +157,7 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         _timeManager.StartTimer();
-
+        Time.timeScale = 1;
     }
 
     /// <summary>
@@ -151,6 +166,7 @@ public class GameManager : MonoBehaviour
     private void StopGame()
     {
         _timeManager.StopTimer();
+        Time.timeScale = 0;
     }
 
     /// <summary>
@@ -159,5 +175,6 @@ public class GameManager : MonoBehaviour
     private void ResetGame()
     {
         _timeManager.ResetTimer();
+        Time.timeScale = 1;
     }
 }
