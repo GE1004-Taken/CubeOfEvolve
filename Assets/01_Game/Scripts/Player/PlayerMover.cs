@@ -1,3 +1,4 @@
+using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using Unity.Mathematics;
 using UnityEngine;
@@ -10,8 +11,11 @@ public class PlayerMover : BasePlayerComponent
 
     protected override void OnInitialize()
     {
+        // 色々取得処理
         _rb = GetComponent<Rigidbody>();
+        var gameManager = GameManager.Instance;
 
+        // 移動処理
         InputEventProvider.Move
             .Subscribe(x =>
             {
@@ -25,7 +29,7 @@ public class PlayerMover : BasePlayerComponent
                 var moveDirection = camaraForward * x.y + Camera.main.transform.right * x.x;
 
                 _rb.linearVelocity =
-                moveDirection *  Core.MoveSpeed.CurrentValue +
+                moveDirection * Core.MoveSpeed.CurrentValue +
                 new Vector3(0f, _rb.linearVelocity.y, 0f);
 
                 // 移動していたら回転
@@ -37,6 +41,33 @@ public class PlayerMover : BasePlayerComponent
                         from,
                         to,
                         Core.RotateSpeed.CurrentValue * Time.deltaTime);
+                }
+            })
+            .AddTo(this);
+
+        // ポーズの開閉処理
+        InputEventProvider.Pause
+            .Where(x => x)
+            .Subscribe(x =>
+            {
+                // ゲーム中のみポーズを開けるように
+                if(gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
+                || gameManager.CurrentGameState.CurrentValue == GameState.BUILD)
+                {
+                    gameManager.ChangeGameState(GameState.PAUSE);
+                }
+                // ポーズ中のみ処理
+                else if(gameManager.CurrentGameState.CurrentValue == GameState.PAUSE)
+                {
+                    // ポーズする前のゲームステートに戻す
+                    if (gameManager.PrevGameState == GameState.BATTLE)
+                    {
+                        gameManager.ChangeGameState(GameState.BATTLE);
+                    }
+                    else if(gameManager.PrevGameState == GameState.BUILD)
+                    {
+                        gameManager.ChangeGameState(GameState.BUILD);
+                    }
                 }
             })
             .AddTo(this);

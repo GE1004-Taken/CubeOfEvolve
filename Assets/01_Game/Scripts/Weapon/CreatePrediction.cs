@@ -109,7 +109,7 @@ public class CreatePrediction : MonoBehaviour
             out RaycastHit hit,
             cubeScale))
             {
-                if (!hit.collider.CompareTag("Cube")) continue;
+                if (!hit.collider.CompareTag("Player")) continue;
 
                 // 0.49fは隣接しているキューブを除外する為
                 var halfScale = cubeScale * 0.49f;

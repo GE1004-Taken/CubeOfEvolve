@@ -1,3 +1,4 @@
+using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using System;
 using UnityEngine;
@@ -78,6 +79,19 @@ public class PlayerCore : MonoBehaviour, IDamageble
                 }
 
                 _prevCubeCount = x;
+            })
+            .AddTo(this);
+
+        // HP関連処理
+        _hp
+            .Skip(1)
+            .Subscribe(x =>
+            {
+                // ゲームオーバー処理
+                if(x <= 0f)
+                {
+                    GameManager.Instance.ChangeGameState(GameState.GAMEOVER);
+                }
             })
             .AddTo(this);
     }
