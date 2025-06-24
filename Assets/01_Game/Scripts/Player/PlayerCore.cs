@@ -66,13 +66,13 @@ public class PlayerCore : MonoBehaviour, IDamageble
             .Subscribe(x =>
             {
                 // 増加処理
-                if(x > _prevCubeCount)
+                if (x > _prevCubeCount)
                 {
                     _maxHp.Value += 10;
                     _hp.Value += 10;
                 }
                 // 減少処理
-                else if(x < _prevCubeCount)
+                else if (x < _prevCubeCount)
                 {
                     _maxHp.Value -= 10;
                     _hp.Value -= 10;
@@ -84,14 +84,12 @@ public class PlayerCore : MonoBehaviour, IDamageble
 
         // HP関連処理
         _hp
+            .Where(x => x <= 0)
             .Skip(1)
+            .Take(1)
             .Subscribe(x =>
             {
-                // ゲームオーバー処理
-                if(x <= 0f)
-                {
-                    GameManager.Instance.ChangeGameState(GameState.GAMEOVER);
-                }
+                GameManager.Instance.ChangeGameState(GameState.GAMEOVER);
             })
             .AddTo(this);
     }
