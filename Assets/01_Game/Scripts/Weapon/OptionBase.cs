@@ -1,6 +1,5 @@
 using App.GameSystem.Modules;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class OptionBase : MonoBehaviour
 {
@@ -18,6 +17,8 @@ public class OptionBase : MonoBehaviour
     /// </summary>
     public void WhenEquipped()
     {
+        Debug.Log("ƒIƒvƒVƒ‡ƒ“‚ð‘•”õ‚µ‚½");
+
         foreach (var item in _data)
         {
             RuntimeModuleManager.Instance.AddOption(item);
