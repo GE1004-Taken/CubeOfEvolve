@@ -44,6 +44,7 @@ namespace App.BaseSystem.DataStores.ScriptableObjects.Modules
         [SerializeField] private int _basePrice = 100; // モジュールの基本価格を設定します。
         [SerializeField] private WeaponData _state; // モジュールの基礎ステータス。
         [SerializeField] private WeaponBase _weaponData; // 武器等のデータ。攻撃力など変数と、ダメージ処理の記述が入ってる。
+        [SerializeField] private GameObject _model; // 生成するObject
 
         // 可変
         [SerializeField] private int _level = 0; // モジュールの現在のレベルを設定します。
@@ -60,6 +61,7 @@ namespace App.BaseSystem.DataStores.ScriptableObjects.Modules
         public int BasePrice => _basePrice;
         public WeaponData ModuleState => _state;
         public WeaponBase WeaponData => _weaponData;
+        public GameObject Model => _model;
 
         public int Level => _level;
         public int Quantity => _quantity;
