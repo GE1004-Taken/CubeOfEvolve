@@ -1,7 +1,6 @@
 // AT
 // タイトル画面での処理を実行する。
 
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
