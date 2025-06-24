@@ -28,7 +28,7 @@ namespace AT.uGUI
         private Button _saveBtn; // 一時変数
         private Canvas _canvas;
         // ---------------------------- button
-        private void OnOpenCanvas(Button clickedButton = null) // 引数として押されたボタンを受け取る
+        public void OnOpenCanvas(Button clickedButton = null) // 引数として押されたボタンを受け取る
         {
             Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
             _canvas.enabled = true;
@@ -36,7 +36,7 @@ namespace AT.uGUI
             _saveBtn = clickedButton;
             _openEvent?.Invoke();
         }
-        private void OnCloseCanvas()
+        public void OnCloseCanvas()
         {
             Debug.Log("ボタン処理：out");
             _canvas.enabled = false;

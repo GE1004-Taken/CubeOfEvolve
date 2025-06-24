@@ -19,7 +19,8 @@ namespace Assets.AT
             DOTween.To(() => _slider.value,
                 n => _slider.value = n,
                 value,
-                duration: 1.0f);
+                duration: 1.0f)
+                .SetUpdate(true);
         }
     }
 }

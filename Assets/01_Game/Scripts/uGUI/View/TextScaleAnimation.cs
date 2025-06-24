@@ -35,11 +35,13 @@ namespace Assets.AT
             var sizeDuration = totalDuration * 0.5f;
 
             // 1. float型の変数の値をアニメーション
-            DOTween.To(() => _currentValue,
+            DOTween
+                .To(() => _currentValue,
                 n => _currentValue = n,
                 Value,
-                duration: totalDuration
-                ).OnUpdate(TextUpdate); ;
+                duration: totalDuration)
+                .OnUpdate(TextUpdate)
+                .SetUpdate(true);
 
             // 2. テキストサイズを総アニメーション時間の半分秒で2倍に拡大
             Sequence sequence = DOTween.Sequence();

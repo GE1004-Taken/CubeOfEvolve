@@ -3,7 +3,6 @@ using App.GameSystem.Modules;
 using R3;
 using R3.Triggers;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -115,6 +114,9 @@ namespace Assets.IGC2025.Scripts.View
         /// <param name="moduleDatas">表示するモジュールのデータリスト（ModuleDataとRuntimeModuleDataを結合したデータ）。</param>
         public void UpdateModuleView(List<(ModuleData master, RuntimeModuleData runtime)> moduleDatas)
         {
+            Debug.Log($"ViewDropCanvas: UpdateModuleView実行");
+
+
             // 前回の購読をすべて解除
             _disposables.Clear();
 
@@ -143,10 +145,10 @@ namespace Assets.IGC2025.Scripts.View
                         int index = i;
                         _buttons[i].OnClickAsObservable()
                                  .Subscribe(_ => OnButtonClicked(index))
-                                 .AddTo(_disposables); // CompositeDisposableに追加
+                                 .AddTo(_disposables);
                         _buttons[i].OnPointerEnterAsObservable()
                                  .Subscribe(_ => OnModuleOptionHovered(index))
-                                 .AddTo(_disposables); // CompositeDisposableに追加
+                                 .AddTo(_disposables);
                     }
                 }
             }
