@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using R3;
+using Unity.VisualScripting;
+using Unit = R3.Unit;
 
 namespace EasyTransition
 {
@@ -17,8 +19,8 @@ namespace EasyTransition
         private Subject<Unit> _onTransitionStarted = new();
         public Observable<Unit> OnTransitionStarted => _onTransitionStarted;
 
-        private Subject<Unit> _onTransitionHalf = new();
-        public Observable<Unit> OnTransitionHalf => _onTransitionHalf;
+        private Subject<Unit> _onSceneLoadCompleted = new();
+        public Observable<Unit> OnTransitionHalf => _onSceneLoadCompleted;
 
         private Subject<Unit> _onTranstionCompleted = new();
         public Observable<Unit> OnTransitionCompleted => _onTranstionCompleted;
@@ -136,14 +138,19 @@ namespace EasyTransition
 
             yield return new WaitForSecondsRealtime(transitionTime);
 
-            yield return SceneManager.LoadSceneAsync(sceneName);
+            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
 
-            _onTransitionHalf.OnNext(Unit.Default);
+            // シーン遷移が完了したことを通知
+            _onSceneLoadCompleted.OnNext(Unit.Default);
 
+            // アニメーションが終了するまで待機
             yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
 
             _isRunning = false;
 
+            Destroy(template);
+
+            // シーン遷移アニメーションが完了したことを通知
             _onTranstionCompleted.OnNext(Unit.Default);
         }
 
@@ -160,14 +167,19 @@ namespace EasyTransition
 
             yield return new WaitForSecondsRealtime(transitionTime);
 
-            SceneManager.LoadSceneAsync(sceneIndex);
+            yield return SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Single);
 
-            _onTransitionHalf.OnNext(Unit.Default);
+            // シーン遷移が完了したことを通知
+            _onSceneLoadCompleted.OnNext(Unit.Default);
 
+            // アニメーションが終了するまで待機
             yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
 
             _isRunning = false;
 
+            Destroy(template);
+
+            // シーン遷移アニメーションが完了したことを通知
             _onTranstionCompleted.OnNext(Unit.Default);
         }
 
@@ -188,9 +200,11 @@ namespace EasyTransition
 
             yield return SceneManager.LoadSceneAsync(sceneName);
 
-            _onTransitionHalf.OnNext(Unit.Default);
+            _onSceneLoadCompleted.OnNext(Unit.Default);
 
             yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
+
+            Destroy(template);
 
             _isRunning = false;
 
@@ -212,11 +226,13 @@ namespace EasyTransition
 
             yield return new WaitForSecondsRealtime(transitionTime);
 
-            SceneManager.LoadSceneAsync(sceneIndex);
+            yield return SceneManager.LoadSceneAsync(sceneIndex);
 
-            _onTransitionHalf.OnNext(Unit.Default);
+            _onSceneLoadCompleted.OnNext(Unit.Default);
 
             yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
+
+            Destroy(template);
 
             _isRunning = false;
 
@@ -240,9 +256,11 @@ namespace EasyTransition
 
             template.GetComponent<Transition>().OnSceneLoad(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 
-            _onTransitionHalf.OnNext(Unit.Default);
+            _onSceneLoadCompleted.OnNext(Unit.Default);
 
             yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
+
+            Destroy(template);
 
             _isRunning = false;
 
