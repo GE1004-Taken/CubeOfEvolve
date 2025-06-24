@@ -36,6 +36,7 @@ public abstract class EnemySpawnBase : MonoBehaviour
 
         GameManager.Instance.CurrentGameState
             .Where(value => value == Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+            .Take(1)
             .Subscribe(_ => StartMethod())
             .AddTo(this);
     }
