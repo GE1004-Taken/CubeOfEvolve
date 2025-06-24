@@ -1,11 +1,8 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
-using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using R3.Triggers;
-using TreeEditor;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PlayerBuilder : BasePlayerComponent
 {
@@ -21,6 +18,8 @@ public class PlayerBuilder : BasePlayerComponent
     // 対象の生成予測キューブ
     private CreatePrediction _predictCube = null;
     private Vector3 _createPos;
+    // 仮
+    private ModuleData _currentModuleData;
 
     // ---------- R3
     private Subject<ModuleData> _selectModuleData = new();
@@ -40,7 +39,7 @@ public class PlayerBuilder : BasePlayerComponent
             .Subscribe(moduleData =>
             {
                 // 既に生成予測キューブが生成されていたら破壊
-                if(_predictCube != null)
+                if (_predictCube != null)
                 {
                     Destroy(_predictCube);
                 }
@@ -51,8 +50,10 @@ public class PlayerBuilder : BasePlayerComponent
                     // その武器の生成予測スクリプト取得
                     _targetCreatePrediction =
                         moduleData
-                        .WeaponData
+                        .Model
                         .GetComponent<CreatePrediction>();
+
+                    _currentModuleData = moduleData;
                 }
                 else
                 {
@@ -140,6 +141,13 @@ public class PlayerBuilder : BasePlayerComponent
             {
                 _predictCube.CreateObject();
                 _predictCube = null;
+
+                // オプションの時
+                if (_currentModuleData != null
+                && _currentModuleData.ModuleType == ModuleData.MODULE_TYPE.Options)
+                {
+                    _currentModuleData.Model.GetComponent<OptionBase>().WhenEquipped();
+                }
             })
             .AddTo(this);
     }
