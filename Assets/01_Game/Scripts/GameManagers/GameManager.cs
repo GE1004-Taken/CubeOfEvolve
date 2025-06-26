@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
                 switch (x)
                 {
                     case GameState.TITLE:
+                        Time.timeScale = 1f;
                         break;
 
                     case GameState.INITIALIZE:
@@ -79,10 +80,14 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.BATTLE:
+                        // ƒJƒƒ‰ˆÚ“®
+                        CameraCtrlManager.Instance.ChangeCamera("Player Camera");
                         StartGame();
                         break;
 
                     case GameState.BUILD:
+                        // ƒJƒƒ‰ˆÚ“®
+                        CameraCtrlManager.Instance.ChangeCamera("Build Camera");
                         StopGame();
                         break;
 
@@ -166,7 +171,7 @@ public class GameManager : MonoBehaviour
     private void StopGame()
     {
         _timeManager.StopTimer();
-        Time.timeScale = 0;
+        Time.timeScale = 0f;
     }
 
     /// <summary>
