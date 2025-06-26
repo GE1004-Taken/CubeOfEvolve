@@ -88,6 +88,17 @@ namespace Assets.AT
             InitializeCameras();
         }
 
+        // シーンがアンロードされる際に呼び出される
+        private void OnDestroy()
+        {
+            // もし破棄されるインスタンスが現在のシングルトンインスタンスであれば、nullに設定して参照を解放する
+            if (Instance == this)
+            {
+                Instance = null;
+                Debug.Log("CameraCtrl: Instanceの参照を破棄します");
+            }
+        }
+
         // --- Private Methods
 
         /// <summary>
@@ -283,6 +294,15 @@ namespace Assets.AT
             return _currentActiveCameraKey;
         }
 
+        public void SetBrainUpdateMode(CinemachineBrain.UpdateMethods method)
+        {
+            _cinemachineBrain.UpdateMethod = method;
+        }
+
+        public void BrainManualUpdate()
+        {
+            _cinemachineBrain.ManualUpdate();
+        }
 
         // --- Editor Integration
 #if UNITY_EDITOR

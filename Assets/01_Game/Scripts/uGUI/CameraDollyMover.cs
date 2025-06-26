@@ -51,13 +51,14 @@ namespace Assets.AT
             GameManager.Instance.CurrentGameState
                 .Where(x => x == IGC2025.Scripts.GameManagers.GameState.READY)
                 .Take(1)
-                .Subscribe(x => StopCoroutine(_coroutine))
+                .Subscribe(x => { StopCoroutine(_coroutine); _panel.DOComplete(); })
                 .AddTo(this);
         }
 
         private void OnDestroy()
         {
             StopCoroutine(_coroutine);
+            _panel.DOComplete();
         }
 
         // -----Private
