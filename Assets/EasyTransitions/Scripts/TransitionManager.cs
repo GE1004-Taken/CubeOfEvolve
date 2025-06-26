@@ -29,6 +29,17 @@ namespace EasyTransition
         private bool _isRunning;
         public bool IsRunning => _isRunning;
 
+        // ---------- UnityMessage
+        private void Start()
+        {
+            _onTransitionStarted.AddTo(this);
+            _onSceneLoadCompleted.AddTo(this);
+            _onTranstionCompleted.AddTo(this);
+        }
+
+        // ---------- Public
+
+
         /// <summary>
         /// Starts a transition without loading a new level.
         /// </summary>

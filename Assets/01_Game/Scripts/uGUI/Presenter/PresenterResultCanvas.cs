@@ -10,8 +10,6 @@ namespace Assets.IGC2025.Scripts.Presenter
     {
         // ----- SerializedField
         [Header("Models")]
-        [SerializeField] private GameManager _gameManager;
-        [SerializeField] private SceneLoader _sceneLoader;
         [Header("Views")]
         [SerializeField] private ViewResultCanvas _view;
         [SerializeField] private Button[] _endGameButton;
@@ -19,34 +17,22 @@ namespace Assets.IGC2025.Scripts.Presenter
         // ----- UnityMessage
         private void Start()
         {
-            if (_gameManager != null)
+            if (GameManager.Instance != null)
             {
-                _gameManager.CurrentGameState
+                GameManager.Instance.CurrentGameState
                     .Where(x => x == GameState.GAMEOVER || x == GameState.GAMECLEAR)
                     .Subscribe(x => _view.ShowCanvas(x))
                     .AddTo(this);
             }
 
-            if (_sceneLoader != null)
+            if (GameManager.Instance.SceneLoader != null)
             {
                 if (_endGameButton.Length == 0) return;
                 for (int i = 0; i < _endGameButton.Length; i++)
                 {
-                    _endGameButton[i].onClick.AddListener(() => _sceneLoader.ReloadScene());
+                    _endGameButton[i].onClick.AddListener(() => GameManager.Instance.SceneLoader.ReloadScene());
 
                 }
-            }
-        }
-        private void Awake()
-        {
-            // 依存関係が未設定の場合、シーンから取得を試みる
-            if (_gameManager == null) _gameManager = GameManager.Instance;
-
-            // 必須の依存関係が揃っているかチェック
-            if (_gameManager == null || _sceneLoader == null)
-            {
-                Debug.LogError("PresenterResultCanvas: _gameManagerが設定されていません。このコンポーネントを無効にします。", this);
-                enabled = false;
             }
         }
 
