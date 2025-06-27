@@ -1,4 +1,5 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using R3.Triggers;
@@ -142,12 +143,18 @@ public class PlayerBuilder : BasePlayerComponent
                 _predictCube.CreateObject();
                 _predictCube = null;
 
+
                 // オプションの時
                 if (_currentModuleData != null
                 && _currentModuleData.ModuleType == ModuleData.MODULE_TYPE.Options)
                 {
                     _currentModuleData.Model.GetComponent<OptionBase>().WhenEquipped();
                 }
+
+                // モジュールの所持数を減らす
+                RuntimeModuleManager.Instance.ChangeModuleQuantity(
+                    _currentModuleData.Id,
+                    -1);
             })
             .AddTo(this);
     }
