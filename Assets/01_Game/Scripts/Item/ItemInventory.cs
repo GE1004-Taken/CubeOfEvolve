@@ -16,8 +16,7 @@ public class ItemInventory : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if ("Item" == LayerMask.LayerToName(other.gameObject.layer)
-                && other.TryGetComponent<ItemBase>(out var status))
+        if (other.TryGetComponent<ItemBase>(out var status))
         {
             GetItem(status.Data);
 
