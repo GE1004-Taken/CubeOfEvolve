@@ -1,7 +1,10 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
+using App.GameSystem.Handler;
+using Assets.IGC2025.Scripts.GameManagers;
 using ObservableCollections;
 using R3;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace App.GameSystem.Modules
@@ -10,6 +13,7 @@ namespace App.GameSystem.Modules
     /// ゲーム実行中のモジュールデータを一元的に管理するマネージャー。
     /// シングルトンパターンで実装されており、各種モジュールの状態変化を監視・操作します。
     /// </summary>
+    [RequireComponent(typeof(SceneClassReferenceHandler))]
     public class RuntimeModuleManager : MonoBehaviour
     {
         // ----- Singleton
@@ -25,6 +29,7 @@ namespace App.GameSystem.Modules
 
         private ObservableList<StatusEffectData> _currentStatusEffectList = new(); // バフ・デバフをまとめる
 
+        private SceneClassReferenceHandler Handler;
         // ----- Public Properties (公開プロパティ)
         public IReadOnlyList<RuntimeModuleData> AllRuntimeModuleData => _allRuntimeModuleDataInternal;
         public Observable<Unit> OnAllRuntimeModuleDataChanged => _collectionChangedSubject.AsObservable();// 変更があったときの目印
@@ -49,6 +54,8 @@ namespace App.GameSystem.Modules
             {
                 Debug.LogError("RuntimeModuleManager: ModuleDataStoreが設定されていません！", this);
             }
+
+            Handler = GetComponent<SceneClassReferenceHandler>();
 
             // 初期化
             InitializeAllModules();
@@ -156,6 +163,49 @@ namespace App.GameSystem.Modules
             {
                 Debug.LogWarning($"RuntimeModuleManager: ID {moduleId} のモジュールが見つかりません。レベルアップできません。", this);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="numberOfOptions"></param>
+        /// <param name="currentGameState"></param>
+        /// <returns></returns>
+        public List<int> GetDisplayModuleIds(int numberOfOptions, GameState currentGameState)
+        {
+            var candidatePool = new List<RuntimeModuleData>();
+            foreach (var runtime in AllRuntimeModuleData)
+            {
+                if (runtime.CurrentLevelValue < 5)
+                    candidatePool.Add(runtime);
+            }
+
+            if (candidatePool.Count == 0)
+                return new List<int>(); // 全モジュールが最大レベル
+
+            if (currentGameState == GameState.TUTORIAL)
+                return new List<int> { 0, 1, 2 };
+
+            if (candidatePool.Count <= numberOfOptions)
+                return candidatePool.Select(m => m.Id).ToList();
+
+            // ランダム候補
+            HashSet<int> selected = new();
+            while (selected.Count < numberOfOptions)
+            {
+                int randIndex = Random.Range(0, candidatePool.Count);
+                selected.Add(candidatePool[randIndex].Id);
+            }
+
+            return selected.ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void TriggerDropUI()
+        {
+            Handler.PresenterDropCanvas.PrepareAndShowDropUI();
         }
     }
 }

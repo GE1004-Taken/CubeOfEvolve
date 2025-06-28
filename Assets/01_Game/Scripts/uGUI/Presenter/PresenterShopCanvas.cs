@@ -17,11 +17,13 @@ namespace Assets.IGC2025.Scripts.Presenter
     public class PresenterShopCanvas : MonoBehaviour
     {
         // ----- Serializable Fields (シリアライズフィールド)
+        [Header("Models")]
         [SerializeField] private ViewShopCanvas _shopView; // ショップのUI表示を管理するViewへの参照。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールのマスターデータを保持するデータストアへの参照。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャーへの参照。
         [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）への参照。
 
+        [Header("Views")]
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
         [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // ホバー中のモジュール情報テキスト。
 

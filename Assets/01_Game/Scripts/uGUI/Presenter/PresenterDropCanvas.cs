@@ -1,8 +1,10 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.View;
+using AT.uGUI;
 using R3;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -52,88 +54,27 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         /// <summary>
         /// ドロップ選択UIを表示する準備をし、Viewに表示を依頼します。
-        /// このメソッドは、例えばプレイヤーが特定のアイテムを拾った際にGameManagerなどから呼び出されます。
         /// </summary>
         public void PrepareAndShowDropUI()
         {
-            // 依存NullCheck
             if (_runtimeModuleManager == null || _moduleDataStore == null || _dropView == null)
             {
-                Debug.LogError("Drop_Presenter: プレゼンターの依存関係が満たされていません！ドロップUIを表示できません。", this);
+                Debug.LogError("依存関係が満たされていません！");
                 return;
             }
 
-            // 1. 提示するモジュールを選択するロジック
-            _candidateModuleIds = GetRandomAvailableModuleIds(NUMBER_OF_OPTIONS);
+            var gameState = GameManager.Instance.CurrentGameState.CurrentValue;
+            var displayIds = _runtimeModuleManager.GetDisplayModuleIds(NUMBER_OF_OPTIONS, gameState);
+            var candidatePool = _runtimeModuleManager.AllRuntimeModuleData
+                                  .Where(m => m.CurrentLevelValue < 5).ToList();
 
-            // 2. Viewに渡すためのデータ準備
-            List<(ModuleData master, RuntimeModuleData runtime)> displayDatas = new List<(ModuleData, RuntimeModuleData)>();
-
-            if (_candidateModuleIds.Count == 0)
+            if (displayIds.Count == 0)
             {
-                // 選択肢がない場合。全部のモジュールがレベル5の場合
-                Debug.Log("Drop_Presenter: 全部のモジュールがレベル5になっちゃったみたい");
-            }
-            else
-            {
-                foreach (int moduleId in _candidateModuleIds)
-                {
-                    RuntimeModuleData runtime = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
-                    ModuleData master = _moduleDataStore.FindWithId(moduleId);
-
-                    if (runtime != null && master != null)
-                    {
-                        displayDatas.Add((master, runtime));
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"Drop_Presenter: データ不整合: 候補にモジュールID {moduleId} が見つかりましたが、マスターデータまたはランタイムデータが不足しています。");
-                    }
-                }
+                Debug.Log("全モジュールが最大レベル。選択肢なし。");
+                return;
             }
 
-            // 3. Viewに表示を依頼
-            _dropView.UpdateModuleView(displayDatas);
-        }
-
-        /// <summary>
-        /// ランダムにアップグレード可能なモジュールIDを選択するロジック。
-        /// </summary>
-        /// <param name="count">選出するモジュールの数。</param>
-        /// <returns>選出されたモジュールのIDリスト。</returns>
-        private List<int> GetRandomAvailableModuleIds(int count)
-        {
-            List<int> upgradeableModuleIds = new List<int>();
-
-            // 現在プレイヤーが所持しているモジュールの中から、
-            // まだレベル上限に達していないモジュールを抽出するロジック
-            foreach (var runtimeModule in _runtimeModuleManager.AllRuntimeModuleData)
-            {
-                // レベルが5未満のモジュールをアップグレード可能とする
-                if (runtimeModule.CurrentLevelValue < 5)
-                {
-                    upgradeableModuleIds.Add(runtimeModule.Id);
-                }
-            }
-
-            // 選出ロジック
-            List<int> selectedIds = new List<int>();
-            if (upgradeableModuleIds.Count == 0)
-            {
-                return selectedIds; // アップグレード可能なモジュールがない場合。
-            }
-
-            // 重複なしでランダムに選ぶ
-            HashSet<int> uniqueIndices = new HashSet<int>();
-            while (uniqueIndices.Count < count && uniqueIndices.Count < upgradeableModuleIds.Count)
-            {
-                int randomIndex = Random.Range(0, upgradeableModuleIds.Count);
-                uniqueIndices.Add(upgradeableModuleIds[randomIndex]);
-            }
-
-            selectedIds.AddRange(uniqueIndices); // HashSetからリストに変換。
-
-            return selectedIds;
+            _dropView.DisplayModulesByIdOrRandom(displayIds, candidatePool, _moduleDataStore);
         }
 
         #endregion
@@ -161,6 +102,8 @@ namespace Assets.IGC2025.Scripts.Presenter
                 // RuntimeModuleManager を介してモジュールのレベルアップ処理を実行
                 _runtimeModuleManager.LevelUpModule(selectedModuleId);
             }
+
+            _dropView.gameObject.GetComponent<CanvasCtrl>().OnCloseCanvas();
 
             // 必要であれば、UIの更新など、ゲーム全体の状態に応じた後処理を呼び出す
             // 例: GameManager.Instance.OnPlayerModuleUpgraded();
