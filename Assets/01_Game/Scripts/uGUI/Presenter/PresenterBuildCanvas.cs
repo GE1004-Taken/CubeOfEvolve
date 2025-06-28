@@ -36,7 +36,7 @@ namespace Assets.IGC2025.Scripts.Presenter
             if (_buildView == null) Debug.LogError("Build_Presenter: BuildViewがInspectorで設定されていません！", this);
             if (_moduleDataStore == null) Debug.LogError("Build_Presenter: ModuleDataStoreがInspectorで設定されていません！", this);
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
-            if (_exitButton == null) Debug.LogError("Build_Presenter: ExitButtonがInspectorで設定されていません！", this); // このエラーメッセージは適切に修正しました。
+            if (_exitButton == null) Debug.LogError("Build_Presenter: ExitButtonがInspectorで設定されていません！", this);
 
             // 各依存関係が揃っているか最終チェック
             if (_buildView == null || _moduleDataStore == null || _runtimeModuleManager == null || _exitButton == null)
