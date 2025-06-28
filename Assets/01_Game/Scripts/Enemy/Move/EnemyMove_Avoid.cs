@@ -2,6 +2,9 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 
+/// <summary>
+/// ‰ñ”ð‚·‚é“G
+/// </summary>
 public class EnemyMove_Avoid : EnemyMoveBase
 {
     // ---------------------------- SerializeField

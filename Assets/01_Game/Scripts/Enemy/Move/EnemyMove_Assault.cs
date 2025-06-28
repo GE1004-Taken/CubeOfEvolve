@@ -2,6 +2,9 @@ using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
+/// <summary>
+/// ’¼üˆÚ“®‚·‚é“G
+/// </summary>
 public class EnemyMove_Assault : EnemyMoveBase
 {
     // ---------------------------- SerializeField
