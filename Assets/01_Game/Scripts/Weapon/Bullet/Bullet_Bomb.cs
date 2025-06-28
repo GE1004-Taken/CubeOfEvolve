@@ -41,6 +41,8 @@ public class Bullet_Bomb : BulletBase
     {
         foreach (var item in _layerSearch.NearestEnemyList)
         {
+            if (item == null) continue;
+
             if (item.transform.root.TryGetComponent<IDamageble>(out var damageble))
             {
                 damageble.TakeDamage(_attack);
