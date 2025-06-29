@@ -11,6 +11,9 @@ public class EnemyStatus : MonoBehaviour, IDamageble
     [Header("ドロップ")]
     [SerializeField, Tooltip("ドロップ")] private ItemDrop _itemDrop;
 
+    [Header("エフェクト")]
+    [SerializeField, Tooltip("死んだ時")] private GameObject _effect;
+
     // ---------------------------- Field
     public enum ActionPattern                              // 行動パターン
     {
@@ -46,6 +49,8 @@ public class EnemyStatus : MonoBehaviour, IDamageble
             .Subscribe(value =>
             {
                 _itemDrop.DropItemProcess();
+
+                Instantiate(_effect, transform.position, Quaternion.identity);
 
                 Destroy(gameObject);
             })

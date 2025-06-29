@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Bullet_Linear : BulletBase
 {
+    // ---------------------------- SerializeField
+    [SerializeField] private GameObject _hitEffect;
+
     // ---------------------------- Field
     private float _moveSpeed;
     private Vector3 _direction;
@@ -29,6 +32,8 @@ public class Bullet_Linear : BulletBase
                 if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
                 && other.CompareTag(_targetTag))
                 {
+                    Instantiate(_hitEffect, transform.position, Quaternion.identity);
+
                     damageble.TakeDamage(_attack);
                     Destroy(gameObject);
                 }
