@@ -1,6 +1,7 @@
 using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerCore : MonoBehaviour, IDamageble
@@ -8,6 +9,7 @@ public class PlayerCore : MonoBehaviour, IDamageble
     // ---------- RP
     [SerializeField, Tooltip("HP")] private SerializableReactiveProperty<float> _hp;
     [SerializeField, Tooltip("Å‘åHP")] private SerializableReactiveProperty<float> _maxHp;
+    [SerializeField, Tooltip("–³“GŠÔ")] private float _invincibleTime = 1.0f;
     [SerializeField, Tooltip("ˆÚ“®‘¬“x")] private SerializableReactiveProperty<float> _moveSpeed;
     [SerializeField, Tooltip("‰ñ“]‘¬“x")] private SerializableReactiveProperty<float> _rotateSpeed;
     [SerializeField, Tooltip("ƒŒƒxƒ‹")] private SerializableReactiveProperty<int> _level;
@@ -32,6 +34,9 @@ public class PlayerCore : MonoBehaviour, IDamageble
 
     // ---------- Field
     private int _prevCubeCount;
+
+    // –³“Gƒtƒ‰ƒO
+    private bool _isInvincibled;
 
     // ---------- UnityMessage
     private void Start()
@@ -85,7 +90,6 @@ public class PlayerCore : MonoBehaviour, IDamageble
         // HPŠÖ˜Aˆ—
         _hp
             .Where(x => x <= 0)
-            .Skip(1)
             .Take(1)
             .Subscribe(x =>
             {
@@ -97,10 +101,20 @@ public class PlayerCore : MonoBehaviour, IDamageble
     // ---------- Interface
     public void TakeDamage(float damage)
     {
+        // –³“GŠÔ’†‚Íˆ—‚µ‚È‚¢
+        if (_isInvincibled) return;
+
+        // HP‚ğŒ¸‚ç‚·
         _hp.Value -= damage;
+
+        // –³“Gƒtƒ‰ƒOƒIƒ“
+        _isInvincibled = true;
+
+        // ”í’e‚µ‚½‚çˆê’èŠÔ–³“G
+        StartCoroutine(StartInvincible());
     }
 
-    // ---------- Event
+    // ---------- Method
     public void ReceiveMoney(int amount)
     {
         _money.Value += amount;
@@ -120,5 +134,16 @@ public class PlayerCore : MonoBehaviour, IDamageble
     public void ReceiveExp(int amount)
     {
         _exp.Value += amount;
+    }
+
+    /// <summary>
+    /// ˆê’èŠÔŒã‚É–³“G‚ğ‰ğœ‚·‚é
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator StartInvincible()
+    {
+        yield return new WaitForSeconds(_invincibleTime);
+
+        _isInvincibled = false;
     }
 }
