@@ -1,23 +1,13 @@
-using Cysharp.Threading.Tasks;
-using R3;
-using R3.Triggers;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class Weapon_Drill : WeaponBase
 {
-    // ---------------------------- Field
-
     // ---------------------------- OverrideMethod
     protected override void Attack()
     {
-        
-        foreach (var enemy in _layerSearch.NearestEnemyList)
+        // LayerSearch ‚É‚æ‚éŒŸõŒ‹‰Ê‚ğg‚¤
+        foreach (var obj in _layerSearch.NearestTargetList)
         {
-            if (enemy.transform.root.TryGetComponent<IDamageble>(out var damageble)
-            && enemy.CompareTag(_targetTag))
+            if (obj.TryGetComponent<IDamageble>(out var damageble))
             {
-
                 damageble.TakeDamage(_currentAttack);
             }
         }
