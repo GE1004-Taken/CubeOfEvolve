@@ -38,11 +38,6 @@ namespace App.GameSystem.Modules
 
         // ----- Private
 
-        private void LevelUpBonus()
-        {
-
-        }
-
         // ----- Public Methods (公開メソッド)
         /// <summary>
         /// モジュールのレベルを更新します。
@@ -52,7 +47,6 @@ namespace App.GameSystem.Modules
         {
             if (newLevel < 0) newLevel = 0; // レベルが負の値にならないように制限。
             _currentLevel.Value = newLevel; // ReactivePropertyの値を更新。
-            LevelUpBonus();
         }
 
         /// <summary>

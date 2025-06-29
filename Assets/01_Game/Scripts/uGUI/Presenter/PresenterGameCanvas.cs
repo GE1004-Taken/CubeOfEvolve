@@ -2,6 +2,8 @@ using Assets.IGC2025.Scripts.Event;
 using Assets.AT;
 using R3;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using TMPro;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -14,6 +16,7 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private PlayerCore _models;
 
         [Header("Views")]
+        [SerializeField] private TextMeshProUGUI _timeText;
         [SerializeField] private SliderAnimation _hpSliderAnimation;
         [SerializeField] private SliderAnimation _expSliderAnimation;
         [SerializeField] private EventLevelUp _levelUp;
@@ -21,9 +24,18 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private TextScaleAnimation _maxCubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
 
+        private TimeManager _timeManager;
 
         private void Start()
         {
+            _timeManager = GameManager.Instance.GetComponent<TimeManager>();
+            _timeManager.CurrentTimeSecond
+                .Subscribe(x =>
+                {
+                    _timeText.text = $"{(x).ToString("F1")}";
+                })
+                .AddTo(this);
+
             // Player‚ÌHealth‚ðŠÄŽ‹
             _models.Hp
                 .Subscribe(x =>

@@ -30,10 +30,11 @@ namespace AT.uGUI
         // ---------------------------- button
         public void OnOpenCanvas(Button clickedButton = null) // 引数として押されたボタンを受け取る
         {
-            Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
+            if (clickedButton != null) Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
+            else Debug.Log("nullなのでする―");
             _canvas.enabled = true;
             if (_closeBtnList.Count != 0) _closeBtnList[0].Select();
-            _saveBtn = clickedButton;
+            if (clickedButton != null) _saveBtn = clickedButton;
             _openEvent?.Invoke();
         }
         public void OnCloseCanvas()
