@@ -8,7 +8,8 @@ using Random = UnityEngine.Random;
 public class ItemMoveAnimation : MonoBehaviour
 {
     // ---------------------------- SerializeField
-    [SerializeField, Tooltip("マテリアル")] private MeshRenderer _material;
+    [SerializeField, Tooltip("マテリアル")] private Renderer _material;
+    [SerializeField, Tooltip("色")] private Color _color;
 
     [SerializeField, Tooltip("吸われるまでの待機時間")] private float _delaySecond;
     [SerializeField, Tooltip("移動速度")] private float _moveSpeed;
@@ -18,7 +19,14 @@ public class ItemMoveAnimation : MonoBehaviour
     // ---------------------------- UnityMessage
     private void Awake()
     {
-        _material.material.color = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+        // マテリアルを取得（注意：sharedMaterial は全体共有、material はインスタンス）
+        Material mat = _material.material;
+
+        // Emission有効化
+        mat.EnableKeyword("_EMISSION");
+
+        // Emissionの色を変更
+        mat.SetColor("_EmissionColor", _color);
     }
 
     private async void OnTriggerEnter(Collider other)
