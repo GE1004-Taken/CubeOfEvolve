@@ -41,6 +41,8 @@ public class Bullet_Linear : BulletBase
 
                 if (other.CompareTag("Ground"))
                 {
+                    Instantiate(_hitEffect, transform.position, Quaternion.identity);
+
                     Destroy(gameObject);
                 }
             })

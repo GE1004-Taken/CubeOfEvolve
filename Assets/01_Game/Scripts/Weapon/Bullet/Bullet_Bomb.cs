@@ -8,7 +8,7 @@ public class Bullet_Bomb : BulletBase
     [SerializeField] private float _range;
     [SerializeField] private LayerSearch _layerSearch;
 
-    [SerializeField] private GameObject _effect;
+    [SerializeField] private GameObject _hitEffect;
 
     // ---------------------------- Field
 
@@ -51,7 +51,7 @@ public class Bullet_Bomb : BulletBase
             }
         }
 
-        Instantiate(_effect, transform.position, Quaternion.identity);
+        Instantiate(_hitEffect, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 
