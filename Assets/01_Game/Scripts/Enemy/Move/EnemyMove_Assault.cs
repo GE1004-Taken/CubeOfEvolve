@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using UnityEngine;
 
 /// <summary>
@@ -11,9 +12,17 @@ public class EnemyMove_Assault : EnemyMoveBase
     [SerializeField] private float _moveDelaySecond;
     [SerializeField] private float _destroyDelaySecond;
 
-    // ---------------------------- SerializeField
+    // ---------------------------- Field
     private Vector3 _moveForward;
     private bool _isAssault = false;
+
+    private CancellationToken _token;
+
+    // ---------------------------- UnityMessage
+    private void Awake()
+    {
+        _token = this.GetCancellationTokenOnDestroy();
+    }
 
     // ---------------------------- PrivateMethod
     /// <summary>
@@ -59,7 +68,7 @@ public class EnemyMove_Assault : EnemyMoveBase
     public override async void Initialize()
     {
         // キャンセル処理を書くところ要相談
-        await UniTask.Delay(TimeSpan.FromSeconds(_moveDelaySecond), cancellationToken: destroyCancellationToken, delayType: DelayType.DeltaTime)
+        await UniTask.Delay(TimeSpan.FromSeconds(_moveDelaySecond), cancellationToken: _token, delayType: DelayType.DeltaTime)
          .SuppressCancellationThrow();
 
         if (this != null && gameObject != null)
@@ -68,7 +77,7 @@ public class EnemyMove_Assault : EnemyMoveBase
         }
 
         // キャンセル処理を書くところ要相談
-        await UniTask.Delay(TimeSpan.FromSeconds(_destroyDelaySecond), cancellationToken: destroyCancellationToken, delayType: DelayType.DeltaTime)
+        await UniTask.Delay(TimeSpan.FromSeconds(_destroyDelaySecond), cancellationToken: _token, delayType: DelayType.DeltaTime)
          .SuppressCancellationThrow();
 
         if (this != null && gameObject != null)
