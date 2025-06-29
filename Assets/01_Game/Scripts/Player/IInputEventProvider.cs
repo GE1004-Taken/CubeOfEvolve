@@ -7,4 +7,5 @@ public interface IInputEventProvider
     public ReadOnlyReactiveProperty<bool> Pause { get; }
     public ReadOnlyReactiveProperty<bool> Create { get; }
     public ReadOnlyReactiveProperty<bool> Skill { get; }
+    public ReadOnlyReactiveProperty<float> Zoom { get; }
 }
