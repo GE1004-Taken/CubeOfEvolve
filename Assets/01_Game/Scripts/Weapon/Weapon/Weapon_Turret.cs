@@ -6,7 +6,7 @@ public class Weapon_Turret : WeaponBase
 
     protected override void Attack()
     {
-        var dir = (_layerSearch.NearestEnemyObj.transform.position - transform.position).normalized;
+        var dir = (_layerSearch.NearestTargetObj.transform.position - transform.position).normalized;
 
         var bullet = Instantiate(
             _bulletPrefab,

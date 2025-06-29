@@ -1,69 +1,88 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LayerSearch : MonoBehaviour
 {
-    // ---------------------------- Field
-    private float _range;
-    private string _maskName;
+    // ---------------------------- Fields
 
-    private GameObject _nearestEnemyObj;
-    private List<GameObject> _nearestEnemyList = new();
+    private float _range;                 // 探索範囲
+    private string _layerMaskName;       // 検出対象のレイヤー名
+
+    private GameObject _nearestTargetObj; // 最も近い対象オブジェクト
+    private readonly List<GameObject> _nearestTargetList = new(); // 範囲内の敵オブジェクト一覧
 
     // ---------------------------- Property
-    public GameObject NearestEnemyObj => _nearestEnemyObj;
-    public List<GameObject> NearestEnemyList => _nearestEnemyList;
-
-    // ---------------------------- UnityMassage
-    private void Update()
+    /// <summary>
+    /// 最も近い対象オブジェクト
+    /// </summary>
+    public GameObject NearestTargetObj
     {
-        float nearestEnemyDis = 0;
-        _nearestEnemyObj = null;
-
-        if (_nearestEnemyList.Count > 0)
+        get
         {
-            _nearestEnemyList.RemoveAll(x => x == null);
-        }
-
-        // 一番近い敵を取得
-        foreach (RaycastHit hit in Physics.SphereCastAll(
-            transform.position,
-            _range,
-            Vector3.down,
-            0,
-            LayerMask.GetMask(_maskName)))
-        {
-
-            if (hit.transform == null) continue;
-
-            if (!_nearestEnemyList.Contains(hit.transform.root.gameObject))
-            {
-                _nearestEnemyList.Add(hit.transform.root.gameObject);
-            }
-
-            var dis = Vector3.Distance(
-                transform.position,
-                hit.transform.position);
-
-            if (nearestEnemyDis == 0f || dis < nearestEnemyDis)
-            {
-                nearestEnemyDis = dis;
-                _nearestEnemyObj = hit.transform.gameObject;
-            }
+            SearchEnemiesInRange();
+            return _nearestTargetObj;
         }
     }
 
-    void OnDrawGizmos()
+    /// <summary>
+    /// 範囲内の対象オブジェクト一覧
+    /// </summary>
+    public List<GameObject> NearestTargetList
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, _range);
+        get
+        {
+            SearchEnemiesInRange();
+            return _nearestTargetList;
+        }
+    }
+
+    // ---------------------------- PrivateMethod
+    /// <summary>
+    /// 範囲内の敵を検出し、最も近い敵を特定する。
+    /// </summary>
+    private void SearchEnemiesInRange()
+    {
+        float nearestDistance = float.MaxValue;
+        _nearestTargetObj = null;
+        _nearestTargetList.Clear();
+
+        // 指定レイヤー内で、一定範囲内にあるコライダーを取得
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position,
+            _range,
+            LayerMask.GetMask(_layerMaskName));
+
+        foreach (var hit in hits)
+        {
+            if (hit == null) continue;
+
+            GameObject enemyRoot = hit.transform.root.gameObject;
+
+            // リストに未追加なら追加
+            if (!_nearestTargetList.Contains(enemyRoot))
+            {
+                _nearestTargetList.Add(enemyRoot);
+            }
+
+            // 最も近い敵を更新
+            float distance = Vector3.Distance(transform.position, hit.transform.position);
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                _nearestTargetObj = hit.gameObject;
+            }
+        }
     }
 
     // ---------------------------- PublicMethod
+    /// <summary>
+    /// 探索設定を初期化。
+    /// </summary>
+    /// <param name="range">探索範囲</param>
+    /// <param name="layerName">対象レイヤー名</param>
     public void Initialize(float range, string layerName)
     {
         _range = range;
-        _maskName = layerName;
+        _layerMaskName = layerName;
     }
 }

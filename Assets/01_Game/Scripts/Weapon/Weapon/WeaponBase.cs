@@ -34,7 +34,7 @@ public abstract class WeaponBase : MonoBehaviour
                 {
                     _currentInterval += Time.deltaTime;
                 }
-                else if (_layerSearch.NearestEnemyObj != null)
+                else if (_layerSearch.NearestTargetObj != null)
                 {
                     Attack();
                     _currentInterval = 0f;
