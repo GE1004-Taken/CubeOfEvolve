@@ -8,6 +8,8 @@ public class Bullet_Bomb : BulletBase
     [SerializeField] private float _range;
     [SerializeField] private LayerSearch _layerSearch;
 
+    [SerializeField] private GameObject _effect;
+
     // ---------------------------- Field
 
     // ---------------------------- UnityMessage
@@ -19,18 +21,12 @@ public class Bullet_Bomb : BulletBase
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
-                Debug.Log(_targetTag);
-
                 if (other.CompareTag("Ground") || other.transform.root.CompareTag(_targetTag))
                 {
                     Explosion();
                 }
             })
             .AddTo(this);
-    }
-    private void Update()
-    {
-        Debug.Log($"”š”­”ÍˆÍ“à: {_layerSearch.NearestEnemyList.Count}");
     }
 
     // ---------------------------- PrivateMethod
@@ -39,18 +35,19 @@ public class Bullet_Bomb : BulletBase
     /// </summary>
     private void Explosion()
     {
-        foreach (var item in _layerSearch.NearestEnemyList)
+        // LayerSearch ‚É‚æ‚éŒŸõŒ‹‰Ê‚ğg‚¤
+        foreach (var obj in _layerSearch.NearestTargetList)
         {
-            if (item == null) continue;
-
-            if (item.transform.root.TryGetComponent<IDamageble>(out var damageble))
+            if (obj.TryGetComponent<IDamageble>(out var damageble))
             {
                 damageble.TakeDamage(_attack);
             }
         }
 
+        Instantiate(_effect, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
+
 
     // ---------------------------- PublicMethod
     public void Initialize(
