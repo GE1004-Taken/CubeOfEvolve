@@ -15,13 +15,20 @@ public class Bullet_Bomb : BulletBase
     // ---------------------------- UnityMessage
     private void Start()
     {
-        _layerSearch.Initialize(_range, _targetTag);
+        _layerSearch.Initialize(_range, _targetLayerName);
 
         // Õ“Ëˆ—
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
-                if (other.CompareTag("Ground") || other.transform.root.CompareTag(_targetTag))
+                string layerName = LayerMask.LayerToName(other.transform.root.gameObject.layer);
+                if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
+                    && layerName == _targetLayerName)
+                {
+                    Explosion();
+                }
+
+                if (other.CompareTag("Ground"))
                 {
                     Explosion();
                 }
@@ -54,7 +61,7 @@ public class Bullet_Bomb : BulletBase
         string targetTag,
         float attack)
     {
-        _targetTag = targetTag;
+        _targetLayerName = targetTag;
         _attack = attack;
     }
 }

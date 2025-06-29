@@ -29,8 +29,9 @@ public class Bullet_Linear : BulletBase
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
+                string layerName = LayerMask.LayerToName(other.transform.root.gameObject.layer);
                 if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
-                && other.CompareTag(_targetTag))
+                    && layerName == _targetLayerName)
                 {
                     Instantiate(_hitEffect, transform.position, Quaternion.identity);
 
@@ -53,7 +54,7 @@ public class Bullet_Linear : BulletBase
         float moveSpeed,
         Vector3 direction)
     {
-        _targetTag = targetTag;
+        _targetLayerName = targetTag;
         _attack = attack;
         _moveSpeed = moveSpeed;
         _direction = direction;

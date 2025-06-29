@@ -45,8 +45,9 @@ public class Bullet_Missile : BulletBase
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
+                string layerName = LayerMask.LayerToName(other.transform.root.gameObject.layer);
                 if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
-                && other.CompareTag(_targetTag))
+                    && layerName == _targetLayerName)
                 {
                     damageble.TakeDamage(_attack);
                     Destroy(gameObject);
@@ -68,7 +69,7 @@ public class Bullet_Missile : BulletBase
         Transform target,
         float period)
     {
-        _targetTag = targetTag;
+        _targetLayerName = targetTag;
         _attack = attack;
         _velocity = velocity;
         _target = target;
