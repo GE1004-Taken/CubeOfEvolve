@@ -16,12 +16,12 @@ public class Weapon_Throwing : WeaponBase
     /// </summary>
     private void ThrowingBall()
     {
-        if (_bullet != null && _layerSearch.NearestEnemyObj != null)
+        if (_bullet != null && _layerSearch.NearestTargetObj != null)
         {
             var ball = Instantiate(_bullet, this.transform.position, Quaternion.identity);
 
-            Transform enemy = _layerSearch.NearestEnemyObj.transform;
-            Rigidbody enemyRb = _layerSearch.NearestEnemyObj.GetComponent<Rigidbody>();
+            Transform enemy = _layerSearch.NearestTargetObj.transform;
+            Rigidbody enemyRb = _layerSearch.NearestTargetObj.GetComponent<Rigidbody>();
 
             Vector3 targetPosition = enemy.position;
             Vector3 enemyVelocity = enemyRb != null ? enemyRb.linearVelocity : Vector3.zero;

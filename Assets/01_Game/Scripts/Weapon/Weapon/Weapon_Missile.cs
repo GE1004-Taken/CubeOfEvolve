@@ -24,7 +24,7 @@ public class Weapon_Missile : WeaponBase
                 _targetTag,
                 _currentAttack,
                 velocity,
-                _layerSearch.NearestEnemyObj.transform,
+                _layerSearch.NearestTargetObj.transform,
                 2);
         }
     }
