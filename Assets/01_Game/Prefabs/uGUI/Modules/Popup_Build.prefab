@@ -1111,15 +1111,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3448381668138078317, guid: 420f49c3efef84555b4ee62bf7f92245, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3757940365557922826}
-    - targetCorrespondingSourceObject: {fileID: 3448381668138078317, guid: 420f49c3efef84555b4ee62bf7f92245, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7641006540657553070}
     - targetCorrespondingSourceObject: {fileID: 3448381667264633162, guid: 420f49c3efef84555b4ee62bf7f92245, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5043444086683312718}
-    - targetCorrespondingSourceObject: {fileID: 3448381667264633162, guid: 420f49c3efef84555b4ee62bf7f92245, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2948419514049002562}
   m_SourcePrefab: {fileID: 100100000, guid: 420f49c3efef84555b4ee62bf7f92245, type: 3}
 --- !u!224 &8299869110267038704 stripped
 RectTransform:
@@ -1146,21 +1140,6 @@ MonoBehaviour:
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
   Angle: 0
---- !u!114 &7641006540657553070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8299869110267038705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5f45762bc9a84906b62fb6b794a6feb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
-  Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: -90
 --- !u!1 &8299869110870049494 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3448381667264633162, guid: 420f49c3efef84555b4ee62bf7f92245, type: 3}
@@ -1181,21 +1160,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 3, y: 3}
   m_UseGraphicAlpha: 1
---- !u!114 &2948419514049002562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8299869110870049494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b502b3fcb3e625a4aaf824d7a4ef6467, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.015686275, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 3, y: 3}
-  m_UseGraphicAlpha: 0
 --- !u!1001 &7658057328234601223
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1313,6 +1277,22 @@ PrefabInstance:
     - target: {fileID: 956802540246429166, guid: fde01e59c2761ae4a821e0712f496697, type: 3}
       propertyPath: m_Navigation.m_Mode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 956802540246429166, guid: fde01e59c2761ae4a821e0712f496697, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 956802540246429166, guid: fde01e59c2761ae4a821e0712f496697, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnButtonChangeGameState
+      objectReference: {fileID: 0}
+    - target: {fileID: 956802540246429166, guid: fde01e59c2761ae4a821e0712f496697, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 956802540246429166, guid: fde01e59c2761ae4a821e0712f496697, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1166993092585192251, guid: fde01e59c2761ae4a821e0712f496697, type: 3}
       propertyPath: m_AnchoredPosition.x
