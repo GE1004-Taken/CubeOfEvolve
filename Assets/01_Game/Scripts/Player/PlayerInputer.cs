@@ -18,6 +18,9 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
     private ReactiveProperty<bool> _isPushedPauseButton = new ReactiveProperty<bool>();
     public ReadOnlyReactiveProperty<bool> Pause => _isPushedPauseButton;
 
+    private ReactiveProperty<float> _zoomInput = new ReactiveProperty<float>();
+    public ReadOnlyReactiveProperty<float> Zoom => _zoomInput;
+
     // ---------- Field
     private Vector2 _moveContextReadValue;
 
@@ -63,6 +66,11 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
         }
     }
 
+    public void OnZoom(InputAction.CallbackContext context)
+    {
+        _zoomInput.Value = context.ReadValue<float>();
+    }
+
     // ---------- UnityMessage
     private void Start()
     {
@@ -74,5 +82,6 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
         _isPushedSkillButton.AddTo(this);
         _isPushedCreateButton.AddTo(this);
         _isPushedPauseButton.AddTo(this);
+        _zoomInput.AddTo(this);
     }
 }
