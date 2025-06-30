@@ -161,11 +161,18 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ゲームを再開
+    /// ゲームを開始
     /// </summary>
     private void StartGame()
     {
-        _timeManager.StartTimer();
+        Time.timeScale = 1;
+    }
+
+    /// <summary>
+    /// ゲームを再開
+    /// </summary>
+    private void ContinueGame()
+    {
         Time.timeScale = 1;
     }
 
@@ -174,7 +181,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void StopGame()
     {
-        _timeManager.StopTimer();
         Time.timeScale = 0f;
     }
 
