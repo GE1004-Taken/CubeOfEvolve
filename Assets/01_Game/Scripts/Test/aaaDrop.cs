@@ -5,7 +5,7 @@ public class aaaDrop : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Cube"))
         {
             if (RuntimeModuleManager.Instance != null)
             {
@@ -20,7 +20,7 @@ public class aaaDrop : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Cube"))
         {
             if (RuntimeModuleManager.Instance != null)
             {
