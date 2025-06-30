@@ -100,10 +100,14 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.GAMEOVER:
+                        GameSoundManager.Instance.StopBGMWithFade(.5f);
+                        GameSoundManager.Instance.PlaySE("Gameover", "SE");
                         StopGame();
                         break;
 
                     case GameState.GAMECLEAR:
+                        GameSoundManager.Instance.PlayBGM("Clear1", "BGM");
+
                         StopGame();
                         break;
                 }

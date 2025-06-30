@@ -4,6 +4,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -58,6 +59,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                 {
                     // Event実行
                     _levelUp.PlayLevelUpEvent();
+                    _hpSliderAnimation.GetComponent<Slider>().maxValue = _models.MaxHp.CurrentValue;
                 }).AddTo(this);
 
             // Playerの所持キューブ数を監視

@@ -1,5 +1,6 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
+using Assets.AT;
 using R3;
 using R3.Triggers;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Assets.IGC2025.Scripts.View
         private CompositeDisposable _disposables = new CompositeDisposable(); // R3購読管理用。
 
         // ----- UnityMessage
-        
+
         private void OnDestroy()
         {
             _disposables.Dispose(); // オブジェクト破棄時に全ての購読を解除。
@@ -124,6 +125,9 @@ namespace Assets.IGC2025.Scripts.View
         /// <param name="moduleId">購入がリクエストされたモジュールのID。</param>
         private void OnModulePurchaseButtonClicked(int moduleId)
         {
+            GameSoundManager.Instance.PlaySE("shop_buy1", "SE");
+            GameSoundManager.Instance.PlaySE("shop_buy2", "SE");
+
             OnModulePurchaseRequested.OnNext(moduleId); // Presenterに通知。
         }
 
