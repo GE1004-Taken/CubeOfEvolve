@@ -52,7 +52,7 @@ namespace App.BaseSystem.DataStores.ScriptableObjects.Modules
 
         // ----- Property
         public static IReadOnlyDictionary<MODULE_TYPE, string> ModuleTypeMapping => _moduleTypeMapping;
-      
+
         public MODULE_TYPE ModuleType => _moduleType;
         public string ViewName => _viewName;
         public string Description => _description;

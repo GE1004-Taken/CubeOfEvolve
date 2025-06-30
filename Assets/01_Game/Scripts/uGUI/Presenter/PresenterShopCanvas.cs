@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -25,7 +26,18 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         [Header("Views")]
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
-        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // ホバー中のモジュール情報テキスト。
+        //[SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // ホバー中のモジュール情報テキスト。
+
+        [Header("Views_Hovered")]
+        [SerializeField] private TextMeshProUGUI _unitName;
+        [SerializeField] private TextMeshProUGUI _infoText; // 説明文
+        [SerializeField] private TextMeshProUGUI _level; // 
+        //[SerializeField] private TextMeshProUGUI _quantity; // 
+        [SerializeField] private Image _image; // 
+        [SerializeField] private Image _icon; // 
+        [SerializeField] private TextMeshProUGUI _atk; // 
+        [SerializeField] private TextMeshProUGUI _rpd; // 
+        [SerializeField] private TextMeshProUGUI _prc; // 
 
         // ----- Private Fields (プライベートフィールド)
         private CompositeDisposable _disposables = new CompositeDisposable(); // オブジェクト破棄時に購読をまとめて解除するためのDisposable。
@@ -48,11 +60,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 enabled = false;
                 return;
             }
-
-            // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
-            _playerCore.Money
-                .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
-                .AddTo(_disposables);
 
             // ランタイムモジュールデータ全体が変更された際に、モジュールの変更購読を再設定し、ショップUIを更新します。
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
@@ -84,6 +91,11 @@ namespace Assets.IGC2025.Scripts.Presenter
             _shopView.OnModuleHovered
                 .Subscribe(x => HandleModuleHovered(x))
                 .AddTo(this); // このGameObjectが破棄されたら自動的に購読解除
+
+            // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
+            _playerCore.Money
+                .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
+                .AddTo(_disposables);
         }
 
 
@@ -238,14 +250,20 @@ namespace Assets.IGC2025.Scripts.Presenter
         /// モジュールにマウスがホバーされた際に、そのモジュールの詳細情報をテキストで表示します。
         /// </summary>
         /// <param name="hoveredModuleId">ホバーされたモジュールのID。</param>
-        private void HandleModuleHovered(int hoveredModuleId)
+        private void HandleModuleHovered(int EnterModuleId)
         {
-            // ホバー情報テキストが設定されていれば、モジュールの説明文を表示します。
-            if (_hoveredModuleInfoText != null)
-            {
-                ModuleData hoveredMasterData = _moduleDataStore.FindWithId(hoveredModuleId);
-                _hoveredModuleInfoText.text = hoveredMasterData?.Description ?? "情報なし"; // 説明がなければ「情報なし」と表示
-            }
+            var module = _moduleDataStore.FindWithId(EnterModuleId);
+            var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
+
+            _unitName.text = module.ViewName;
+            _infoText.text = module.Description;
+            _level.text = $"{Rruntime.CurrentLevelValue}";
+            //_quantity.text = $"{Rruntime.CurrentQuantityValue}";
+            _image.sprite = module.MainSprite;
+            _icon.sprite = module.BlockSprite;
+            _atk.text = $"{module.ModuleState?.Attack ?? 0}";
+            _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
+            _prc.text = $"{module.BasePrice}";
         }
     }
 }

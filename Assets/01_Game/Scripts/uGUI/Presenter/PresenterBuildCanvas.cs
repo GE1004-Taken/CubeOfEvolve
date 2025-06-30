@@ -1,5 +1,6 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
+using Assets.AT;
 using Assets.IGC2025.Scripts.View;
 using R3;
 using System.Collections.Generic;
@@ -19,16 +20,37 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private ViewBuildCanvas _buildView; // ビルドUIを表示するViewコンポーネント。
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
+        [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）への参照。
 
         [Header("Views")]
-        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText;
+        [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
         [SerializeField] private Button _exitButton;
+
+        [Header("Views_Hovered")]
+        [SerializeField] private TextMeshProUGUI _unitName;
+        [SerializeField] private TextMeshProUGUI _infoText; // 説明文
+        [SerializeField] private TextMeshProUGUI _level; // 
+        //[SerializeField] private TextMeshProUGUI _quantity; // 
+        [SerializeField] private Image _image; // 
+        [SerializeField] private Image _icon; // 
+        [SerializeField] private TextMeshProUGUI _atk; // 
+        [SerializeField] private TextMeshProUGUI _rpd; // 
+        [SerializeField] private TextMeshProUGUI _prc; // 
+
 
         // ----- Private Members (内部データ)
         private CompositeDisposable _disposables = new CompositeDisposable(); // 全体の購読解除を管理するCompositeDisposable。
         private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable(); // 各モジュールのレベル・数量変更購読を管理するCompositeDisposable。
 
         // ----- UnityMessage
+
+        private void Start()
+        {
+            // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
+            _playerCore.Money
+                .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
+                .AddTo(_disposables);
+        }
         private void Awake()
         {
             // 依存関係の取得とチェック
@@ -52,8 +74,8 @@ namespace Assets.IGC2025.Scripts.Presenter
                 .AddTo(_disposables);
 
             _buildView.OnModuleHovered
-                .Subscribe(x => HandleModuleHovered(x))
-                .AddTo(this); // ここは_disposablesに追加しても良いかもしれません。
+                .Subscribe(moduleId => HandleModuleHovered(moduleId))
+                .AddTo(_disposables);
 
             // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ビルドUIを更新する
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
@@ -220,7 +242,18 @@ namespace Assets.IGC2025.Scripts.Presenter
         /// <param name="EnterModuleId">マウスオーバーされたモジュールのID。</param>
         private void HandleModuleHovered(int EnterModuleId)
         {
-            _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
+            var module = _moduleDataStore.FindWithId(EnterModuleId);
+            var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
+
+            _unitName.text = module.ViewName;
+            _infoText.text = module.Description;
+            _level.text = $"{Rruntime.CurrentLevelValue}";
+            //_quantity.text = $"{Rruntime.CurrentQuantityValue}";
+            _image.sprite = module.MainSprite;
+            _icon.sprite = module.BlockSprite;
+            _atk.text = $"{module.ModuleState?.Attack ?? 0}";
+            _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
+            _prc.text = $"{module.BasePrice}";
         }
 
         #endregion

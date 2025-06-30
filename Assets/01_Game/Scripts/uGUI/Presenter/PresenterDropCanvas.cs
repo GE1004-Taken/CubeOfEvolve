@@ -6,7 +6,9 @@ using R3;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -18,7 +20,15 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
         [Header("Views")]
         [SerializeField] private ViewDropCanvas _dropView; // ドロップUIを表示するViewコンポーネント。
-        [SerializeField] private TextMeshProUGUI _hoveredModuleInfoText; // 説明文
+        [Header("Views_Hovered")]
+        [SerializeField] private TextMeshProUGUI _unitName;
+        [SerializeField] private TextMeshProUGUI _infoText; // 説明文
+        [SerializeField] private TextMeshProUGUI _level; // 
+        [SerializeField] private Image _image; // 
+        [SerializeField] private Image _icon; // 
+        [SerializeField] private TextMeshProUGUI _atk; // 
+        [SerializeField] private TextMeshProUGUI _rpd; // 
+        [SerializeField] private TextMeshProUGUI _prc; // 
 
         // ----- Private Members (内部データ)
         private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
@@ -71,10 +81,13 @@ namespace Assets.IGC2025.Scripts.Presenter
             if (displayIds.Count == 0)
             {
                 Debug.Log("全モジュールが最大レベル。選択肢なし。");
+                var Player = FindFirstObjectByType(typeof(PlayerCore));
+                Player.GetComponent<PlayerCore>().ReceiveMoney(500); // 500金追加
                 return;
             }
 
             _dropView.DisplayModulesByIdOrRandom(displayIds, candidatePool, _moduleDataStore);
+            _dropView.GetComponent<CanvasCtrl>().OnOpenCanvas();
         }
 
         #endregion
@@ -113,11 +126,22 @@ namespace Assets.IGC2025.Scripts.Presenter
         /// モジュールにマウスオーバーした際のイベントハンドラ。
         /// 説明文を更新します。
         /// </summary>
-        /// <param name="EnterModuleId">マウスオーバーされたモジュールのID。</param>
+        /// <param name="EnterModuleId"></param>
         private void HandleModuleHovered(int EnterModuleId)
         {
-            _hoveredModuleInfoText.text = _moduleDataStore.FindWithId(EnterModuleId).Description;
+            var module = _moduleDataStore.FindWithId(EnterModuleId);
+            var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
+
+            _unitName.text = module.ViewName;
+            _infoText.text = module.Description;
+            _level.text = $"{Rruntime.CurrentLevelValue}";
+            _image.sprite = module.MainSprite;
+            _icon.sprite = module.BlockSprite;
+            _atk.text = $"{module.ModuleState?.Attack ?? 0}";
+            _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
+            _prc.text = $"{module.BasePrice}";
         }
+
 
         #endregion
 
