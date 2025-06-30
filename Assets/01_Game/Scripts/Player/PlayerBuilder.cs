@@ -8,7 +8,6 @@ using UnityEngine;
 public class PlayerBuilder : BasePlayerComponent
 {
     // ---------- SerializeField
-    [SerializeField] private ModuleDataStore _moduleDataStore;
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private float _rayDist = 50f;
 
@@ -62,6 +61,8 @@ public class PlayerBuilder : BasePlayerComponent
                     _targetCreatePrediction =
                         _cubePrefab
                         .GetComponent<CreatePrediction>();
+
+                    _currentModuleData = null;
                 }
             })
             .AddTo(this);
@@ -140,21 +141,32 @@ public class PlayerBuilder : BasePlayerComponent
             .Where(_ => _predictCube.CanCreated.CurrentValue)
             .Subscribe(_ =>
             {
+                // 武器・キューブの設置
                 _predictCube.CreateObject();
+
+                // 生成予測キューブをヌルに
                 _predictCube = null;
 
-
-                // オプションの時
-                if (_currentModuleData != null
-                && _currentModuleData.ModuleType == ModuleData.MODULE_TYPE.Options)
+                // 生成するものがモジュールの時
+                if (_currentModuleData != null)
                 {
-                    _currentModuleData.Model.GetComponent<OptionBase>().WhenEquipped();
-                }
+                    // オプションの時
+                    if (_currentModuleData.ModuleType == ModuleData.MODULE_TYPE.Options)
+                    {
+                        _currentModuleData.Model.GetComponent<OptionBase>().WhenEquipped();
+                    }
 
-                // モジュールの所持数を減らす
-                RuntimeModuleManager.Instance.ChangeModuleQuantity(
-                    _currentModuleData.Id,
-                    -1);
+                    // モジュールの所持数を減らす
+                    RuntimeModuleManager.Instance.ChangeModuleQuantity(
+                        _currentModuleData.Id,
+                        -1);
+                }
+                // 生成するものがキューブの時
+                else
+                {
+                    // キューブの設置してる数を増やす
+                    Core.AddCube();
+                }
             })
             .AddTo(this);
     }
