@@ -1,6 +1,8 @@
 using UnityEngine;
 using R3;
 using System.Collections;
+using R3.Triggers;
+using Assets.IGC2025.Scripts.GameManagers;
 
 public class TimeManager : MonoBehaviour
 {
@@ -9,29 +11,19 @@ public class TimeManager : MonoBehaviour
     public ReadOnlyReactiveProperty<float> CurrentTimeSecond => _currentTimeSecond;
 
     // ---------- Event
-    public void StartTimer()
-    {
-        StartCoroutine(MeasureTime());
-    }
-
-    public void StopTimer()
-    {
-        StopCoroutine(MeasureTime());
-    }
-
     public void ResetTimer()
     {
         _currentTimeSecond.Value = 0f;
     }
 
     // ---------- Method
-    private IEnumerator MeasureTime()
+    private void Start()
     {
-        while (true)
-        {
-            _currentTimeSecond.Value += Time.deltaTime;
-
-            yield return null;
-        }
+        this.UpdateAsObservable()
+            .Where(_ => GameManager.Instance.CurrentGameState.CurrentValue == GameState.BATTLE)
+            .Subscribe(_ =>
+            {
+                _currentTimeSecond.Value += Time.deltaTime;
+            });
     }
 }
