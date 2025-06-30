@@ -57,7 +57,7 @@ public abstract class WeaponBase : MonoBehaviour
     /// </summary>
     private void ObserveLevel()
     {
-        if (transform.root.CompareTag("Player"))
+        if (transform.root.CompareTag("Cube"))
         {
             RuntimeModuleManager.Instance.GetRuntimeModuleData(_id).Level
                 .Subscribe(level =>
