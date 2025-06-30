@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Weapon_Drill : WeaponBase
 {
     // ---------------------------- OverrideMethod
@@ -6,7 +8,9 @@ public class Weapon_Drill : WeaponBase
         // LayerSearch ‚É‚æ‚éŒŸõŒ‹‰Ê‚ğg‚¤
         foreach (var obj in _layerSearch.NearestTargetList)
         {
-            if (obj.TryGetComponent<IDamageble>(out var damageble))
+            string layerName = LayerMask.LayerToName(obj.layer);
+            if (obj.transform.root.TryGetComponent<IDamageble>(out var damageble)
+                && layerName == _targetTag)
             {
                 damageble.TakeDamage(_currentAttack);
             }

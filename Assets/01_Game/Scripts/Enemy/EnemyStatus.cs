@@ -55,6 +55,20 @@ public class EnemyStatus : MonoBehaviour, IDamageble
                 Destroy(gameObject);
             })
             .AddTo(this);
+
+        GameManager.Instance.CurrentGameState
+            .Subscribe(value =>
+            {
+                if (value == Assets.IGC2025.Scripts.GameManagers.GameState.TITLE)
+                {
+                    Destroy(gameObject);
+                }
+                else if (value == Assets.IGC2025.Scripts.GameManagers.GameState.GAMECLEAR)
+                {
+                    TakeDamage(_maxHp);
+                }
+            })
+            .AddTo(this);
     }
 
     // ---------------------------- PublicMethod
