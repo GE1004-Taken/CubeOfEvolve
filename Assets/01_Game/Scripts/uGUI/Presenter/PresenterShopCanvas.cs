@@ -265,5 +265,17 @@ namespace Assets.IGC2025.Scripts.Presenter
             _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
             _prc.text = $"{module.BasePrice}";
         }
+
+        // -----Public
+
+        public void inShopSE()
+        {
+            GameSoundManager.Instance.PlaySE("shop_in", "SE");
+        }
+
+        public void outShopSE()
+        {
+            GameSoundManager.Instance.PlaySE("shop_out", "SE");
+        }
     }
 }

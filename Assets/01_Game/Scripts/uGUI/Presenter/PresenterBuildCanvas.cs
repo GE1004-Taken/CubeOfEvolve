@@ -6,6 +6,7 @@ using R3;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UltimateClean;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -257,6 +258,17 @@ namespace Assets.IGC2025.Scripts.Presenter
         }
 
         #endregion
+
+        // -----Public
+        public void inInventory()
+        {
+            GameSoundManager.Instance.PlaySE("inv_in", "SE");
+        }
+
+        public void outInventory()
+        {
+            GameSoundManager.Instance.PlaySE("inv_out", "SE");
+        }
 
     }
 }

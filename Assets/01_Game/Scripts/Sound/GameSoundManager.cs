@@ -259,13 +259,14 @@ namespace Assets.AT
                 .Subscribe(_ =>
                 {
                     if (!source) return;
-                    source.volume = Mathf.MoveTowards(source.volume, to, Time.deltaTime * (1f / duration));
+                    source.volume = Mathf.MoveTowards(source.volume, to, Time.unscaledDeltaTime * (1f / duration));
                     if (Mathf.Approximately(source.volume, to))
                     {
                         onComplete?.Invoke();
                         _bgmFadeDisposable?.Dispose();
                     }
-                }).AddTo(this);
+                })
+                .AddTo(this);
         }
 
         private bool TryGetClip(string name, out AudioClip clip)
