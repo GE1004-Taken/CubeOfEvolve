@@ -15,6 +15,8 @@ public class Bullet_Missile : BulletBase
     private Transform _target;  // –Ú“I’n
     private float _period;      // ˆÚ“®ŠúŠÔ
 
+    private Vector3 _dis;
+
     // ---------------------------- UnityMessage
     private void Start()
     {
@@ -28,10 +30,13 @@ public class Bullet_Missile : BulletBase
             .Subscribe(_ =>
             {
                 // ‹——£
-                var dis = _target.position - transform.position;
+                if (_target != null)
+                {
+                    _dis = _target.position - transform.position;
+                }
 
                 var accelerator = Vector3.zero;
-                accelerator += (dis - _velocity * _period) * 2f / (_period * _period);
+                accelerator += (_dis - _velocity * _period) * 2f / (_period * _period);
 
                 if (accelerator.magnitude > _rangeAbortSuffer)
                 {
