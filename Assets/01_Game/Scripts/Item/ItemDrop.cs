@@ -10,9 +10,20 @@ public class ItemDrop : MonoBehaviour
         public ItemData data;
         public int value;
     }
+
+    [Serializable]
+    private class RareDrop
+    {
+        public ItemData data;
+        public int value;
+        public float rate;
+    }
     // ---------------------------- SerializeField
     [Header("ドロップするもの")]
     [SerializeField, Tooltip("")] private DropItem[] _dropItemList;
+
+    [Header("ドロップするもの")]
+    [SerializeField, Tooltip("")] private RareDrop[] _rareDropList;
 
     [Header("吹き飛ぶ力")]
     [SerializeField, Tooltip("上")] private float _forceHeightPower;
@@ -20,15 +31,33 @@ public class ItemDrop : MonoBehaviour
 
     // ---------------------------- PublicMethod
     /// <summary>
-    /// 経験値を落とす処理
+    /// アイテムを落とす処理
     /// </summary>
     public void DropItemProcess()
     {
+        Debug.Log("アイテムを落とす処理");
+        // 通常のアイテム
         foreach (var dropItem in _dropItemList)
         {
             for (int i = 0; i < dropItem.value; i++)
             {
                 DropAnimation(dropItem.data.Item);
+            }
+        }
+
+        // レアドロップ
+        foreach (var dropItem in _rareDropList)
+        {
+            var random = Random.Range(0f, 1f) * 100;
+
+            if (random <= dropItem.rate)
+            {
+                Debug.Log("レアドロップ");
+
+                for (int i = 0; i < dropItem.value; i++)
+                {
+                    DropAnimation(dropItem.data.Item);
+                }
             }
         }
     }
