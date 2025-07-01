@@ -102,6 +102,20 @@ namespace Assets.AT
             source.gameObject.GetOrAddComponent<OnAudioSourceFinished>().Monitor(source, () => ReleaseAudioSource(source));
         }
 
+        public void PlaySFX(string name, Transform transform, string mixerGroupName = null)
+        {
+            if (!TryGetClip(name, out var clip)) return;
+            var source = GetOrCreateAudioSource();
+            ResetAudioSource(source);
+            source.clip = clip;
+            source.loop = false;
+            source.spatialBlend = 1f;
+            source.gameObject.transform.position = transform.position;
+            SetAudioMixerGroup(source, mixerGroupName);
+            source.Play();
+            source.gameObject.GetOrAddComponent<OnAudioSourceFinished>().Monitor(source, () => ReleaseAudioSource(source));
+        }
+
         /// <summary>
         /// BGM再生（指定名・フェードインあり）
         /// </summary>

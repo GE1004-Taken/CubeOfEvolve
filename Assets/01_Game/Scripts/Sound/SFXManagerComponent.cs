@@ -25,7 +25,7 @@ namespace Assets.AT
         private int _initialAudioSourcePoolSize = 2;
 
         [SerializeField, Tooltip("このコンポーネントで再生するSFXのリスト")]
-        private SFXDataWrapper[] _sfxDataArray; // このコンポーネントが直接SoundDataを保持
+        private SFXDataWrapper[] _sfxDataArray;
 
         // -----Field
 

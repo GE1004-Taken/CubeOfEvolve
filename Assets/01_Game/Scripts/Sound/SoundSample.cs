@@ -26,7 +26,8 @@ namespace Assets.AT
 
             if (Input.GetKeyDown(KeyCode.F) && _isPlay) // ブッピガン！ 指定箇所から
             {
-                _soundSourceObj.GetComponent<SFXManagerComponent>().PlaySFX("SampleSE", "SE", false);
+                //_soundSourceObj.GetComponent<SFXManagerComponent>().PlaySFX("SampleSE", "SE", false);
+                GameSoundManager.Instance.PlaySFX("Hit_Bom", _soundSourceObj.transform, "SE");
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
             }
