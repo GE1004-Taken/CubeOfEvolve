@@ -135,6 +135,10 @@ public class PlayerCore : MonoBehaviour, IDamageble
     {
         _exp.Value += amount;
     }
+    public void RecoveryHp(int amount)
+    {
+        _hp.Value += amount;
+    }
 
     /// <summary>
     /// ˆê’èŠÔŒã‚É–³“G‚ğ‰ğœ‚·‚é
