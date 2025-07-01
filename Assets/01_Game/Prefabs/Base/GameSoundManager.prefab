@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3691131905817723844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2495772328944978104}
+  - component: {fileID: 4360169371949036742}
+  m_Layer: 0
+  m_Name: GameSoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2495772328944978104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3691131905817723844}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4360169371949036742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3691131905817723844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc74f03fba716047be237c533f87257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _soundDataArray:
+  - name: SampleSE
+    soundData: {fileID: 11400000, guid: f28ac1c7c6c930b45b31e158b5f43839, type: 2}
+  - name: SampleBGM
+    soundData: {fileID: 11400000, guid: a45d97303b055dd4999b454abfb32503, type: 2}
+  - name: Boss
+    soundData: {fileID: 11400000, guid: f9264fbee48b6804280badf8200cd5a0, type: 2}
+  - name: Main
+    soundData: {fileID: 11400000, guid: 5895985789ef0e948a84371a3769c72b, type: 2}
+  - name: Clear1
+    soundData: {fileID: 11400000, guid: 17df8ca909dcf084fac85759a5c19d5c, type: 2}
+  - name: Clear2
+    soundData: {fileID: 11400000, guid: d148011d13af46f4d8f8286b3ac9d955, type: 2}
+  - name: Gameover
+    soundData: {fileID: 11400000, guid: 6c5649a8cace0e3479bdd846798bcbea, type: 2}
+  - name: Sys_Click_1
+    soundData: {fileID: 11400000, guid: 6d935df5da3ab5b43b2fe8a15e8ed54b, type: 2}
+  - name: Sys_Click_2
+    soundData: {fileID: 11400000, guid: ed471d85eb934594192d1448a49e1f2b, type: 2}
+  - name: Sys_Hover
+    soundData: {fileID: 11400000, guid: 21546a74fb9296b408a17ff9b9282e7e, type: 2}
+  - name: Sys_Start
+    soundData: {fileID: 11400000, guid: 21546a74fb9296b408a17ff9b9282e7e, type: 2}
+  - name: Ene_Death_1
+    soundData: {fileID: 11400000, guid: 4df70007fe092714da289e615649bfed, type: 2}
+  - name: Ene_Death_2
+    soundData: {fileID: 11400000, guid: 4837fcf313453e54cba5a3316af22017, type: 2}
+  - name: Ene_Death_3
+    soundData: {fileID: 11400000, guid: 0233cfb2d9f30254c9ac6d5b9b8e00de, type: 2}
+  - name: Fire_Bom
+    soundData: {fileID: 11400000, guid: 200a38ad28e119244a0e46fbf5d9df7e, type: 2}
+  - name: Fire_Cannon
+    soundData: {fileID: 11400000, guid: b1829a4c0b527b64ba0d2544adfeeaf1, type: 2}
+  - name: Fire_Drill
+    soundData: {fileID: 11400000, guid: 29b78f706a1da06469f56aaf3a7ec074, type: 2}
+  - name: Fire_MG
+    soundData: {fileID: 11400000, guid: d4ab3a80be6c3a54dbed8b5f3efde9ce, type: 2}
+  - name: Fire_ML
+    soundData: {fileID: 11400000, guid: d4ab3a80be6c3a54dbed8b5f3efde9ce, type: 2}
+  - name: Fire
+    soundData: {fileID: 11400000, guid: 6f6c46cae2f87804bb4a74f0e1a20cad, type: 2}
+  - name: Hit_Bom
+    soundData: {fileID: 11400000, guid: 262ba3c3369951b4b96c928108d3d124, type: 2}
+  - name: Hit_ML
+    soundData: {fileID: 11400000, guid: 175576d30feb0e843be9f147d68d1d97, type: 2}
+  - name: Hit
+    soundData: {fileID: 11400000, guid: b15d02d07d3d0d84e983f27faaf9edb1, type: 2}
+  - name: Hit_High
+    soundData: {fileID: 11400000, guid: 8394f9d0059b05a4580ac740c0dbe76c, type: 2}
+  _inScenePlay:
+  - sceneName: ATWorkSpace
+    bgmName: Main
+  _initialManagerAudioSources: 20
+  _audioMixer: {fileID: 24100000, guid: 10843e89f908e7348ac43e34803312b8, type: 2}
