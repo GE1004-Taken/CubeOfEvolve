@@ -34,7 +34,7 @@ namespace Assets.IGC2025.Scripts.View
 
             // 各テキストコンポーネントに値を代入
             if (_levelText != null) _levelText.text = $"{runtimeData.CurrentLevelValue}";
-            if (_quantityText != null) _quantityText.text = $"{runtimeData.CurrentQuantityValue}個";
+            if (_quantityText != null) _quantityText.text = $"{runtimeData.CurrentQuantityValue}";
             if (_unitNameText != null) _unitNameText.text = masterData.ViewName; // マスターデータの表示名。
             // ATKの計算例: 攻撃力はマスターデータとレベルから計算されます。
             // if (_atkText != null) _atkText.text = $"ATK: {masterData.AttackPower + (runtimeData.CurrentLevelValue * 5)}";
