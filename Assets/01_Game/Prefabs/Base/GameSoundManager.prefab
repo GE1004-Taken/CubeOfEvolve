@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3691131905817723844
+--- !u!1 &1266415533954997746
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2495772328944978104}
-  - component: {fileID: 4360169371949036742}
+  - component: {fileID: 502354996767442737}
+  - component: {fileID: 3845489307856757874}
   m_Layer: 0
   m_Name: GameSoundManager
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2495772328944978104
+--- !u!4 &502354996767442737
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3691131905817723844}
+  m_GameObject: {fileID: 1266415533954997746}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,13 +32,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4360169371949036742
+--- !u!114 &3845489307856757874
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3691131905817723844}
+  m_GameObject: {fileID: 1266415533954997746}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcc74f03fba716047be237c533f87257, type: 3}
@@ -67,6 +67,14 @@ MonoBehaviour:
     soundData: {fileID: 11400000, guid: 21546a74fb9296b408a17ff9b9282e7e, type: 2}
   - name: Sys_Start
     soundData: {fileID: 11400000, guid: 21546a74fb9296b408a17ff9b9282e7e, type: 2}
+  - name: Sys_Menu_in
+    soundData: {fileID: 11400000, guid: e6cdfe9031b96174aa4a6d378e9b4f27, type: 2}
+  - name: Sys_Menu_out
+    soundData: {fileID: 11400000, guid: 05d3b9a79d5ef9c4cb48d9ca9a4f8be7, type: 2}
+  - name: Sys_Start
+    soundData: {fileID: 11400000, guid: 74681d5a217dbf044b1bbcff53b00f1e, type: 2}
+  - name: Sys_LvUp
+    soundData: {fileID: 11400000, guid: 5fb50aed1e8722f40a6a7463f981fe4a, type: 2}
   - name: Ene_Death_1
     soundData: {fileID: 11400000, guid: 4df70007fe092714da289e615649bfed, type: 2}
   - name: Ene_Death_2
@@ -82,17 +90,19 @@ MonoBehaviour:
   - name: Fire_MG
     soundData: {fileID: 11400000, guid: d4ab3a80be6c3a54dbed8b5f3efde9ce, type: 2}
   - name: Fire_ML
-    soundData: {fileID: 11400000, guid: d4ab3a80be6c3a54dbed8b5f3efde9ce, type: 2}
+    soundData: {fileID: 11400000, guid: 23c880a0398091e4eb0adeb4232296ef, type: 2}
   - name: Fire
     soundData: {fileID: 11400000, guid: 6f6c46cae2f87804bb4a74f0e1a20cad, type: 2}
   - name: Hit_Bom
     soundData: {fileID: 11400000, guid: 262ba3c3369951b4b96c928108d3d124, type: 2}
-  - name: Hit_ML
+  - name: Hit_Missile
     soundData: {fileID: 11400000, guid: 175576d30feb0e843be9f147d68d1d97, type: 2}
-  - name: Hit
+  - name: Hit_1
     soundData: {fileID: 11400000, guid: b15d02d07d3d0d84e983f27faaf9edb1, type: 2}
-  - name: Hit_High
+  - name: Hit_2
     soundData: {fileID: 11400000, guid: 8394f9d0059b05a4580ac740c0dbe76c, type: 2}
+  - name: Hit_Item
+    soundData: {fileID: 11400000, guid: 379ff754e95e22c4bba544d8880a6877, type: 2}
   _inScenePlay:
   - sceneName: ATWorkSpace
     bgmName: Main
