@@ -1,9 +1,8 @@
-using Assets.IGC2025.Scripts.Event;
 using Assets.AT;
+using Assets.IGC2025.Scripts.Event;
 using R3;
-using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
@@ -27,13 +26,17 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         private TimeManager _timeManager;
 
+        private const float BOSS_CREATE_TIME = 60;
+
         private void Start()
         {
             _timeManager = GameManager.Instance.GetComponent<TimeManager>();
             _timeManager.CurrentTimeSecond
                 .Subscribe(x =>
                 {
-                    _timeText.text = $"{(x).ToString("F1")}";
+                    var time = (BOSS_CREATE_TIME - x);
+                    if (time >= 0) _timeText.text = $"ボス出現まで残り……\r\n{time.ToString("F1")}\r\nカウント！";
+                    else _timeText.text = $"ボス出現中！";
                 })
                 .AddTo(this);
 
