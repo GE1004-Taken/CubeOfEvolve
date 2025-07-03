@@ -270,12 +270,12 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         public void inShopSE()
         {
-            GameSoundManager.Instance.PlaySE("shop_in", "SE");
+            GameSoundManager.Instance.PlaySE("Sys_menu_in", "System");
         }
 
         public void outShopSE()
         {
-            GameSoundManager.Instance.PlaySE("shop_out", "SE");
+            GameSoundManager.Instance.PlaySE("Sys_menu_out", "System");
         }
     }
 }

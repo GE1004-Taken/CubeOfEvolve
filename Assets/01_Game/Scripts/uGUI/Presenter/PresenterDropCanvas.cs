@@ -21,14 +21,8 @@ namespace Assets.IGC2025.Scripts.Presenter
         [Header("Views")]
         [SerializeField] private ViewDropCanvas _dropView; // ドロップUIを表示するViewコンポーネント。
         [Header("Views_Hovered")]
-        [SerializeField] private TextMeshProUGUI _unitName;
         [SerializeField] private TextMeshProUGUI _infoText; // 説明文
         [SerializeField] private TextMeshProUGUI _level; // 
-        [SerializeField] private Image _image; // 
-        [SerializeField] private Image _icon; // 
-        [SerializeField] private TextMeshProUGUI _atk; // 
-        [SerializeField] private TextMeshProUGUI _rpd; // 
-        [SerializeField] private TextMeshProUGUI _prc; // 
 
         // ----- Private Members (内部データ)
         private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
@@ -132,14 +126,14 @@ namespace Assets.IGC2025.Scripts.Presenter
             var module = _moduleDataStore.FindWithId(EnterModuleId);
             var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
 
-            _unitName.text = module.ViewName;
+            //_unitName.text = module.ViewName;
             _infoText.text = module.Description;
             _level.text = $"{Rruntime.CurrentLevelValue}";
-            _image.sprite = module.MainSprite;
-            _icon.sprite = module.BlockSprite;
-            _atk.text = $"{module.ModuleState?.Attack ?? 0}";
-            _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
-            _prc.text = $"{module.BasePrice}";
+            //_image.sprite = module.MainSprite;
+            //_icon.sprite = module.BlockSprite;
+            //_atk.text = $"{module.ModuleState?.Attack ?? 0}";
+            //_rpd.text = $"{module.ModuleState?.Interval ?? 0}";
+            //_prc.text = $"{module.BasePrice}";
         }
 
 
