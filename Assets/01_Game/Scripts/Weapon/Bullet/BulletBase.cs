@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class BulletBase : MonoBehaviour
 {
+    // ---------------------------- SerializeField
+    [SerializeField] protected string _hitSEName;
+
     // ---------------------------- Field
     protected string _targetLayerName;
     protected float _attack;

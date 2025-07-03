@@ -1,3 +1,4 @@
+using Assets.AT;
 using R3;
 using R3.Triggers;
 using UnityEngine;
@@ -21,9 +22,15 @@ public class Bullet_Linear : BulletBase
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
-                transform.Translate(_direction * _moveSpeed * Time.deltaTime);
+                if (_direction != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.LookRotation(_direction);
+                }
+
+                transform.Translate(_direction * _moveSpeed * Time.deltaTime, Space.World);
             })
             .AddTo(this);
+
 
         // è’ìÀèàóù
         this.OnTriggerEnterAsObservable()
@@ -33,14 +40,22 @@ public class Bullet_Linear : BulletBase
                 if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
                     && layerName == _targetLayerName)
                 {
-                    Instantiate(_hitEffect, transform.position, Quaternion.identity);
-
                     damageble.TakeDamage(_attack);
-                    Destroy(gameObject);
+
+                    HitMethod();
                 }
 
                 if (other.CompareTag("Ground"))
                 {
+                    HitMethod();
+                }
+
+                // ìñÇΩÇ¡ÇΩéûÇÃã§í èàóù
+                void HitMethod()
+                {
+                    Debug.Log("AAA");
+
+                    GameSoundManager.Instance.PlaySFX(_hitSEName, transform, _hitSEName);
                     Instantiate(_hitEffect, transform.position, Quaternion.identity);
 
                     Destroy(gameObject);
