@@ -1,3 +1,4 @@
+using Assets.AT;
 using UnityEngine;
 
 public class Weapon_Missile : WeaponBase
@@ -27,5 +28,7 @@ public class Weapon_Missile : WeaponBase
                 _layerSearch.NearestTargetObj.transform,
                 2);
         }
+
+        GameSoundManager.Instance.PlaySFX(_fireSEName, transform, _fireSEName);
     }
 }

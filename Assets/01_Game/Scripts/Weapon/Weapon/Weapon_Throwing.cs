@@ -1,3 +1,4 @@
+using Assets.AT;
 using UnityEngine;
 
 public class Weapon_Throwing : WeaponBase
@@ -9,6 +10,8 @@ public class Weapon_Throwing : WeaponBase
     {
         // ƒ{[ƒ‹‚ğËo‚·‚é
         ThrowingBall();
+
+        GameSoundManager.Instance.PlaySFX(_fireSEName, transform, _fireSEName);
     }
 
     /// <summary>

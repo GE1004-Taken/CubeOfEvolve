@@ -1,3 +1,4 @@
+using Assets.AT;
 using UnityEngine;
 
 public class Weapon_Turret : WeaponBase
@@ -6,17 +7,24 @@ public class Weapon_Turret : WeaponBase
 
     protected override void Attack()
     {
-        var dir = (_layerSearch.NearestTargetObj.transform.position - transform.position).normalized;
+        var player = _layerSearch.NearestTargetObj.transform;
+        var dir = (player.position - transform.position).normalized;
+
+        // プレイヤー方向を向く回転を使う
+        Quaternion finalRotation = Quaternion.LookRotation(dir);
 
         var bullet = Instantiate(
             _bulletPrefab,
             transform.position,
-            Quaternion.identity);
+            finalRotation);
 
         bullet.Initialize(
             _targetTag,
             _currentAttack,
             _data.BulletSpeed,
             dir);
+
+        GameSoundManager.Instance.PlaySFX(_fireSEName, transform, _fireSEName);
     }
+
 }
