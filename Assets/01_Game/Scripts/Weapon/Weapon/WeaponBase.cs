@@ -7,8 +7,12 @@ using UnityEngine;
 public abstract class WeaponBase : MonoBehaviour
 {
     // ---------------------------- SerializeField
+    [Header("データ")]
     [SerializeField, Tooltip("データ")] protected WeaponData _data;
     [SerializeField, Tooltip("データID")] protected int _id = -1;
+
+    [Header("音")]
+    [SerializeField, Tooltip("SE")] protected string _fireSEName;
 
     [Header("索敵")]
     [SerializeField, Tooltip("対象検知用")] protected LayerSearch _layerSearch;
@@ -41,6 +45,9 @@ public abstract class WeaponBase : MonoBehaviour
                 }
             })
             .AddTo(this);
+
+        // 攻撃力更新
+        UpdateAttackStatus();
     }
 
     // ---------------------------- Initialization

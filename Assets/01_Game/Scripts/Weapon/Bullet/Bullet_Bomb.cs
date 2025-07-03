@@ -1,3 +1,4 @@
+using Assets.AT;
 using R3;
 using R3.Triggers;
 using UnityEngine;
@@ -51,6 +52,7 @@ public class Bullet_Bomb : BulletBase
             }
         }
 
+        GameSoundManager.Instance.PlaySFX(_hitSEName, transform, _hitSEName);
         Instantiate(_hitEffect, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }

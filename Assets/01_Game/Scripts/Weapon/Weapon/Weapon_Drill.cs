@@ -1,7 +1,11 @@
+using Assets.AT;
 using UnityEngine;
 
 public class Weapon_Drill : WeaponBase
 {
+    // ---------------------------- Field
+    [SerializeField] private GameObject _hitEffect;
+
     // ---------------------------- OverrideMethod
     protected override void Attack()
     {
@@ -13,6 +17,8 @@ public class Weapon_Drill : WeaponBase
                 && layerName == _targetTag)
             {
                 damageble.TakeDamage(_currentAttack);
+
+                Instantiate(_hitEffect, transform.position, Quaternion.identity);
             }
         }
     }
