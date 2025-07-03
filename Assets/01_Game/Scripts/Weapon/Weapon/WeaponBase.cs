@@ -23,6 +23,12 @@ public abstract class WeaponBase : MonoBehaviour
     protected float _currentAttack;
     protected float _currentInterval;
 
+    // ---------------------------- Property
+    /// <summary>
+    /// ID
+    /// </summary>
+    public int Id => _id;
+
     // ---------------------------- Unity Method
     private void Start()
     {
