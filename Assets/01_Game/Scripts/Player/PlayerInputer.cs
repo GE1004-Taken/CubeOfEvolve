@@ -21,6 +21,9 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
     private ReactiveProperty<float> _zoomInput = new ReactiveProperty<float>();
     public ReadOnlyReactiveProperty<float> Zoom => _zoomInput;
 
+    private ReactiveProperty<bool> _isPushedMoveCameraButton = new ReactiveProperty<bool>();
+    public ReadOnlyReactiveProperty<bool> MoveCamera => _isPushedMoveCameraButton;
+
     // ---------- Field
     private Vector2 _moveContextReadValue;
 
@@ -69,6 +72,18 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
     public void OnZoom(InputAction.CallbackContext context)
     {
         _zoomInput.Value = context.ReadValue<float>();
+    }
+
+    public void OnMoveCamera(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            _isPushedMoveCameraButton.Value = true;
+        }
+        else
+        {
+            _isPushedMoveCameraButton.Value = false;
+        }
     }
 
     // ---------- UnityMessage
