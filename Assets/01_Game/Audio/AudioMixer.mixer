@@ -1,5 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!244 &-8982631152556810934
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 357a57b37d6808842a596dca24ac7225
+  m_EffectName: Attenuation
+  m_MixLevel: 3b0e7adc6ae852545a858a0ab1a7d3e1
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!243 &-8673876666444022542
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -29,6 +43,7 @@ AudioMixerGroupController:
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: a9da02129cf7a784fbf8ce5e8162fecb
   m_Children:
+  - {fileID: 3548574662227409406}
   - {fileID: 7923479304232862898}
   - {fileID: -8673876666444022542}
   - {fileID: 2236136650509230706}
@@ -69,7 +84,7 @@ AudioMixerGroupController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fire_MchineGun
+  m_Name: Fire_MachineGun
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 1ec4ffde568626145ad4fdc7e2ea58f3
   m_Children: []
@@ -279,6 +294,7 @@ AudioMixerController:
     - 4d7661402d0651f45a705949bdc94196
     - 1ec4ffde568626145ad4fdc7e2ea58f3
     - c7329288fd67d6c43a3e050acf6a4dcd
+    - e5e8f82cf898e124884a29324d7e4d3c
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -331,6 +347,7 @@ AudioMixerSnapshotController:
     86474ae02e5c01741917d942c7c192f3: -14
     81bedbb19344c6c43b7add153d1ca81f: -3.0787053
     01449025acdf8454f840b7e9b3973cba: 1
+    db24b557b5a45624481c6c1d6d362efe: 4
     11bd996bcbbaa0b4aaef560d097d0b5e: 1.0000023
     454f81fc3a5960143b69e32fb26986a4: -2.6718183
     8f147cee16ebdb44aa5721074576ce36: -4.1973577
@@ -500,6 +517,25 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 2529146527547528677}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!243 &3548574662227409406
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: System
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: e5e8f82cf898e124884a29324d7e4d3c
+  m_Children: []
+  m_Volume: 107e4dfe43a7e6a48bb4b0c1ce971665
+  m_Pitch: 4c1accfe08220dc4fa69c5c6d2cbd0b0
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -8982631152556810934}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0
