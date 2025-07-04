@@ -24,19 +24,19 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）への参照。
 
         [Header("Views")]
-        [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
-        [SerializeField] private Button _exitButton;
+        //[SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
+        //[SerializeField] private Button _exitButton;
 
         [Header("Views_Hovered")]
-        [SerializeField] private TextMeshProUGUI _unitName;
-        [SerializeField] private TextMeshProUGUI _infoText; // 説明文
-        [SerializeField] private TextMeshProUGUI _level; // 
+        //[SerializeField] private TextMeshProUGUI _unitName;
+        //[SerializeField] private TextMeshProUGUI _infoText; // 説明文
+        //[SerializeField] private TextMeshProUGUI _level; // 
         //[SerializeField] private TextMeshProUGUI _quantity; // 
-        [SerializeField] private Image _image; // 
-        [SerializeField] private Image _icon; // 
-        [SerializeField] private TextMeshProUGUI _atk; // 
-        [SerializeField] private TextMeshProUGUI _rpd; // 
-        [SerializeField] private TextMeshProUGUI _prc; // 
+        //[SerializeField] private Image _image; // 
+        //[SerializeField] private Image _icon; // 
+        //[SerializeField] private TextMeshProUGUI _atk; // 
+        //[SerializeField] private TextMeshProUGUI _rpd; // 
+        //[SerializeField] private TextMeshProUGUI _prc; // 
 
 
         // ----- Private Members (内部データ)
@@ -45,13 +45,13 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         // ----- UnityMessage
 
-        private void Start()
-        {
-            // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
-            _playerCore.Money
-                .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
-                .AddTo(_disposables);
-        }
+        //private void Start()
+        //{
+        //    // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
+        //    _playerCore.Money
+        //        .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
+        //        .AddTo(_disposables);
+        //}
         private void Awake()
         {
             // 依存関係の取得とチェック
@@ -59,10 +59,10 @@ namespace Assets.IGC2025.Scripts.Presenter
             if (_buildView == null) Debug.LogError("Build_Presenter: BuildViewがInspectorで設定されていません！", this);
             if (_moduleDataStore == null) Debug.LogError("Build_Presenter: ModuleDataStoreがInspectorで設定されていません！", this);
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
-            if (_exitButton == null) Debug.LogError("Build_Presenter: ExitButtonがInspectorで設定されていません！", this);
+            //if (_exitButton == null) Debug.LogError("Build_Presenter: ExitButtonがInspectorで設定されていません！", this);
 
             // 各依存関係が揃っているか最終チェック
-            if (_buildView == null || _moduleDataStore == null || _runtimeModuleManager == null || _exitButton == null)
+            if (_buildView == null || _moduleDataStore == null || _runtimeModuleManager == null/* || _exitButton == null*/)
             {
                 Debug.LogError("Build_Presenter: 依存関係が不足しています。Inspectorの設定とシーンのセットアップを確認してください。このコンポーネントを無効にします。", this);
                 enabled = false;
@@ -74,9 +74,9 @@ namespace Assets.IGC2025.Scripts.Presenter
                 .Subscribe(moduleId => HandleModuleChoiceRequested(moduleId))
                 .AddTo(_disposables);
 
-            _buildView.OnModuleHovered
-                .Subscribe(moduleId => HandleModuleHovered(moduleId))
-                .AddTo(_disposables);
+            //_buildView.OnModuleHovered
+            //    .Subscribe(moduleId => HandleModuleHovered(moduleId))
+            //    .AddTo(_disposables);
 
             // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ビルドUIを更新する
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
@@ -105,9 +105,6 @@ namespace Assets.IGC2025.Scripts.Presenter
             _moduleLevelAndQuantityChangeDisposables.Dispose(); // 各モジュールのレベル・数量変更購読も解除
         }
 
-        /// <summary>
-        /// モデルの変更を監視し、ビューに表示データを渡す処理をここに記述します。
-        /// </summary>
         #region ModelToView
 
         /// <summary>
@@ -223,7 +220,7 @@ namespace Assets.IGC2025.Scripts.Presenter
             }
 
             // 選択画面の消去
-            _exitButton.onClick.Invoke();
+            //_exitButton.onClick.Invoke();
 
             // ☆注意：ビルド画面に移行する処理
             // ☆注意：設置後に所持数を減らす処理
@@ -246,15 +243,15 @@ namespace Assets.IGC2025.Scripts.Presenter
             var module = _moduleDataStore.FindWithId(EnterModuleId);
             var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
 
-            _unitName.text = module.ViewName;
-            _infoText.text = module.Description;
-            _level.text = $"{Rruntime.CurrentLevelValue}";
+            //_unitName.text = module.ViewName;
+            //_infoText.text = module.Description;
+            //_level.text = $"{Rruntime.CurrentLevelValue}";
             //_quantity.text = $"{Rruntime.CurrentQuantityValue}";
-            _image.sprite = module.MainSprite;
-            _icon.sprite = module.BlockSprite;
-            _atk.text = $"{module.ModuleState?.Attack ?? 0}";
-            _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
-            _prc.text = $"{module.BasePrice}";
+            //_image.sprite = module.MainSprite;
+            //_icon.sprite = module.BlockSprite;
+            //_atk.text = $"{module.ModuleState?.Attack ?? 0}";
+            //_rpd.text = $"{module.ModuleState?.Interval ?? 0}";
+            //_prc.text = $"{module.BasePrice}";
         }
 
         #endregion
