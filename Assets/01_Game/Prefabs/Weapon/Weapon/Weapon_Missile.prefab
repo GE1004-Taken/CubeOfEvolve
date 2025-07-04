@@ -284,6 +284,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 418236, guid: cb59bc2aad49ba444a148ef50760ce45, type: 3}
   m_PrefabInstance: {fileID: 1695248545501476627}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &1695248545503290693 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2380374, guid: cb59bc2aad49ba444a148ef50760ce45, type: 3}
+  m_PrefabInstance: {fileID: 1695248545501476627}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1695248545503761211 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2303016, guid: cb59bc2aad49ba444a148ef50760ce45, type: 3}
+  m_PrefabInstance: {fileID: 1695248545501476627}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7446756375861622636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -296,6 +306,26 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: _renderer.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7239984886075087814}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[1]'
+      value: 
+      objectReference: {fileID: 7553347426598938254}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1695248545503761211}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1695248545503290693}
     - target: {fileID: 3767028282445145877, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       propertyPath: m_Name
       value: Weapon_Missile

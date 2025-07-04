@@ -1,13 +1,12 @@
 using R3;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CreatePrediction : MonoBehaviour
 {
     // ---------- SerializeField
-    [SerializeField] private List<Cube> _cubes = new List<Cube>();
+    [SerializeField] private List<Cube> _cubes = new();
+    [SerializeField] private List<Renderer> _renderer = new();
 
     [SerializeField] private Material _normalMaterial;
     [SerializeField] private Material _trueMaterial;
@@ -17,7 +16,7 @@ public class CreatePrediction : MonoBehaviour
 
     public ReadOnlyReactiveProperty<bool> IsActived => _isActived;
 
-    private ReactiveProperty<bool> _canCreated = new ReactiveProperty<bool>();
+    private ReactiveProperty<bool> _canCreated = new();
     public ReadOnlyReactiveProperty<bool> CanCreated => _canCreated;
 
     private Vector3[] _directions =
@@ -38,15 +37,15 @@ public class CreatePrediction : MonoBehaviour
             .Where(_ => !_isActived.Value)
             .Subscribe(x =>
             {
-                foreach(var cube in _cubes)
+                foreach (var renderer in _renderer)
                 {
                     if (x)
                     {
-                        cube.GetComponent<Renderer>().material = _trueMaterial;
+                        renderer.material = _trueMaterial;
                     }
                     else
                     {
-                        cube.GetComponent<Renderer>().material = _falseMaterial;
+                        renderer.material = _falseMaterial;
                     }
                 }
             })
@@ -59,9 +58,12 @@ public class CreatePrediction : MonoBehaviour
             {
                 if (x)
                 {
+                    foreach (var renderer in _renderer)
+                    {
+                        renderer.material = _normalMaterial;
+                    }
                     foreach (var cube in _cubes)
                     {
-                        cube.GetComponent<Renderer>().material = _normalMaterial;
                         cube.GetComponent<BoxCollider>().enabled = true;
                     }
                 }
@@ -121,7 +123,7 @@ public class CreatePrediction : MonoBehaviour
                     cube.transform.rotation);
 
                 // ‚»‚Ì”‚ª0‚æ‚è‘å‚«‚¢‚È‚çÝ’uÏ‚Ý‚Æ‚Ý‚È‚·
-                if(cubeInsideColliders.Length > 0) return false;
+                if (cubeInsideColliders.Length > 0) return false;
 
                 return true;
             };

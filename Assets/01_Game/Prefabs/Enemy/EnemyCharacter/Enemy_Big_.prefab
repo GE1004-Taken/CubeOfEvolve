@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4770513878451722641}
     m_Modifications:
+    - target: {fileID: 1433724444686938723, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _isActived.value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_Name
       value: Weapon_Turret (1)
@@ -141,6 +145,10 @@ PrefabInstance:
     - target: {fileID: 5989538170979831929, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258986706578942597, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
+      propertyPath: _isActived.value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
       propertyPath: _targetTag
@@ -303,6 +311,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4770513878451722641}
     m_Modifications:
+    - target: {fileID: 1433724444686938723, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _isActived.value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3631961046202255519, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_Name
       value: Weapon_Turret
@@ -527,6 +539,10 @@ PrefabInstance:
     - target: {fileID: 3938932775136541202, guid: 62a8d97f53cfb1d49882ebcc9885e086, type: 3}
       propertyPath: _mask.m_Bits
       value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325662807445088516, guid: 62a8d97f53cfb1d49882ebcc9885e086, type: 3}
+      propertyPath: _isActived.value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8431714175781951356, guid: 62a8d97f53cfb1d49882ebcc9885e086, type: 3}
       propertyPath: _targetTag
@@ -1132,6 +1148,10 @@ PrefabInstance:
     - target: {fileID: 5989538170979831929, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8258986706578942597, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
+      propertyPath: _isActived.value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
       propertyPath: _targetTag
