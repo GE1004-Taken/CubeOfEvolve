@@ -5853,6 +5853,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 476194, guid: 356bd9a2dc8e3ff49b51ed05b24d192f, type: 3}
   m_PrefabInstance: {fileID: 1986496186292300172}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &1986496186294136136 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2360516, guid: 356bd9a2dc8e3ff49b51ed05b24d192f, type: 3}
+  m_PrefabInstance: {fileID: 1986496186292300172}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2251968895221604631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5873,6 +5878,26 @@ PrefabInstance:
       propertyPath: '_cubes.Array.data[1]'
       value: 
       objectReference: {fileID: 428548893930303475}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: _renderer.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[0]'
+      value: 
+      objectReference: {fileID: 335461936462719282}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[1]'
+      value: 
+      objectReference: {fileID: 335461936462400882}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[2]'
+      value: 
+      objectReference: {fileID: 335461936462369866}
+    - target: {fileID: 1568908392873123305, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      propertyPath: '_renderer.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1986496186294136136}
     - target: {fileID: 3767028282445145877, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       propertyPath: m_Name
       value: Weapon_MachineGun
