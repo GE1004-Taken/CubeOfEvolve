@@ -6,7 +6,6 @@ public class Item_Money : ItemBase
 
     public override void UseItem(PlayerCore playerCore)
     {
-        Debug.Log("‚¨‹à‚ðŠl“¾");
         playerCore.ReceiveMoney(_value);
     }
 }
