@@ -814,6 +814,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2454496207801410552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9082974690149103503}
+  m_Layer: 0
+  m_Name: BulletSpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9082974690149103503
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2454496207801410552}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.05, z: 1.219}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5802498300164406200}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &441490304257699722
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -918,6 +949,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      insertIndex: 0
+      addedObject: {fileID: 9082974690149103503}
+    - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 10065622485093256}
     m_AddedComponents:
@@ -947,6 +981,8 @@ MonoBehaviour:
   _fireSEName: Fire
   _layerSearch: {fileID: 8252070589722386805}
   _targetTag: Enemy
+  _enemyRate: 0.5
+  _bulletSpawnPos: {fileID: 9082974690149103503}
   _bulletPrefab: {fileID: 1102360989235296141, guid: b6d8b2b9ae9a8dc4a96db0d9516eccda, type: 3}
 --- !u!4 &5802498300164406200 stripped
 Transform:
