@@ -475,6 +475,8 @@ MonoBehaviour:
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
   Angle: -90
+  _isAnime: 0
+  _rotationSpeed: 30
 --- !u!114 &795434766234921508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -553,8 +555,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371c87cafb19c4d07bb1670ac037c92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pressedSound: {fileID: 8300000, guid: 21d2dd36629bf406daad2064370e68fe, type: 3}
-  rolloverSound: {fileID: 8300000, guid: 08b21a5c0723e41c293613e9d37f9902, type: 3}
+  pressedSound: {fileID: 8300000, guid: 8a83a0ac9e339fd4bb4e8f12a54da234, type: 3}
+  rolloverSound: {fileID: 8300000, guid: 2db3897c7869f0e4383f89d8ad8a9bdf, type: 3}
 --- !u!82 &6765196076610369747
 AudioSource:
   m_ObjectHideFlags: 0
@@ -564,7 +566,7 @@ AudioSource:
   m_GameObject: {fileID: 6014864213857364171}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 3548574662227409406, guid: 10843e89f908e7348ac43e34803312b8, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
