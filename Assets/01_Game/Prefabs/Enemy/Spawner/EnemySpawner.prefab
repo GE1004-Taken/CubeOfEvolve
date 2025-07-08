@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1930666981343970900}
   - component: {fileID: 3335983933191837804}
   m_Layer: 0
-  m_Name: EnemySpawner_Event
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,8 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _waves:
-  - {fileID: 11400000, guid: 639c6d87fa101d044a668ec62c64a1d0, type: 2}
   - {fileID: 11400000, guid: 0b2f46895efe1914db712833b770fd27, type: 2}
   - {fileID: 11400000, guid: fc667416a62f2de4e9ef6dfc1048e295, type: 2}
   - {fileID: 11400000, guid: 097833ca8b0437744ba829e7eb2ff1db, type: 2}
+  - {fileID: 11400000, guid: a2f09ae42a07143489723bd532c0d0de, type: 2}
+  - {fileID: 11400000, guid: d91536160d3ea8440b0751cd4dfd8e08, type: 2}
+  - {fileID: 11400000, guid: c336dd25f249be14a89349a0de8a590a, type: 2}
+  - {fileID: 11400000, guid: 0582edc1a2e20314fb1130336a8017ba, type: 2}
+  - {fileID: 11400000, guid: cf53d8a83c550b34ba9829b5e44f47ba, type: 2}
+  - {fileID: 11400000, guid: eaa85321027efcf479d3b35adcf47a2d, type: 2}
+  - {fileID: 11400000, guid: 639c6d87fa101d044a668ec62c64a1d0, type: 2}
   _playerDistance: 30
