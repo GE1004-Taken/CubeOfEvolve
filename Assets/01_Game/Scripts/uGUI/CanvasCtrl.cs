@@ -29,7 +29,7 @@ namespace AT.uGUI
         // ---------------------------- button
         public void OnOpenCanvas(Button clickedButton = null) // 引数として押されたボタンを受け取る
         {
-            if (clickedButton == null) Debug.LogWarning("nullなのでする―");
+            if (clickedButton == null) Debug.Log("nullなのでする―");
             _canvas.enabled = true;
             if (_closeBtnList.Count != 0) _closeBtnList[0].Select();
             if (clickedButton != null) _saveBtn = clickedButton;

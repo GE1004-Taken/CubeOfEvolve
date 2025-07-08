@@ -5,6 +5,8 @@ using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using Cysharp.Threading.Tasks;
 
 namespace Assets.AT
 {
@@ -31,66 +33,68 @@ namespace Assets.AT
             _playerCore.Level
                 .Pairwise()
                 .Where(pair => pair.Previous < pair.Current)
-                .Subscribe(_ => PlayAsync().Forget());
+                .Subscribe(_ => PlayFancyLevelUpAsync().Forget());
         }
 
         public void Trigger()
         {
-            PlayAsync().Forget();
+            PlayFancyLevelUpAsync().Forget();
         }
 
 
-        public async UniTask PlayAsync()
+        public async UniTask PlayFancyLevelUpAsync()
         {
-            // 既存の再生を中断
             _cts?.Cancel();
-            _cts?.Dispose();
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
 
-            // パーティクル演出（即時）
-            levelUpParticle?.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            levelUpParticle?.Play();
+            RectTransform rect = panel.GetComponent<RectTransform>();
+            float targetY = 450f;
+            Vector2 originalPos = rect.anchoredPosition;
 
-            // Tween中断
-            _glowRotateTween?.Kill();
-
-            // パネル初期化
-            panel.SetActive(false);
+            // 初期化
+            rect.anchoredPosition = new Vector2(0, targetY - 300f); // 下から
+            panel.GetComponent<CanvasGroup>().alpha = 0f;
             panel.SetActive(true);
 
-            levelUpText.color = new Color(1, 1, 1, 0);
-            levelUpText.transform.localScale = Vector3.zero;
-            glowImage.transform.rotation = Quaternion.identity;
+            levelUpText.text = "LEVEL UP!";
+            levelUpText.alpha = 1f;
+            DOTweenTMPAnimator animator = new DOTweenTMPAnimator(levelUpText);
 
-            // 音再生
+            // パーティクル＆音
+            levelUpParticle?.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            levelUpParticle?.Play();
             GameSoundManager.Instance.PlaySE("Sys_LvUp", "System");
 
-            // 回転開始（ループ）
-            _glowRotateTween = glowImage.transform
-                .DORotate(new Vector3(0, 0, 360), 2f, RotateMode.FastBeyond360)
-                .SetLoops(-1)
-                .SetEase(Ease.Linear);
-
-            // テキストアニメーション（フェード＋スケール）
-            var fadeTween = levelUpText.DOFade(1f, 0.5f);
-            var scaleTween = levelUpText.transform.DOScale(1f, 0.5f).SetEase(Ease.OutBack);
-
+            // パネル：下からフェードイン＋上昇
             await UniTask.WhenAll(
-                fadeTween.ToUniTask(cancellationToken: token),
-                scaleTween.ToUniTask(cancellationToken: token)
-            );
+    rect.DOAnchorPosY(targetY, 0.5f).SetEase(Ease.OutCubic).ToUniTask(token),
+    panel.GetComponent<CanvasGroup>().DOFade(1f, 0.5f).ToUniTask(token)
+);
 
-            // 一定時間表示
-            await UniTask.Delay(1500, cancellationToken: token);
+            // 各文字ポップ
+            for (int i = 0; i < animator.textInfo.characterCount; i++)
+            {
+                if (!animator.textInfo.characterInfo[i].isVisible) continue;
 
-            // フェードアウト
-            await levelUpText.DOFade(0f, 0.5f).ToUniTask(cancellationToken: token);
+                animator.DOScaleChar(i, 1.3f, 0.3f)
+                    .From(0f)
+                    .SetEase(Ease.OutBack)
+                    .SetDelay(i * 0.05f);
+            }
 
-            // 後処理
-            _glowRotateTween?.Kill();
+            await UniTask.Delay(2000, cancellationToken: token);
+
+            // パネル：上へ退場しながらフェードアウト
+            await UniTask.WhenAll(
+     rect.DOAnchorPosY(targetY + 300f, 0.5f).SetEase(Ease.InCubic).ToUniTask(token),
+     panel.GetComponent<CanvasGroup>().DOFade(0f, 0.5f).ToUniTask(token)
+ );
+
             panel.SetActive(false);
+            rect.anchoredPosition = originalPos;
         }
+
 
         private void OnDestroy()
         {

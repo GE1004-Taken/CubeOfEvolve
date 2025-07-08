@@ -871,6 +871,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: bb37790ca9232c74dbc7645b6012c555, type: 3}
+    - target: {fileID: 689047487628746551, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 689047489305466390, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
       propertyPath: m_Name
       value: Btn_Select_Shop
@@ -1017,7 +1021,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4691478709291488056, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
       propertyPath: Angle
-      value: 160.89458
+      value: -138.92688
       objectReference: {fileID: 0}
     - target: {fileID: 4691478709291488056, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
       propertyPath: _isAnime
@@ -1028,9 +1032,25 @@ PrefabInstance:
       value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 6981527227867072211, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
+      propertyPath: _itemImage
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981527227867072211, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
+      propertyPath: _levelText
+      value: 
+      objectReference: {fileID: 8331980172156232159}
+    - target: {fileID: 6981527227867072211, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
+      propertyPath: _priceText
+      value: 
+      objectReference: {fileID: 9213617907087150236}
+    - target: {fileID: 6981527227867072211, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
       propertyPath: _quantityText
       value: 
       objectReference: {fileID: 2924495914533828717}
+    - target: {fileID: 6981527227867072211, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}
+      propertyPath: _blockSizeImage
+      value: 
+      objectReference: {fileID: 2011271699807740031}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1285467285086070206, guid: 4914ef959550818428bf2a684fb2ace2, type: 3}

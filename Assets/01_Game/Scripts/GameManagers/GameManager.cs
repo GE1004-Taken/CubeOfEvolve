@@ -5,6 +5,7 @@ using Assets.AT;
 using System.Collections;
 using Unity.Cinemachine;
 using AT.uGUI;
+using Cysharp.Threading.Tasks;
 
 [RequireComponent(typeof(TimeManager))]
 [RequireComponent(typeof(SceneLoader))]
@@ -54,10 +55,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // アクセス取得
-        _cameraCtrlManager = CameraCtrlManager.Instance;
-        _canvasCtrlManager = CanvasCtrlManager.Instance;
-
         // ゲームステート変更時の処理
         _currentGameState
             .Skip(1)
@@ -75,8 +72,8 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.READY:
-                        StartCoroutine(ReadyGame());
                         ResetGame();
+                        ReadyGameAsync().Forget(); // ← UniTask に置き換え
                         break;
 
                     case GameState.BATTLE:
@@ -150,39 +147,19 @@ public class GameManager : MonoBehaviour
     /// ゲーム開始前の処理
     /// </summary>
     /// <returns></returns>
-    private IEnumerator ReadyGame()
+    private async UniTask ReadyGameAsync()
     {
+        _canvasCtrlManager = CanvasCtrlManager.Instance;
 
+        var readyCtrl = _canvasCtrlManager
+            .GetCanvas("ReadyView")
+            .GetComponent<ReadyViewCanvasController>();
 
-        // テキスト演出（例：「出撃準備中」）を表示
-        var readyTextCanvas = _canvasCtrlManager.GetCanvas("ReadyView").GetComponent<Canvas>();
-        readyTextCanvas.enabled = true;
-        var startText = readyTextCanvas.transform.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>();
-        startText.text = "";
-
-        // 一時停止状態
-        Time.timeScale = 0f;
-
-        // カメラ移動
-        CameraCtrlManager.Instance.ChangeCamera("Player Camera");
-        // 演出もここ
-        yield return new WaitForSecondsRealtime(_cameraCtrlManager.CameraBlendTime);
-
-
-        // 数秒間待機（リアル時間で）
-        yield return new WaitForSecondsRealtime(1f);
-
-        // 「タップして開始」などの演出を表示
-        startText.text = "クリックして出撃！";
-
-        // 入力待機（マウスクリック or タップ）
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
-
-        // 準備完了：ゲームビューへ
-        ChangeGameState(GameState.BATTLE);
-        _canvasCtrlManager.ShowOnlyCanvas("GameView");
-        Time.timeScale = 1f;
-
+        await readyCtrl.PlayReadySequenceAsync(() =>
+        {
+            ChangeGameState(GameState.BATTLE);
+            _canvasCtrlManager.ShowOnlyCanvas("GameView");
+        });
     }
 
 

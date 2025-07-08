@@ -49,28 +49,27 @@ namespace AT.uGUI
         // --- UnityMessage
         private void Awake()
         {
-            // Singletonのインスタンス設定
+            // すでに別のインスタンスが存在する場合、それを破棄
             if (Instance != null && Instance != this)
             {
-                Debug.LogWarning("CanvasCtrlList: 既に別のインスタンスが存在します。このオブジェクトは破棄されます。", this);
-                Destroy(gameObject);
-                return;
+                Debug.Log("[CanvasCtrlManager] 古いインスタンスを破棄し、最新のインスタンスに差し替えます", this);
+                Destroy(Instance.gameObject);
             }
-            Instance = this;
 
-            // Optional: Inspectorで設定されていない場合、エディタで自動的にSetupを走らせる
-            // これにより、プレイモードに入る前にリストが初期化される可能性が高まる
+            // このインスタンスを最新として登録
+            Instance = this;
+            Debug.Log("[CanvasCtrlManager] 新しいインスタンスが設定されました", this);
+
+            // Setup 実行
             if (_canvasEntries == null || _canvasEntries.Count == 0)
             {
                 Setup();
             }
             else
             {
-                // runtime check for null entries if setup wasn't run recently in editor
                 _canvasEntries = _canvasEntries.Where(entry => entry.canvasCtrl != null).ToList();
             }
 
-            // 初期化処理
             Initialize(_initialActiveCanvasKey);
         }
 

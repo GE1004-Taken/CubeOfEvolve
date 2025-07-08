@@ -1,6 +1,7 @@
 using Assets.IGC2025.Scripts.GameManagers;
 using Assets.IGC2025.Scripts.View;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,11 @@ namespace Assets.IGC2025.Scripts.Presenter
     {
         // ----- SerializedField
         [Header("Models")]
+
         [Header("Views")]
         [SerializeField] private ViewResultCanvas _view;
         [SerializeField] private Button[] _endGameButton;
+        [SerializeField] private TextMeshProUGUI _finishTimeTextUGUI;
 
         // ----- UnityMessage
         private void Start()
@@ -21,7 +24,11 @@ namespace Assets.IGC2025.Scripts.Presenter
             {
                 GameManager.Instance.CurrentGameState
                     .Where(x => x == GameState.GAMEOVER || x == GameState.GAMECLEAR)
-                    .Subscribe(x => _view.ShowCanvas(x))
+                    .Subscribe(x =>
+                    {
+                        _view.ShowCanvas(x);
+                        _finishTimeTextUGUI.text = $"{GameManager.Instance.GetComponent<TimeManager>().CurrentTimeSecond.CurrentValue.ToString("F1")}ƒJƒEƒ“ƒg";
+                    })
                     .AddTo(this);
             }
 
