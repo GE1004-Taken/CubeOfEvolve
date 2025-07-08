@@ -101,8 +101,6 @@ namespace Assets.IGC2025.Scripts.Presenter
             }
             else
             {
-                //debug.log($"Drop_Presenter: ユーザーによってモジュールID {selectedModuleId} が選択されました。");
-
                 // RuntimeModuleManager を介してモジュールのレベルアップ処理を実行
                 _runtimeModuleManager.LevelUpModule(selectedModuleId);
             }

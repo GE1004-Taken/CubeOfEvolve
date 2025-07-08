@@ -2,6 +2,7 @@ using Assets.AT;
 using R3;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -21,12 +22,16 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private TextScaleAnimation _maxCubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
 
+        private Slider _hpSlider;
+
         private TimeManager _timeManager;
 
         private const float BOSS_CREATE_TIME = 60;
 
         private void Start()
         {
+            _hpSlider = _hpSliderAnimation.GetComponent<Slider>();
+
             _timeManager = GameManager.Instance.GetComponent<TimeManager>();
             _timeManager.CurrentTimeSecond
                 .Subscribe(x =>
@@ -45,6 +50,12 @@ namespace Assets.IGC2025.Scripts.Presenter
                     _hpSliderAnimation.SliderAnime(x);
                 }).AddTo(this);
 
+            _models.RequireExp
+                .Subscribe(x =>
+                {
+                    _expSliderAnimation.GetComponent<Slider>().maxValue = x;
+                }).AddTo(this);
+
             // Playerの経験値を監視
             _models.Exp
                 .Subscribe(x =>
@@ -59,6 +70,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                 {
                     // Viewに反映
                     _cubeCountTextScaleAnimation.AnimateFloatAndText(x, 1f);
+                    _hpSlider.maxValue = _models.MaxHp.CurrentValue;
                 }).AddTo(this);
 
             // Playerの所持キューブ数を監視

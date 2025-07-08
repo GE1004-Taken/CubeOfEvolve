@@ -95,8 +95,6 @@ namespace Assets.IGC2025.Scripts.View
         /// </summary>
         public void RequestPurchase(int moduleId)
         {
-            GameSoundManager.Instance.PlaySE("shop_buy1", "SE");
-            GameSoundManager.Instance.PlaySE("shop_buy2", "SE");
             OnModulePurchaseRequested.OnNext(moduleId);
         }
     }

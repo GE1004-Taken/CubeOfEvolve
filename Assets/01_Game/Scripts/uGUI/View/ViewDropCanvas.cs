@@ -127,6 +127,13 @@ namespace Assets.IGC2025.Scripts.View
                 _selectionButtons[moduleId] = button;
                 _currentDisplayedModuleIds.Add(moduleId);
 
+                Transform indicatorTransform = item.transform.Find("LevelZeroIndicator");
+                if (indicatorTransform != null)
+                {
+                    GameObject indicator = indicatorTransform.gameObject;
+                    indicator.SetActive(runtime.CurrentLevelValue == 0);
+                }
+
                 button.OnClickAsObservable()
                     .Subscribe(_ => OnModuleSelected.OnNext(moduleId))
                     .AddTo(_disposables);
@@ -135,6 +142,7 @@ namespace Assets.IGC2025.Scripts.View
                     .Subscribe(_ => OnModuleHovered.OnNext(moduleId))
                     .AddTo(_disposables);
             }
+
         }
     }
 }
