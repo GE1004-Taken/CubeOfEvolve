@@ -19,7 +19,6 @@ namespace AT.uGUI
         // ---------------------------- SerializeField
         [Header("ボタン")]
         [SerializeField] private List<Button> _openBtnList = new List<Button>();
-        //[SerializeField] private Button _closeBtn;
         [SerializeField] private List<Button> _closeBtnList = new List<Button>();
         [Header("イベント")]
         [SerializeField] private UnityEvent _openEvent = new();
@@ -30,8 +29,7 @@ namespace AT.uGUI
         // ---------------------------- button
         public void OnOpenCanvas(Button clickedButton = null) // 引数として押されたボタンを受け取る
         {
-            if (clickedButton != null) Debug.Log("ボタン処理：in - " + clickedButton.name); // どのボタンが押されたか確認
-            else Debug.Log("nullなのでする―");
+            if (clickedButton == null) Debug.LogWarning("nullなのでする―");
             _canvas.enabled = true;
             if (_closeBtnList.Count != 0) _closeBtnList[0].Select();
             if (clickedButton != null) _saveBtn = clickedButton;
@@ -39,7 +37,6 @@ namespace AT.uGUI
         }
         public void OnCloseCanvas()
         {
-            Debug.Log("ボタン処理：out");
             _canvas.enabled = false;
             if (_saveBtn != null) _saveBtn.Select();
             _closeEvent?.Invoke();
@@ -56,7 +53,6 @@ namespace AT.uGUI
             else
                 foreach (var button in _openBtnList)
                 {
-                    // ラムダ式を使って、ボタンがクリックされたときに OnOpenCanvas メソッドに自身を渡す
                     button.onClick.AddListener(() => OnOpenCanvas(button));
                 }
 

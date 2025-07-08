@@ -53,7 +53,7 @@ namespace Assets.AT
 
         private void TextUpdate()
         {
-            _text.text = $"{_currentValue:F0}";
+            _text.text = $"{_currentValue.ToString("N0"):F0}";
         }
     }
 }

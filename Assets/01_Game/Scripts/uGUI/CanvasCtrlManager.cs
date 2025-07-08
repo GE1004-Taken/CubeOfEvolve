@@ -109,7 +109,7 @@ namespace AT.uGUI
                 }
             }
 
-            Debug.Log($"CanvasCtrlList: Setup完了。管理対象のCanvasCtrl数: {_canvasEntries.Count}");
+            //debug.log($"CanvasCtrlList: Setup完了。管理対象のCanvasCtrl数: {_canvasEntries.Count}");
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this); // エディタ上で変更を保存
 #endif
@@ -140,7 +140,7 @@ namespace AT.uGUI
             }
 
             // 特定のキャンバスを表示する
-            CanvasCtrl initialCanvas = Get(initialShowCanvasKey);
+            CanvasCtrl initialCanvas = GetCanvas(initialShowCanvasKey);
 
             if (initialCanvas == null)
             {
@@ -151,7 +151,7 @@ namespace AT.uGUI
             {
                 initialCanvas.GetComponent<Canvas>().enabled = true;
                 //initialCanvas.OnOpenCanvas(); // CanvasCtrlのShow()メソッドを使用
-                Debug.Log($"CanvasCtrlList: 初期化成功。'{initialShowCanvasKey}' が表示されました。");
+                //debug.log($"CanvasCtrlList: 初期化成功。'{initialShowCanvasKey}' が表示されました。");
                 return true;
             }
         }
@@ -163,7 +163,7 @@ namespace AT.uGUI
         /// </summary>
         /// <param name="key">取得するCanvasCtrlのキー。</param>
         /// <returns>対応するCanvasCtrlインスタンス、または見つからない場合はnull。</returns>
-        public CanvasCtrl Get(string key)
+        public CanvasCtrl GetCanvas(string key)
         {
             if (_canvasEntries == null)
             {
@@ -196,7 +196,6 @@ namespace AT.uGUI
                     //entry.canvasCtrl.OnCloseCanvas();
                 }
             }
-            Debug.Log("CanvasCtrlList: 全てのキャンバスが非表示になりました。");
         }
 
         /// <summary>
@@ -233,7 +232,6 @@ namespace AT.uGUI
             {
                 // canvasToActivate.OnOpenCanvas(); // 目的のキャンバスを表示
                 canvasToActivate.GetComponent<Canvas>().enabled = true;
-                Debug.Log($"CanvasCtrlList: '{keyToShow}' が表示されました。他のキャンバスは非表示です。");
             }
             else
             {
