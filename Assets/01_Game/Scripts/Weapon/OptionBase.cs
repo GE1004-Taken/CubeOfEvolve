@@ -17,8 +17,6 @@ public class OptionBase : MonoBehaviour
     /// </summary>
     public void WhenEquipped()
     {
-        Debug.Log("ƒIƒvƒVƒ‡ƒ“‚ð‘•”õ‚µ‚½");
-
         foreach (var item in _data)
         {
             RuntimeModuleManager.Instance.AddOption(item);
