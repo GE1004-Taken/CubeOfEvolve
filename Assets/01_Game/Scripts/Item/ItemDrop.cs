@@ -31,16 +31,12 @@ public class ItemDrop : MonoBehaviour
     /// </summary>
     public void DropItemProcess()
     {
-        Debug.Log("アイテムを落とす処理");
-
         foreach (var dropItem in _dropItemList)
         {
             var random = Random.Range(0f, 1f) * 100;
 
             if (random <= dropItem.rate)
             {
-                Debug.Log("ドロップ");
-
                 for (int i = 0; i < dropItem.value; i++)
                 {
                     DropAnimation(dropItem.data.Item);
