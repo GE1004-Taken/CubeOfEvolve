@@ -3,6 +3,7 @@ using R3;
 using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerCore : MonoBehaviour, IDamageble
 {
@@ -15,6 +16,7 @@ public class PlayerCore : MonoBehaviour, IDamageble
     [SerializeField, Tooltip("レベル")] private SerializableReactiveProperty<int> _level;
     [SerializeField, Tooltip("経験値")] private SerializableReactiveProperty<float> _exp;
     [SerializeField, Tooltip("必要経験値")] private SerializableReactiveProperty<float> _requireExp;
+    [SerializeField, Tooltip("必要経験値の増加量(累乗)")] private float _AddRequireExpAmount;
     [SerializeField, Tooltip("キューブ数")] private SerializableReactiveProperty<int> _cubeCount;
     [SerializeField, Tooltip("最大キューブ数")] private SerializableReactiveProperty<int> _maxCubeCount;
     [SerializeField, Tooltip("お金")] private SerializableReactiveProperty<int> _money;
@@ -60,6 +62,8 @@ public class PlayerCore : MonoBehaviour, IDamageble
             .Subscribe(x =>
             {
                 _maxCubeCount.Value += 3;
+                _requireExp.Value += _AddRequireExpAmount;
+                _AddRequireExpAmount *= 2;
             })
             .AddTo(this);
 
@@ -137,7 +141,8 @@ public class PlayerCore : MonoBehaviour, IDamageble
     }
     public void RecoveryHp(int amount)
     {
-        _hp.Value += amount;
+        // HPの最大値を超えないように加算
+        _hp.Value = Mathf.Min(_hp.Value + amount, _maxHp.Value);
     }
 
     /// <summary>

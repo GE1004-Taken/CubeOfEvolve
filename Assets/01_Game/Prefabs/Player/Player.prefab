@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 4176307090542740963, guid: 3f1f541fac57ad84f9fa768dd2a23677, type: 3}
   _rayDist: 50
+  _isRemoving: 0
 --- !u!114 &3578453690902763032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +165,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubes:
   - {fileID: 4218618388434398758}
-  _normalMaterial: {fileID: 2100000, guid: 87dbb044dc0904b4f83e30445be3ccea, type: 2}
+  _renderer:
+  - {fileID: 1466427867856774217}
+  _normalMaterial: {fileID: 2100000, guid: 3849bc5e0e5d4fa41aa5c50066534260, type: 2}
   _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
   _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
   _isActived:
@@ -1047,5 +1050,10 @@ PrefabInstance:
 --- !u!4 &293544027889458982 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8317234213177726147, guid: 4d62d897b59a1934f91e860848b4596a, type: 3}
+  m_PrefabInstance: {fileID: 8610355614002367461}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1466427867856774217 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7144939574139088812, guid: 4d62d897b59a1934f91e860848b4596a, type: 3}
   m_PrefabInstance: {fileID: 8610355614002367461}
   m_PrefabAsset: {fileID: 0}

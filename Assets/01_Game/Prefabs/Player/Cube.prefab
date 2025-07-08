@@ -67,7 +67,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubes:
   - {fileID: 4176307090542740963}
-  _normalMaterial: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  _renderer:
+  - {fileID: 6845833933498510800}
+  _normalMaterial: {fileID: 2100000, guid: 3849bc5e0e5d4fa41aa5c50066534260, type: 2}
   _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
   _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
   _isActived:
@@ -210,5 +212,10 @@ PrefabInstance:
 --- !u!4 &5713490599208916671 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8317234213177726147, guid: 4d62d897b59a1934f91e860848b4596a, type: 3}
+  m_PrefabInstance: {fileID: 4334333243941618300}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6845833933498510800 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7144939574139088812, guid: 4d62d897b59a1934f91e860848b4596a, type: 3}
   m_PrefabInstance: {fileID: 4334333243941618300}
   m_PrefabAsset: {fileID: 0}
