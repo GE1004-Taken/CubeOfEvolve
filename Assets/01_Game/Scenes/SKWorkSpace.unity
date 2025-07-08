@@ -923,7 +923,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5095611727835368661, guid: 14d04cb8136761f4b91f700527ed72ea, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4037279
+      value: -4152820.2
       objectReference: {fileID: 0}
     - target: {fileID: 5819946685723746814, guid: 14d04cb8136761f4b91f700527ed72ea, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1103,10 +1103,10 @@ MonoBehaviour:
         z: 0.5095215
       Rotation:
         value:
-          x: 0.055998616
+          x: 0.055998605
           y: 0.9368017
-          z: -0.14333346
-          w: 0.31420118
+          z: -0.14333345
+          w: 0.31420124
     - Position:
         x: 1.8496422
         y: 0
@@ -1418,8 +1418,16 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4607230410802355471, guid: 444723bc50f704d4ba5d535125fb8046, type: 3}
+      propertyPath: _requireExp.value
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4607230410802355471, guid: 444723bc50f704d4ba5d535125fb8046, type: 3}
       propertyPath: _maxCubeCount.value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4607230410802355471, guid: 444723bc50f704d4ba5d535125fb8046, type: 3}
+      propertyPath: _AddRequireExpAmount
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5895972960449011473, guid: 444723bc50f704d4ba5d535125fb8046, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1751,7 +1759,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 163018948577741952, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
-      value: 720370.2
+      value: 720025.9
       objectReference: {fileID: 0}
     - target: {fileID: 235341063453353960, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
@@ -2149,6 +2157,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3291390179285183119, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
+      propertyPath: Angle
+      value: 1785297.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3394709728657602643, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2187,7 +2199,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3549822234997918941, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
-      value: 181575.81
+      value: 181223.64
       objectReference: {fileID: 0}
     - target: {fileID: 3661636694154437094, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: _moduleItemPrefab
@@ -2347,7 +2359,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4502651526341298850, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
-      value: 720506.56
+      value: 720162.25
       objectReference: {fileID: 0}
     - target: {fileID: 4507898339324095246, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2719,7 +2731,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6904503099427163599, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
-      value: 4145.4443
+      value: 3801.105
       objectReference: {fileID: 0}
     - target: {fileID: 6998138802656075902, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2803,7 +2815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772099124235977173, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
-      value: 257853.61
+      value: 257503
       objectReference: {fileID: 0}
     - target: {fileID: 7983972036232264869, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
@@ -2887,7 +2899,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9108857475304799279, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: Angle
-      value: 257833.58
+      value: 257482.97
       objectReference: {fileID: 0}
     - target: {fileID: 9111576019102443495, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: m_AnchorMax.y
