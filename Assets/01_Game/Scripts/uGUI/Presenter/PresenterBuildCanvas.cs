@@ -24,7 +24,7 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private PlayerCore _playerCore; // プレイヤーのコアデータ（所持金など）への参照。
 
         [Header("Views")]
-        //[SerializeField] private TextScaleAnimation _moneyTextScaleAnimation; // 所持金表示のテキストアニメーションコンポーネント。
+        [SerializeField] private TextMeshProUGUI _cubeQuantityText;
         //[SerializeField] private Button _exitButton;
 
         [Header("Views_Hovered")]
@@ -45,13 +45,13 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         // ----- UnityMessage
 
-        //private void Start()
-        //{
-        //    // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
-        //    _playerCore.Money
-        //        .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
-        //        .AddTo(_disposables);
-        //}
+        private void Start()
+        {
+            // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
+            _playerCore.CubeCount
+                .Subscribe(x => _cubeQuantityText.text = $"{_playerCore.MaxCubeCount.CurrentValue - x}")
+                .AddTo(_disposables);
+        }
         private void Awake()
         {
             // 依存関係の取得とチェック
@@ -82,7 +82,7 @@ namespace Assets.IGC2025.Scripts.Presenter
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
                 .Subscribe(_ =>
                 {
-                    Debug.Log("RuntimeModuleDataコレクションが変更されました。モジュールの変更購読を再設定し、ビルドUIを更新します。");
+
                     // 既存のモジュールレベル・数量変更購読を全て解除
                     _moduleLevelAndQuantityChangeDisposables.Clear();
 
@@ -119,7 +119,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 runtimeModuleData.Level
                     .Subscribe(level =>
                     {
-                        Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) のレベルが {level} に変更されました。ビルドUIを更新します。");
                         DisplayBuildUI(); // レベルが変更されたらビルド画面を再表示
                     })
                     .AddTo(_moduleLevelAndQuantityChangeDisposables); // 個別モジュールの購読は専用のDisposableBagに追加
@@ -129,7 +128,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 runtimeModuleData.Quantity
                     .Subscribe(quantity =>
                     {
-                        Debug.Log($"モジュールID {runtimeModuleData.Id} ({_moduleDataStore.FindWithId(runtimeModuleData.Id)?.ViewName}) の数量が {quantity} に変更されました。ビルドUIを更新します。");
                         DisplayBuildUI(); // 数量が変更されたらビルド画面を再表示
                     })
                     .AddTo(_moduleLevelAndQuantityChangeDisposables);
@@ -227,15 +225,14 @@ namespace Assets.IGC2025.Scripts.Presenter
 
             _builder?.SetModuleData(masterData);
 
-            Debug.Log($"Build_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を選択しました。", this);
+            //debug.log($"Build_Presenter: プレイヤーがモジュールID {moduleId} ({masterData.ViewName}) を選択しました。", this);
 
             // 選択成功時のフィードバック (UI更新など)
             UpdateChoiceButtonsInteractability();
         }
 
         /// <summary>
-        /// モジュールにマウスオーバーした際のイベントハンドラ。
-        /// 説明文を更新します。
+        /// モジュールにマウスオーバーした際のイベントハンドラ
         /// </summary>
         /// <param name="EnterModuleId">マウスオーバーされたモジュールのID。</param>
         private void HandleModuleHovered(int EnterModuleId)

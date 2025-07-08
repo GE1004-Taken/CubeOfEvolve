@@ -31,25 +31,25 @@ namespace Assets.IGC2025.Scripts.Presenter
             var isSuccess = false;
 
             // 依存チェック
-            if (_checkCanvasCtrl == null || _resetEvent == null || _quitEvent == null)
-                Debug.Log($"TitlePresenter: 依存が不足のため処理中止");
+            if (_checkCanvasCtrl == null || _resetEvent == null || _quitEvent == null) ;
+            //debug.log($"TitlePresenter: 依存が不足のため処理中止");
             else isSuccess = true;
 
-            if (_resetButton == null) Debug.Log($"TitlePresenter: _resetButton がnull です");
+            if (_resetButton == null) ;//debug.log($"TitlePresenter: _resetButton がnull です");
             else
             {
                 _resetButton.onClick.AddListener(() => _checkCanvasCtrl.ShowCheckCanvas(_resetEvent, _resetButton));
                 isSuccess = true;
             }
 
-            if (_quitButton == null) Debug.Log($"TitlePresenter: _quitButton がnull です");
+            if (_quitButton == null) ; //debug.log($"TitlePresenter: _quitButton がnull です");
             else
             {
-                _quitButton.onClick.AddListener(() => _checkCanvasCtrl.ShowCheckCanvas(_quitEvent, _quitButton));
+                _quitButton?.onClick.AddListener(() => _checkCanvasCtrl.ShowCheckCanvas(_quitEvent, _quitButton));
                 isSuccess = true;
             }
 
-            Debug.Log($"TitlePresenter:初期化成功？=>{isSuccess}");
+            //debug.log($"TitlePresenter:初期化成功？=>{isSuccess}");
             return isSuccess;
         }
 
