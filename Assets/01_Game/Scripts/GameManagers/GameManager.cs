@@ -152,13 +152,39 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator ReadyGame()
     {
+
+
+        // テキスト演出（例：「出撃準備中」）を表示
+        var readyTextCanvas = _canvasCtrlManager.GetCanvas("ReadyView").GetComponent<Canvas>();
+        readyTextCanvas.enabled = true;
+        var startText = readyTextCanvas.transform.GetChild(2).GetComponent<TMPro.TextMeshProUGUI>();
+        startText.text = "";
+
+        // 一時停止状態
+        Time.timeScale = 0f;
+
         // カメラ移動
         CameraCtrlManager.Instance.ChangeCamera("Player Camera");
         // 演出もここ
-        yield return _cameraCtrlManager.CameraBlendTime;
+        yield return new WaitForSecondsRealtime(_cameraCtrlManager.CameraBlendTime);
+
+
+        // 数秒間待機（リアル時間で）
+        yield return new WaitForSecondsRealtime(1f);
+
+        // 「タップして開始」などの演出を表示
+        startText.text = "クリックして出撃！";
+
+        // 入力待機（マウスクリック or タップ）
+        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+
+        // 準備完了：ゲームビューへ
         ChangeGameState(GameState.BATTLE);
         _canvasCtrlManager.ShowOnlyCanvas("GameView");
+        Time.timeScale = 1f;
+
     }
+
 
     /// <summary>
     /// ゲームを開始
