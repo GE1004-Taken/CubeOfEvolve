@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Weapon_Throwing : WeaponBase
 {
+    [Header("弾")]
+    [SerializeField] private Transform _bulletSpawnPos;
     [SerializeField] private Bullet_Bomb _bullet;
     [SerializeField] private float _shootAngle;
 
@@ -21,7 +23,7 @@ public class Weapon_Throwing : WeaponBase
     {
         if (_bullet != null && _layerSearch.NearestTargetObj != null)
         {
-            var ball = Instantiate(_bullet, this.transform.position, Quaternion.identity);
+            var ball = Instantiate(_bullet, _bulletSpawnPos.position, Quaternion.identity);
 
             Transform enemy = _layerSearch.NearestTargetObj.transform;
             Rigidbody enemyRb = _layerSearch.NearestTargetObj.GetComponent<Rigidbody>();
@@ -31,14 +33,14 @@ public class Weapon_Throwing : WeaponBase
 
             // 仮の速度で飛行時間を予測
             float dummySpeed = 10f; // 適当な初速（後で調整）
-            float distance = Vector3.Distance(this.transform.position, targetPosition);
+            float distance = Vector3.Distance(_bulletSpawnPos.position, targetPosition);
             float flightTime = distance / dummySpeed;
 
             // 予測位置
             Vector3 predictedPosition = targetPosition + enemyVelocity * flightTime;
 
             // 実際の速度を再計算
-            Vector3 velocity = CalculateVelocity(transform.position, predictedPosition, _shootAngle);
+            Vector3 velocity = CalculateVelocity(_bulletSpawnPos.position, predictedPosition, _shootAngle);
 
             Rigidbody rid = ball.GetComponent<Rigidbody>();
             rid.AddForce(velocity * rid.mass, ForceMode.Impulse);

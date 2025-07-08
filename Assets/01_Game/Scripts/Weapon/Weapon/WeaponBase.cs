@@ -18,6 +18,9 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField, Tooltip("‘ÎÛŒŸ’m—p")] protected LayerSearch _layerSearch;
     [SerializeField, Tooltip("UŒ‚‘ÎÛ‚Ìƒ^ƒO")] protected string _targetTag;
 
+    [Header("“G‚Ìê‡")]
+    [SerializeField, Tooltip("UŒ‚—Í”{—¦")] private float _enemyRate = 1;
+
     // ---------------------------- Field
     protected float _attackStatusEffects;
     protected float _currentAttack;
@@ -81,7 +84,7 @@ public abstract class WeaponBase : MonoBehaviour
         }
         else if (transform.root.CompareTag("Enemy"))
         {
-            _currentAttack = _data.Attack;
+            _currentAttack = _data.Attack * _enemyRate;
         }
     }
 
@@ -90,9 +93,11 @@ public abstract class WeaponBase : MonoBehaviour
     /// </summary>
     private void ObserveStatusEffects()
     {
+        if (!transform.root.CompareTag("Cube")) return;
+
         var addStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
-            .ObserveAdd(destroyCancellationToken)
-            .Select(_ => Unit.Default);
+        .ObserveAdd(destroyCancellationToken)
+        .Select(_ => Unit.Default);
 
         var removeStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
             .ObserveRemove(destroyCancellationToken)
@@ -112,6 +117,8 @@ public abstract class WeaponBase : MonoBehaviour
     /// </summary>
     private void UpdateAttackStatus()
     {
+        if (!transform.root.CompareTag("Cube")) return;
+
         _attackStatusEffects = 0;
 
         foreach (var effect in RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList)
