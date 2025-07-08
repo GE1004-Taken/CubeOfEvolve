@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2943ccd97d586214b87275bcf713d8be, type: 3}
   m_Name: SpawnWave_03
   m_EditorClassIdentifier: 
-  delaySecond: 20
-  duration: 30
-  spawnCount: 1
+  delaySecond: 60
+  duration: 120
+  spawnCount: 2
   enemyList:
   - {fileID: 3278792622113905435, guid: 21ebc10b63b48434794ce10c83e794ef, type: 3}
   - {fileID: 6106638853983770325, guid: f344f8a4cf91cdc49ba51d3db2afd297, type: 3}
   patternType: 1
-  interval: 1
+  interval: 4
