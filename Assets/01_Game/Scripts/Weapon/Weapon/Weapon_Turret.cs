@@ -3,28 +3,38 @@ using UnityEngine;
 
 public class Weapon_Turret : WeaponBase
 {
+    [Header("弾")]
+    [SerializeField] private Transform _bulletSpawnPos;
     [SerializeField] private Bullet_Linear _bulletPrefab;
 
     protected override void Attack()
     {
-        var player = _layerSearch.NearestTargetObj.transform;
-        var dir = (player.position - transform.position).normalized;
+        var target = _layerSearch.NearestTargetObj.transform;
 
-        // プレイヤー方向を向く回転を使う
-        Quaternion finalRotation = Quaternion.LookRotation(dir);
+        // 砲台の回転はY軸のみ（高さを無視して水平方向に向ける）
+        //Vector3 flatTargetPos = new Vector3(target.position.x, transform.position.y, target.position.z);
+        //Vector3 turretDir = (flatTargetPos - transform.position).normalized;
+
+        //if (turretDir != Vector3.zero)
+        //{
+        //    transform.localRotation = Quaternion.LookRotation(turretDir);
+        //}
+
+        // 弾の方向は正確な3D方向（高さも含む）
+        Vector3 shootDir = (target.position - _bulletSpawnPos.position).normalized;
+        Quaternion shootRotation = Quaternion.LookRotation(shootDir);
 
         var bullet = Instantiate(
             _bulletPrefab,
-            transform.position,
-            finalRotation);
+            _bulletSpawnPos.position,
+            shootRotation);
 
         bullet.Initialize(
             _targetTag,
             _currentAttack,
             _data.BulletSpeed,
-            dir);
+            shootDir);
 
         GameSoundManager.Instance.PlaySFX(_fireSEName, transform, _fireSEName);
     }
-
 }

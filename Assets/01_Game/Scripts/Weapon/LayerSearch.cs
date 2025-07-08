@@ -69,7 +69,7 @@ public class LayerSearch : MonoBehaviour
             if (distance < nearestDistance)
             {
                 nearestDistance = distance;
-                _nearestTargetObj = hit.gameObject;
+                _nearestTargetObj = hit.gameObject.transform.root.gameObject;
             }
         }
     }

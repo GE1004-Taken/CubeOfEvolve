@@ -6,7 +6,6 @@ public class Item_Exp : ItemBase
 
     public override void UseItem(PlayerCore playerCore)
     {
-        Debug.Log("ŒoŒ±’l‚ðŠl“¾");
         playerCore.ReceiveExp(_value);
     }
 }

@@ -316,6 +316,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &560622703759837405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5141426614743252637}
+  m_Layer: 0
+  m_Name: BulletSpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5141426614743252637
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560622703759837405}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.595, z: 1.327}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5325077367293343013}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1992616243306916676
 GameObject:
   m_ObjectHideFlags: 0
@@ -5965,6 +5996,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 327239499375330542}
+    - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5141426614743252637}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3767028282445145877, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       insertIndex: -1
@@ -5992,6 +6026,8 @@ MonoBehaviour:
   _fireSEName: Fire_MachineGun
   _layerSearch: {fileID: 7774860755542700008}
   _targetTag: Enemy
+  _enemyRate: 0.5
+  _bulletSpawnPos: {fileID: 5141426614743252637}
   _bulletPrefab: {fileID: 1102360989235296141, guid: b6d8b2b9ae9a8dc4a96db0d9516eccda, type: 3}
 --- !u!4 &5325077367293343013 stripped
 Transform:

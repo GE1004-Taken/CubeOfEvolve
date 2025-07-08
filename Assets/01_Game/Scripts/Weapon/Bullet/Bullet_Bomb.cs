@@ -66,4 +66,10 @@ public class Bullet_Bomb : BulletBase
         _targetLayerName = targetTag;
         _attack = attack;
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, _range);
+    }
 }

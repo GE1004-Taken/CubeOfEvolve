@@ -6,7 +6,6 @@ public class Item_RecoveryHp : ItemBase
 
     public override void UseItem(PlayerCore playerCore)
     {
-        Debug.Log("‰ñ•œIII");
         playerCore.RecoveryHp(_value);
     }
 }

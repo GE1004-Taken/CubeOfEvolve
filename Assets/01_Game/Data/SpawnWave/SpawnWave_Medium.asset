@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2943ccd97d586214b87275bcf713d8be, type: 3}
-  m_Name: SpawnEvent_04
+  m_Name: SpawnWave_Medium
   m_EditorClassIdentifier: 
-  delaySecond: 150
-  duration: 0
-  spawnCount: 3
+  delaySecond: 20
+  duration: 300
+  spawnCount: 1
   enemyList:
-  - {fileID: 613721161528825185, guid: 98053651857e66e44ba523f571e9c35e, type: 3}
-  patternType: 0
-  interval: 0
+  - {fileID: 7342549308853293212, guid: 154013a3504e60a438e4c23fb667ed3b, type: 3}
+  - {fileID: 7342549308853293212, guid: d3235a121f551d645a36fbc102e5ef34, type: 3}
+  - {fileID: 7342549308853293212, guid: 1524628cf2375ae4ab6665ec9bfb0158, type: 3}
+  patternType: 1
+  interval: 20

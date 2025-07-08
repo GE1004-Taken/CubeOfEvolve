@@ -53,8 +53,6 @@ public class Bullet_Linear : BulletBase
                 // “–‚½‚Á‚½‚Ì‹¤’Êˆ—
                 void HitMethod()
                 {
-                    Debug.Log("AAA");
-
                     GameSoundManager.Instance.PlaySFX(_hitSEName, transform, _hitSEName);
                     Instantiate(_hitEffect, transform.position, Quaternion.identity);
 

@@ -107,6 +107,11 @@ MonoBehaviour:
   _isActived:
     value: 0
   _collider: {fileID: 92131010352905171}
+--- !u!23 &5933624614966388491 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1367501470542223569, guid: 3a067ef09e75c36439746dbf04d53727, type: 3}
+  m_PrefabInstance: {fileID: 4657337130671652826}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7193622076593140992
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131,6 +136,18 @@ PrefabInstance:
       propertyPath: '_cubes.Array.data[2]'
       value: 
       objectReference: {fileID: 3606049369931196243}
+    - target: {fileID: -6471142838119887852, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: _renderer.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -6471142838119887852, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: '_renderer.Array.data[1]'
+      value: 
+      objectReference: {fileID: 5933624614966388491}
+    - target: {fileID: -6471142838119887852, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: '_renderer.Array.data[2]'
+      value: 
+      objectReference: {fileID: 7582130758238489798}
     - target: {fileID: 7185627214972387187, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -270,6 +287,11 @@ PrefabInstance:
 --- !u!65 &4190048926644719646 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 4748341963525866505, guid: 3a067ef09e75c36439746dbf04d53727, type: 3}
+  m_PrefabInstance: {fileID: 8918099879551570967}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7582130758238489798 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1367501470542223569, guid: 3a067ef09e75c36439746dbf04d53727, type: 3}
   m_PrefabInstance: {fileID: 8918099879551570967}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8230855743217200403 stripped

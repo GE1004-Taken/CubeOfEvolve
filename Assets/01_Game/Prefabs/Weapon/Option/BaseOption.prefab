@@ -63,6 +63,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubes:
   - {fileID: 6670874719082973724}
+  _renderer:
+  - {fileID: 1003692335004641134}
   _normalMaterial: {fileID: 2100000, guid: 0e2d96556f6f65c4fb8dca5f2b676954, type: 2}
   _trueMaterial: {fileID: 2100000, guid: 4c40c4764ec0a114cb127b8217b14ece, type: 2}
   _falseMaterial: {fileID: 2100000, guid: 1e931be20b985b44398230b835663459, type: 2}
@@ -144,6 +146,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6670874719082973724}
   m_SourcePrefab: {fileID: 100100000, guid: 3a067ef09e75c36439746dbf04d53727, type: 3}
+--- !u!23 &1003692335004641134 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1367501470542223569, guid: 3a067ef09e75c36439746dbf04d53727, type: 3}
+  m_PrefabInstance: {fileID: 2240403976803958719}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1652021358941718203 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 719075277259536644, guid: 3a067ef09e75c36439746dbf04d53727, type: 3}

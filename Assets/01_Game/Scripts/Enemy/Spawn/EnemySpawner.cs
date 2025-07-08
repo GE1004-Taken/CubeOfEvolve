@@ -24,70 +24,69 @@ public class EnemySpawner : MonoBehaviour
             {
                 // delaySecond の昇順に並び替えている
                 _waves.Sort((a, b) => a.delaySecond.CompareTo(b.delaySecond));
-                StartCoroutine(SpawnWaveSequence());
+
+                // 全Waveを開始
+                foreach (var wave in _waves)
+                {
+                    StartCoroutine(StartWave(wave));
+                }
             })
             .AddTo(this);
     }
 
     // ---------------------------- PrivateMethod
     /// <summary>
-    /// 複数のSpawnWaveDataを順番に処理
+    /// ウェーブを開始する
     /// </summary>
+    /// <param name="wave"></param>
     /// <returns></returns>
-    private IEnumerator SpawnWaveSequence()
+    private IEnumerator StartWave(SpawnWaveData wave)
     {
-        foreach (var wave in _waves)
+        float waitTime = wave.delaySecond - GameManager.Instance.TimeManager.CurrentTimeSecond.CurrentValue;
+
+        if (waitTime > 0)
         {
-            // 現在の経過時間からWave開始までの待機時間を計算
-            float waitTime = wave.delaySecond - GameManager.Instance.TimeManager.CurrentTimeSecond.CurrentValue;
+            yield return new WaitForSeconds(waitTime);
+        }
 
-            if (waitTime > 0)
+        // イベント
+        if (wave.patternType == SpawnWaveData.SpawnPatternType.Event)
+        {
+            for (int i = 0; i < wave.spawnCount; i++)
             {
-                // 指定時間だけ待機してWaveの開始を遅らせる
-                yield return new WaitForSeconds(waitTime);
+                Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
             }
+        }
+        // ループ
+        else if (wave.patternType == SpawnWaveData.SpawnPatternType.Loop)
+        {
+            // Waveの開始時刻
+            float startTime = Time.time;
+            // 開始時点
+            float nextSpawnTime = startTime;
+            // wave.duration が -1 のときは無限ループ、それ以外は制限時間付きループ
+            bool isInfinite = wave.duration < 0;
+            float endTime = isInfinite ? float.MaxValue : startTime + wave.duration;
 
-            // イベント
-            if (wave.patternType == SpawnWaveData.SpawnPatternType.Event)
+            // 現在時刻が終了時刻を過ぎるまでループ（または無限）
+            while (Time.time < endTime)
             {
-                for (int i = 0; i < wave.spawnCount; i++)
+                // 現在時刻が次のスポーンタイミングになったか
+                if (Time.time >= nextSpawnTime)
                 {
-                    Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
-                }
-            }
-            // ループ
-            else if (wave.patternType == SpawnWaveData.SpawnPatternType.Loop)
-            {
-                // Waveの開始時間
-                float startTime = Time.time;
-                // Waveの終了時間
-                float endTime = startTime + wave.duration;
-                // 次にスポーンを行う時間
-                float nextSpawnTime = startTime;
-
-                // Waveの終了時間までループ処理を継続
-                while (Time.time < endTime)
-                {
-                    // 次のスポーン予定時間に達したかを判定
-                    if (Time.time >= nextSpawnTime)
+                    for (int i = 0; i < wave.spawnCount; i++)
                     {
-                        // 指定された数だけ敵を生成
-                        for (int i = 0; i < wave.spawnCount; i++)
-                        {
-                            Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
-                        }
-
-                        // 次のスポーン時間を更新
-                        nextSpawnTime += wave.interval;
+                        Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
                     }
 
-                    // 毎フレーム1回ループを継続、負荷軽減のため WaitForSeconds は使わない
-                    yield return null;
+                    // 次回のスポーン時間を interval 秒後に設定
+                    nextSpawnTime += wave.interval;
                 }
+
+                yield return null;
             }
         }
     }
-
 
     /// <summary>
     /// 生成処理
