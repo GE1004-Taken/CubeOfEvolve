@@ -13,7 +13,6 @@ public class CreatePrediction : MonoBehaviour
     [SerializeField] private Material _falseMaterial;
 
     [SerializeField] private SerializableReactiveProperty<bool> _isActived;
-
     public ReadOnlyReactiveProperty<bool> IsActived => _isActived;
 
     private ReactiveProperty<bool> _canCreated = new();
@@ -113,14 +112,15 @@ public class CreatePrediction : MonoBehaviour
             {
                 if (!hit.collider.CompareTag("Cube")) continue;
 
-                // 0.49fは隣接しているキューブを除外する為
-                var halfScale = cubeScale * 0.49f;
+                // 0.45fは隣接しているキューブを除外する為
+                var halfScale = cubeScale * 0.45f;
 
                 // 対象のキューブにめり込んでいるコライダー数
                 var cubeInsideColliders = Physics.OverlapBox(
                     cube.transform.position,
                     new Vector3(halfScale, halfScale, halfScale),
-                    cube.transform.rotation);
+                    cube.transform.rotation,
+                    LayerMask.GetMask("Player"));
 
                 // その数が0より大きいなら設置済みとみなす
                 if (cubeInsideColliders.Length > 0) return false;
@@ -146,5 +146,41 @@ public class CreatePrediction : MonoBehaviour
     public void RemoveObject()
     {
         _isActived.Value = false;
+    }
+
+    /// <summary>
+    /// 予期しない時に生成出来てしまうのを防ぐ関数
+    /// </summary>
+    public void ResistCreate()
+    {
+        // 生成できないようにする
+        _canCreated.Value = false;
+    }
+
+    /// <summary>
+    /// このスクリプトがアタッチされているオブジェクトの色を戻す
+    /// </summary>
+    public void ChangeNormalColor()
+    {
+        foreach (var renderer in _renderer)
+        {
+            renderer.material = _normalMaterial;
+        }
+    }
+
+    /// <summary>
+    /// このスクリプトがアタッチされているオブジェクトを色を不可能を示す色に変える
+    /// </summary>
+    public void ChangeFalseColor()
+    {
+        foreach (var renderer in _renderer)
+        {
+            renderer.material = _falseMaterial;
+        }
+    }
+
+    public void DestroyCheck()
+    {
+
     }
 }
