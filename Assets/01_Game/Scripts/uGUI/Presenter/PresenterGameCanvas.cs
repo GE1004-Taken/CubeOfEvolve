@@ -1,9 +1,7 @@
 using Assets.AT;
-using Assets.IGC2025.Scripts.Event;
 using R3;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -19,7 +17,6 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private TextMeshProUGUI _timeText;
         [SerializeField] private SliderAnimation _hpSliderAnimation;
         [SerializeField] private SliderAnimation _expSliderAnimation;
-        [SerializeField] private EventLevelUp _levelUp;
         [SerializeField] private TextScaleAnimation _cubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _maxCubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
@@ -54,15 +51,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 {
                     // Viewに反映
                     _expSliderAnimation.SliderAnime((float)x);
-                }).AddTo(this);
-
-            // Playerの経験値を監視
-            _models.Level
-                .Subscribe(_ =>
-                {
-                    // Event実行
-                    _levelUp.PlayLevelUpEvent();
-                    _hpSliderAnimation.GetComponent<Slider>().maxValue = _models.MaxHp.CurrentValue;
                 }).AddTo(this);
 
             // Playerの所持キューブ数を監視

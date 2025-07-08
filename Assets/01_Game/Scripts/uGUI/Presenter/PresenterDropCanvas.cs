@@ -8,7 +8,6 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
@@ -23,6 +22,7 @@ namespace Assets.IGC2025.Scripts.Presenter
         [Header("Views_Hovered")]
         [SerializeField] private TextMeshProUGUI _infoText; // 説明文
         [SerializeField] private TextMeshProUGUI _level; // 
+        [SerializeField] private TextMeshProUGUI _levelNext; // 
 
         // ----- Private Members (内部データ)
         private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
@@ -74,7 +74,7 @@ namespace Assets.IGC2025.Scripts.Presenter
 
             if (displayIds.Count == 0)
             {
-                Debug.Log("全モジュールが最大レベル。選択肢なし。");
+                //debug.log("全モジュールが最大レベル。選択肢なし。");
                 var Player = FindFirstObjectByType(typeof(PlayerCore));
                 Player.GetComponent<PlayerCore>().ReceiveMoney(500); // 500金追加
                 return;
@@ -98,22 +98,16 @@ namespace Assets.IGC2025.Scripts.Presenter
         {
             if (selectedModuleId == -1) // 何でもないものを選択した場合
             {
-                Debug.Log("Drop_Presenter: 代替オプションが選択されました。");
-                // ここで経験値獲得やコイン獲得などのロジックを呼び出す
-                // 例: GameManager.Instance.GainExperience(100);
             }
             else
             {
-                Debug.Log($"Drop_Presenter: ユーザーによってモジュールID {selectedModuleId} が選択されました。");
+                //debug.log($"Drop_Presenter: ユーザーによってモジュールID {selectedModuleId} が選択されました。");
 
                 // RuntimeModuleManager を介してモジュールのレベルアップ処理を実行
                 _runtimeModuleManager.LevelUpModule(selectedModuleId);
             }
 
             _dropView.gameObject.GetComponent<CanvasCtrl>().OnCloseCanvas();
-
-            // 必要であれば、UIの更新など、ゲーム全体の状態に応じた後処理を呼び出す
-            // 例: GameManager.Instance.OnPlayerModuleUpgraded();
         }
 
         /// <summary>
@@ -129,6 +123,7 @@ namespace Assets.IGC2025.Scripts.Presenter
             //_unitName.text = module.ViewName;
             _infoText.text = module.Description;
             _level.text = $"{Rruntime.CurrentLevelValue}";
+            _levelNext.text = $"{Rruntime.CurrentLevelValue + 1}";
             //_image.sprite = module.MainSprite;
             //_icon.sprite = module.BlockSprite;
             //_atk.text = $"{module.ModuleState?.Attack ?? 0}";
