@@ -16,4 +16,9 @@ public class UIReferenceRelay : MonoBehaviour
     {
         GameManager.RequestRetry();
     }
+
+    public void OnButtonReloadScene()
+    {
+        GameManager.Instance.GetComponent<SceneLoader>().ReloadScene();
+    }
 }
