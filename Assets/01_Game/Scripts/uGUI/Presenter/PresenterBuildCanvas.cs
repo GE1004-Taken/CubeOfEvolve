@@ -49,8 +49,13 @@ namespace Assets.IGC2025.Scripts.Presenter
         {
             // プレイヤーの所持金が変更された際に、テキストアニメーションを更新します。
             _playerCore.CubeCount
-                .Subscribe(x => _cubeQuantityText.text = $"{_playerCore.MaxCubeCount.CurrentValue - x}")
-                .AddTo(_disposables);
+                .CombineLatest(_playerCore.MaxCubeCount, (cube, maxCube) => new { cube, maxCube })
+                .Subscribe(x =>
+                {
+                    // Viewに反映
+                    _cubeQuantityText.text = $"{_playerCore.MaxCubeCount.CurrentValue - x.cube}";
+                }).AddTo(_disposables);
+
         }
         private void Awake()
         {
@@ -73,10 +78,6 @@ namespace Assets.IGC2025.Scripts.Presenter
             _buildView.OnModuleChoiceRequested
                 .Subscribe(moduleId => HandleModuleChoiceRequested(moduleId))
                 .AddTo(_disposables);
-
-            //_buildView.OnModuleHovered
-            //    .Subscribe(moduleId => HandleModuleHovered(moduleId))
-            //    .AddTo(_disposables);
 
             // RuntimeModuleManagerが管理するモジュールコレクション全体の変更を監視し、ビルドUIを更新する
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged

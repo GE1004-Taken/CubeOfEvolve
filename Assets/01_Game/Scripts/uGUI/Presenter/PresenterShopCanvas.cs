@@ -2,6 +2,7 @@ using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using Assets.AT;
 using Assets.IGC2025.Scripts.View;
+using Game.Utils;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,21 +142,42 @@ namespace Assets.IGC2025.Scripts.Presenter
 
             if (module == null || runtime == null) return;
 
+            int level = runtime.CurrentLevelValue;
+
+            // 攻撃力・連射・射程のスケーリング
+            float scaledAtk = StateValueCalculator.CalcStateValue(
+                baseValue: module.ModuleState?.Attack ?? 0f,
+                currentLevel: level,
+                maxLevel: 5,
+                maxRate: 0.5f // 最大+50%の成長
+            );
+
+            // 価格スケーリング（最大30%増）
+            float scaledPrice = StateValueCalculator.CalcStateValue(
+                baseValue: module.BasePrice,
+                currentLevel: level,
+                maxLevel: 5,
+                maxRate: 0.5f
+            );
+
+            // UIに反映
             _unitName.text = module.ViewName;
             _infoText.text = module.Description;
-            _level.text = $"{runtime.CurrentLevelValue}";
+            _level.text = $"{level}";
             _image.sprite = module.MainSprite;
             _icon.sprite = module.BlockSprite;
-            _atk.text = $"{module.ModuleState?.Attack ?? 0}";
-            _rpd.text = $"{module.ModuleState?.Interval ?? 0}";
-            _rng.text = $"{module.ModuleState?.SearchRange ?? 0}";
-            _prc.text = $"{module.BasePrice}";
+
+            _atk.text = $"{(int)scaledAtk}";
+            _rpd.text = $"{(int)module.ModuleState.Interval}";
+            _rng.text = $"{(int)module.ModuleState.SearchRange}";
+            _prc.text = $"{(int)scaledPrice}";
 
             _currentSelectedModuleId = moduleId;
 
             _confirmPurchaseButton.onClick.RemoveAllListeners();
             _confirmPurchaseButton.onClick.AddListener(() => HandleModulePurchaseRequested(moduleId));
         }
+
 
         private void HandleModulePurchaseRequested(int moduleId)
         {
@@ -165,12 +187,15 @@ namespace Assets.IGC2025.Scripts.Presenter
             RuntimeModuleData runtimeModule = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
             if (runtimeModule == null || runtimeModule.CurrentLevelValue == 0) return;
 
-            float CalculatePrice(float maxDiscountRate)
+            float CalculatePrice(float maxIncreaseRate, int maxLevel = 5)
             {
-                if (runtimeModule.CurrentLevelValue <= 1) return masterData.BasePrice;
-                if (runtimeModule.CurrentLevelValue >= 5) return masterData.BasePrice * (1f - maxDiscountRate);
-                float progress = (runtimeModule.CurrentLevelValue - 1) / 4f;
-                return masterData.BasePrice * (1f - maxDiscountRate * progress);
+                int currentLevel = runtimeModule.CurrentLevelValue;
+
+                if (currentLevel <= 1) return masterData.BasePrice;
+                if (currentLevel >= maxLevel) return masterData.BasePrice * (1f + maxIncreaseRate);
+
+                float progress = (currentLevel - 1f) / (maxLevel - 1f);
+                return masterData.BasePrice * (1f + maxIncreaseRate * progress);
             }
 
             var payPrice = CalculatePrice(0.5f);
