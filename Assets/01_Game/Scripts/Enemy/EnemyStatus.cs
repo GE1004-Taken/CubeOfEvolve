@@ -50,6 +50,12 @@ public class EnemyStatus : MonoBehaviour, IDamageble
             {
                 _itemDrop.DropItemProcess();
 
+                // ƒKƒCƒh•\¦iÅ‰‚Ì“G‚ª“|‚ê‚½‚Æ‚«j
+                if (GuideManager.GuideEnabled && !GuideManager.Instance.HasShown("FirstKill"))
+                {
+                    GuideManager.Instance.TryShowGuide("FirstKill");
+                }
+
                 Instantiate(_effect, transform.position, Quaternion.identity);
 
                 Destroy(gameObject);

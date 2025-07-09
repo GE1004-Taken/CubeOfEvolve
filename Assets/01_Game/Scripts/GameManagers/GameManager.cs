@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 
                     case GameState.READY:
                         ResetGame();
-                        ReadyGameAsync().Forget();
+                        ShowStartThenReady().Forget(); // © ”ñ“¯Šú‚Ìˆ—‚ğ•Ê‚É
                         break;
 
                     case GameState.BATTLE:
@@ -86,9 +86,16 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.BUILD:
-                        // ƒJƒƒ‰ˆÚ“®
                         CameraCtrlManager.Instance.ChangeCamera("Build Camera");
                         StopGame();
+
+                        GuideManager.Instance?.TryShowGuide("Build");
+                        break;
+
+                    case GameState.SHOP:
+                        StopGame();
+
+                        GuideManager.Instance?.TryShowGuide("Shop");
                         break;
 
                     case GameState.PAUSE:
@@ -220,5 +227,12 @@ public class GameManager : MonoBehaviour
     public void OnRetryButtonPressed()
     {
         GameManager.RequestRetry();
+    }
+
+    // ---------- PrivateMethod
+    private async UniTask ShowStartThenReady()
+    {
+        await GuideManager.Instance.ShowGuideAndWaitAsync("Start");
+        await ReadyGameAsync();
     }
 }
