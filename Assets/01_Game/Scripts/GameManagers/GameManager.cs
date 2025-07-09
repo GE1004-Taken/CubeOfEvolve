@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     private CanvasCtrlManager _canvasCtrlManager;
 
     private GameState _prevGameState;
+    public static bool IsRetry { get; private set; } = false;
+
+
     // ---------- RP
     private ReactiveProperty<GameState> _currentGameState = new();
     public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
@@ -73,7 +76,7 @@ public class GameManager : MonoBehaviour
 
                     case GameState.READY:
                         ResetGame();
-                        ReadyGameAsync().Forget(); // Å© UniTask Ç…íuÇ´ä∑Ç¶
+                        ReadyGameAsync().Forget();
                         break;
 
                     case GameState.BATTLE:
@@ -110,6 +113,16 @@ public class GameManager : MonoBehaviour
                 }
             })
             .AddTo(this);
+
+        if (IsRetry)
+        {
+            IsRetry = false;
+            ChangeGameState(GameState.READY);
+        }
+        else
+        {
+            ChangeGameState(GameState.TITLE); // í èÌãNìÆéû
+        }
     }
 
     // ---------- Event
@@ -194,5 +207,18 @@ public class GameManager : MonoBehaviour
     {
         _timeManager.ResetTimer();
         Time.timeScale = 1;
+    }
+
+    // ---------- PublicMethod
+
+    public static void RequestRetry()
+    {
+        IsRetry = true;
+        Instance.SceneLoader.ReloadScene();
+    }
+
+    public void OnRetryButtonPressed()
+    {
+        GameManager.RequestRetry();
     }
 }

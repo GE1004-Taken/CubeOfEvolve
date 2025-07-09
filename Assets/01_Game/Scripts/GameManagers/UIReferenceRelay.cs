@@ -8,4 +8,12 @@ public class UIReferenceRelay : MonoBehaviour
     {
         GameManager.Instance.ChangeGameState(state);
     }
+
+    /// <summary>
+    /// シーン上ボタンからの「やり直し」呼び出し
+    /// </summary>
+    public void OnRetryButtonPressed()
+    {
+        GameManager.RequestRetry();
+    }
 }
