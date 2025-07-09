@@ -18,6 +18,9 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField, Tooltip("‘ÎÛŒŸ’m—p")] protected LayerSearch _layerSearch;
     [SerializeField, Tooltip("UŒ‚‘ÎÛ‚Ìƒ^ƒO")] protected string _targetTag;
 
+    [Header("UŒ‚—Í")]
+    [SerializeField, Tooltip("Å‘åƒŒƒxƒ‹")] private int _maxLevel = 5;
+
     [Header("“G‚Ìê‡")]
     [SerializeField, Tooltip("UŒ‚—Í”{—¦")] private float _enemyRate = 1;
 
@@ -137,7 +140,7 @@ public abstract class WeaponBase : MonoBehaviour
     /// <returns></returns>
     private float CalculateAttack(int level)
     {
-        return _data.Attack * level + _attackStatusEffects;
+        return _data.Attack + _data.Attack * ((float)level / (float)_maxLevel) + _attackStatusEffects;
     }
 
     // ---------------------------- Abstract Method
