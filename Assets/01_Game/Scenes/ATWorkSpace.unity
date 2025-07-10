@@ -204,6 +204,37 @@ MonoBehaviour:
   - key: TitleFixedCamera
     Camera: {fileID: 1995164943}
   _initialActiveCameraKey: TitleDemoCamera
+--- !u!1 &83091428
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 83091429}
+  m_Layer: 0
+  m_Name: _PooledAudioSource_New_a41263dd9cac46fe9d93ec6086781d11
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &83091429
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83091428}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &207179261
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +869,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5095611727835368661, guid: 14d04cb8136761f4b91f700527ed72ea, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -4274284
+      value: -4276158
       objectReference: {fileID: 0}
     - target: {fileID: 5819946685723746814, guid: 14d04cb8136761f4b91f700527ed72ea, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1396,9 +1427,9 @@ MonoBehaviour:
       Rotation:
         value:
           x: 0.123776786
-          y: -0.0000000018981032
-          z: -0.14728148
-          w: 0.9813193
+          y: -0.000000001898103
+          z: -0.1472815
+          w: 0.98131925
     m_MetaData:
     - Mode: 2
       Tension: 0.5
@@ -2338,6 +2369,10 @@ PrefabInstance:
       propertyPath: Angle
       value: 234.51428
       objectReference: {fileID: 0}
+    - target: {fileID: 5138759043867956140, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1d8ffbb29d0e0ae4d9c01b1d49660074, type: 3}
     - target: {fileID: 5392971301578049964, guid: f6a366bf09edb70479f8dbbba431215b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -3591,3 +3626,4 @@ SceneRoots:
   - {fileID: 1600401578}
   - {fileID: 946881639}
   - {fileID: 1646095880}
+  - {fileID: 83091429}
