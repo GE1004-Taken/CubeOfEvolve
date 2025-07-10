@@ -10,6 +10,7 @@ namespace Assets.IGC2025.Scripts.GameManagers
         PAUSE,
         TUTORIAL,
         GAMEOVER,
-        GAMECLEAR
+        GAMECLEAR,
+        SHOP
     }
 }

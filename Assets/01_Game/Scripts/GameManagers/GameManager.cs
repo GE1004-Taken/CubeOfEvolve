@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     private CanvasCtrlManager _canvasCtrlManager;
 
     private GameState _prevGameState;
+    public static bool IsRetry { get; private set; } = false;
+
+
     // ---------- RP
     private ReactiveProperty<GameState> _currentGameState = new();
     public ReadOnlyReactiveProperty<GameState> CurrentGameState => _currentGameState;
@@ -73,7 +76,7 @@ public class GameManager : MonoBehaviour
 
                     case GameState.READY:
                         ResetGame();
-                        ReadyGameAsync().Forget(); // © UniTask ‚É’u‚«Š·‚¦
+                        ShowStartThenReady().Forget(); // © ”ñ“¯Šú‚Ìˆ—‚ğ•Ê‚É
                         break;
 
                     case GameState.BATTLE:
@@ -83,9 +86,16 @@ public class GameManager : MonoBehaviour
                         break;
 
                     case GameState.BUILD:
-                        // ƒJƒƒ‰ˆÚ“®
                         CameraCtrlManager.Instance.ChangeCamera("Build Camera");
                         StopGame();
+
+                        GuideManager.Instance?.TryShowGuide("Build");
+                        break;
+
+                    case GameState.SHOP:
+                        StopGame();
+
+                        GuideManager.Instance?.TryShowGuide("Shop");
                         break;
 
                     case GameState.PAUSE:
@@ -110,6 +120,16 @@ public class GameManager : MonoBehaviour
                 }
             })
             .AddTo(this);
+
+        if (IsRetry)
+        {
+            IsRetry = false;
+            ChangeGameState(GameState.READY);
+        }
+        else
+        {
+            ChangeGameState(GameState.TITLE); // ’Êí‹N“®
+        }
     }
 
     // ---------- Event
@@ -194,5 +214,25 @@ public class GameManager : MonoBehaviour
     {
         _timeManager.ResetTimer();
         Time.timeScale = 1;
+    }
+
+    // ---------- PublicMethod
+
+    public static void RequestRetry()
+    {
+        IsRetry = true;
+        Instance.SceneLoader.ReloadScene();
+    }
+
+    public void OnRetryButtonPressed()
+    {
+        GameManager.RequestRetry();
+    }
+
+    // ---------- PrivateMethod
+    private async UniTask ShowStartThenReady()
+    {
+        await GuideManager.Instance.ShowGuideAndWaitAsync("Start");
+        await ReadyGameAsync();
     }
 }
