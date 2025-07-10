@@ -66,7 +66,7 @@ MonoBehaviour:
     value: 100
   _maxHp:
     value: 100
-  _hpChangeValue: 15
+  _hpChangeValue: 20
   _invincibleTime: 0.5
   _moveSpeed:
     value: 5
@@ -101,6 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 4176307090542740963, guid: 3f1f541fac57ad84f9fa768dd2a23677, type: 3}
   _rayDist: 50
+  _isRemoving: 0
 --- !u!114 &3578453690902763032
 MonoBehaviour:
   m_ObjectHideFlags: 0
