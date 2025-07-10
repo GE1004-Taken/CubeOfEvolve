@@ -131,10 +131,10 @@ namespace Assets.IGC2025.Scripts.Presenter
             _infoText.text = module.Description;
             _level.text = $"{Level}";
             _levelNext.text = $"{Level + 1}";
-            _ATK.text = $"{ATK}";
-            _ATKNext.text = $"{StateValueCalculator.CalcStateValue(ATK, Level, 5, 0.5f)}";
-            _Price.text = $"{Price}";
-            _PriceNext.text = $"{StateValueCalculator.CalcStateValue(Price, Level, 5, 0.5f)}";
+            _ATK.text = $"{StateValueCalculator.CalcStateValue(ATK, Level, 5, 0.5f)}";
+            _ATKNext.text = $"{StateValueCalculator.CalcStateValue(ATK, Level + 1, 5, 0.5f)}";
+            _Price.text = $"{StateValueCalculator.CalcStateValue(Price, Level, 5, 0.5f)}";
+            _PriceNext.text = $"{StateValueCalculator.CalcStateValue(Price, Level + 1, 5, 0.5f)}";
             //_image.sprite = module.MainSprite;
             //_icon.sprite = module.BlockSprite;
             //_atk.text = $"{module.ModuleState?.Attack ?? 0}";
