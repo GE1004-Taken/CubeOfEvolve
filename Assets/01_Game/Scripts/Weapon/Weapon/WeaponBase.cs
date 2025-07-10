@@ -1,4 +1,7 @@
 using App.GameSystem.Modules;
+using Assets.IGC2025.Scripts.Presenter;
+using Assets.IGC2025.Scripts.View;
+using Game.Utils;
 using ObservableCollections;
 using R3;
 using R3.Triggers;
@@ -81,7 +84,7 @@ public abstract class WeaponBase : MonoBehaviour
             RuntimeModuleManager.Instance.GetRuntimeModuleData(_id).Level
                 .Subscribe(level =>
                 {
-                    _currentAttack = CalculateAttack(level);
+                    UpdateAttackStatus();
                 })
                 .AddTo(this);
         }
@@ -130,17 +133,14 @@ public abstract class WeaponBase : MonoBehaviour
         }
 
         var level = RuntimeModuleManager.Instance.GetRuntimeModuleData(_id).Level.CurrentValue;
-        _currentAttack = CalculateAttack(level);
-    }
 
-    /// <summary>
-    /// UŒ‚—ÍŒvZ
-    /// </summary>
-    /// <param name="level"></param>
-    /// <returns></returns>
-    private float CalculateAttack(int level)
-    {
-        return _data.Attack + _data.Attack * ((float)level / (float)_maxLevel) + _attackStatusEffects;
+        // UŒ‚—ÍŒvZ
+        _currentAttack = StateValueCalculator.CalcStateValue(
+                baseValue: _data.Attack,
+                currentLevel: level,
+                maxLevel: 5,
+                maxRate: 0.5f // Å‘å+50%‚Ì¬’·
+            ) + _attackStatusEffects;
     }
 
     // ---------------------------- Abstract Method

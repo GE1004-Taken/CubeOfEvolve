@@ -1,15 +1,14 @@
 using Assets.IGC2025.Scripts.GameManagers;
 using R3;
-using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerCore : MonoBehaviour, IDamageble
 {
     // ---------- RP
     [SerializeField, Tooltip("HP")] private SerializableReactiveProperty<float> _hp;
     [SerializeField, Tooltip("Å‘åHP")] private SerializableReactiveProperty<float> _maxHp;
+    [SerializeField, Tooltip("Hp‚Ì•Ï‰»’l")] private float _hpChangeValue = 10;
     [SerializeField, Tooltip("–³“GŠÔ")] private float _invincibleTime = 1.0f;
     [SerializeField, Tooltip("ˆÚ“®‘¬“x")] private SerializableReactiveProperty<float> _moveSpeed;
     [SerializeField, Tooltip("‰ñ“]‘¬“x")] private SerializableReactiveProperty<float> _rotateSpeed;
@@ -61,7 +60,7 @@ public class PlayerCore : MonoBehaviour, IDamageble
             .Skip(1)
             .Subscribe(x =>
             {
-                _maxCubeCount.Value += 3;
+                _maxCubeCount.Value += 2;
                 _requireExp.Value += _AddRequireExpAmount;
                 _AddRequireExpAmount *= 2;
             })
@@ -77,14 +76,14 @@ public class PlayerCore : MonoBehaviour, IDamageble
                 // ‘‰Áˆ—
                 if (x > _prevCubeCount)
                 {
-                    _maxHp.Value += 10;
-                    _hp.Value += 10;
+                    _maxHp.Value += _hpChangeValue;
+                    _hp.Value += _hpChangeValue;
                 }
                 // Œ¸­ˆ—
                 else if (x < _prevCubeCount)
                 {
-                    _maxHp.Value -= 10;
-                    _hp.Value -= 10;
+                    _maxHp.Value -= _hpChangeValue;
+                    _hp.Value -= _hpChangeValue;
                 }
 
                 _prevCubeCount = x;
