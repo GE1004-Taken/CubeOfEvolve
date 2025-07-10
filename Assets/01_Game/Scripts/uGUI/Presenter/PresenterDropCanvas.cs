@@ -2,6 +2,7 @@ using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.View;
 using AT.uGUI;
+using Game.Utils;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,10 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private TextMeshProUGUI _infoText; // 説明文
         [SerializeField] private TextMeshProUGUI _level; // 
         [SerializeField] private TextMeshProUGUI _levelNext; // 
+        [SerializeField] private TextMeshProUGUI _ATK; // 
+        [SerializeField] private TextMeshProUGUI _ATKNext; // 
+        [SerializeField] private TextMeshProUGUI _Price; // 
+        [SerializeField] private TextMeshProUGUI _PriceNext; // 
 
         // ----- Private Members (内部データ)
         private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
@@ -118,10 +123,18 @@ namespace Assets.IGC2025.Scripts.Presenter
             var module = _moduleDataStore.FindWithId(EnterModuleId);
             var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
 
+            var Level = Rruntime.CurrentLevelValue;
+            var ATK = module.ModuleState.Attack;
+            var Price = module.BasePrice;
+
             //_unitName.text = module.ViewName;
             _infoText.text = module.Description;
-            _level.text = $"{Rruntime.CurrentLevelValue}";
-            _levelNext.text = $"{Rruntime.CurrentLevelValue + 1}";
+            _level.text = $"{Level}";
+            _levelNext.text = $"{Level + 1}";
+            _ATK.text = $"{ATK}";
+            _ATKNext.text = $"{StateValueCalculator.CalcStateValue(ATK, Level, 5, 0.5f)}";
+            _Price.text = $"{Price}";
+            _PriceNext.text = $"{StateValueCalculator.CalcStateValue(Price, Level, 5, 0.5f)}";
             //_image.sprite = module.MainSprite;
             //_icon.sprite = module.BlockSprite;
             //_atk.text = $"{module.ModuleState?.Attack ?? 0}";

@@ -116,7 +116,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 .ToList();
 
             _shopView.DisplayShopModules(shopRuntimeModules, _moduleDataStore);
-            UpdatePurchaseButtonsInteractability();
         }
 
         private void UpdatePurchaseButtonsInteractability()
@@ -187,18 +186,13 @@ namespace Assets.IGC2025.Scripts.Presenter
             RuntimeModuleData runtimeModule = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
             if (runtimeModule == null || runtimeModule.CurrentLevelValue == 0) return;
 
-            float CalculatePrice(float maxIncreaseRate, int maxLevel = 5)
-            {
-                int currentLevel = runtimeModule.CurrentLevelValue;
+            var payPrice = StateValueCalculator.CalcStateValue(
+                baseValue: masterData.BasePrice,
+                currentLevel: runtimeModule.Level.CurrentValue,
+                maxLevel: 5,
+                maxRate: 0.5f
+            );
 
-                if (currentLevel <= 1) return masterData.BasePrice;
-                if (currentLevel >= maxLevel) return masterData.BasePrice * (1f + maxIncreaseRate);
-
-                float progress = (currentLevel - 1f) / (maxLevel - 1f);
-                return masterData.BasePrice * (1f + maxIncreaseRate * progress);
-            }
-
-            var payPrice = CalculatePrice(0.5f);
             if (_playerCore.Money.CurrentValue >= payPrice)
             {
                 _playerCore.PayMoney((int)payPrice);

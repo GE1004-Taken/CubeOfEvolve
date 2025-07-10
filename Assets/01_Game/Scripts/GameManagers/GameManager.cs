@@ -87,14 +87,10 @@ public class GameManager : MonoBehaviour
                     case GameState.BUILD:
                         CameraCtrlManager.Instance.ChangeCamera("Build Camera");
                         StopGame();
-
-                        GuideManager.Instance?.TryShowGuide("Build");
                         break;
 
                     case GameState.SHOP:
                         StopGame();
-
-                        GuideManager.Instance?.TryShowGuide("Shop");
                         break;
 
                     case GameState.PAUSE:
@@ -157,6 +153,8 @@ public class GameManager : MonoBehaviour
     public void ChangeGameState(int stateNum)
     {
         var state = (GameState)stateNum;
+
+        if (_currentGameState.Value == GameState.READY) return;
 
         // 前のステートを更新
         _prevGameState = _currentGameState.Value;
@@ -230,7 +228,9 @@ public class GameManager : MonoBehaviour
     // ---------- PrivateMethod
     private async UniTask ShowStartThenReady()
     {
-        await GuideManager.Instance.ShowGuideAndWaitAsync("Start");
+        GuideManager guideManager = GuideManager.Instance;
+        await guideManager.ShowGuideAndWaitAsync("Start");
+        await guideManager.DoBuildModeAndWaitAsync();
         await ReadyGameAsync();
     }
 }
