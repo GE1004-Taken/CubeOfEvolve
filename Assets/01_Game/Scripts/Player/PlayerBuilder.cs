@@ -46,12 +46,18 @@ public class PlayerBuilder : BasePlayerComponent
     private Subject<ModuleData> _selectModuleData = new();
     public Observable<ModuleData> OnSelectModuleData => _selectModuleData;
 
+    private Subject<Unit> _createSubject = new();
+
+    public Observable<Unit> OnCreate => _createSubject;
+
     // ---------- UnityMessage
     /// <summary>
     /// UnityMessageのStart()と同義
     /// </summary>
     protected override void OnInitialize()
     {
+        _createSubject.AddTo(this);
+
         var currentState =
             GameManager.Instance.CurrentGameState;
 
@@ -103,7 +109,7 @@ public class PlayerBuilder : BasePlayerComponent
 
         // 設置予測処理
         this.UpdateAsObservable()
-            .Where(_ => currentState.CurrentValue == GameState.BUILD)
+            .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.READY)
             .Subscribe(_ =>
             {
                 var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -204,7 +210,7 @@ public class PlayerBuilder : BasePlayerComponent
 
         // 回転処理
         InputEventProvider.Move
-            .Where(_ => currentState.CurrentValue == GameState.BUILD)
+            .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.READY)
             .DistinctUntilChanged()
             .Subscribe(x =>
             {
@@ -215,7 +221,7 @@ public class PlayerBuilder : BasePlayerComponent
         // 生成・削除処理
         InputEventProvider.Create
             .Where(x => x)
-            .Where(_ => currentState.CurrentValue == GameState.BUILD)
+            .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.READY)
             .Subscribe(_ =>
             {
                 // 生成モード
@@ -232,6 +238,8 @@ public class PlayerBuilder : BasePlayerComponent
 
                     // 生成予測キューブをヌルに
                     _predictCube = null;
+
+                    _createSubject.OnNext(Unit.Default);
 
                     // 生成するものがモジュールの時
                     if (_currentModuleData != null)
