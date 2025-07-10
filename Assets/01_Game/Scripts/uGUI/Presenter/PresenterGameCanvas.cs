@@ -26,7 +26,7 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         private TimeManager _timeManager;
 
-        private const float BOSS_CREATE_TIME = 60;
+        private const float BOSS_CREATE_TIME = 300;
 
         private void Start()
         {
