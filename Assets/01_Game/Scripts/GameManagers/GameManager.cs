@@ -1,11 +1,9 @@
-using R3;
-using UnityEngine;
-using Assets.IGC2025.Scripts.GameManagers;
 using Assets.AT;
-using System.Collections;
-using Unity.Cinemachine;
+using Assets.IGC2025.Scripts.GameManagers;
 using AT.uGUI;
 using Cysharp.Threading.Tasks;
+using R3;
+using UnityEngine;
 
 [RequireComponent(typeof(TimeManager))]
 [RequireComponent(typeof(SceneLoader))]
@@ -38,16 +36,16 @@ public class GameManager : MonoBehaviour
     // ---------- UnityMessage
     private void Awake()
     {
-        // シングルトン
-        if (Instance == null)
+        // すでに別のインスタンスが存在する場合、それを破棄
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Debug.Log("[GameManager] 古いインスタンスを破棄し、最新のインスタンスに差し替えます", this);
+            Destroy(Instance.gameObject);
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        // このインスタンスを最新として登録
+        Instance = this;
+        Debug.Log("[GameManager] 新しいインスタンスが設定されました", this);
 
         // 初期化
         _timeManager = GetComponent<TimeManager>();
@@ -60,22 +58,23 @@ public class GameManager : MonoBehaviour
     {
         // ゲームステート変更時の処理
         _currentGameState
-            .Skip(1)
+            //.Skip(1)
             .Subscribe(x =>
             {
                 Debug.Log($"【GameManager】 ゲームステートが変更されました {_prevGameState} -> {x}");
+                _canvasCtrlManager = CanvasCtrlManager.Instance;
 
                 switch (x)
                 {
                     case GameState.TITLE:
-                        Time.timeScale = 1f;
+                        _canvasCtrlManager.ShowOnlyCanvas("TitleView");
                         break;
 
                     case GameState.INITIALIZE:
+
                         break;
 
                     case GameState.READY:
-                        ResetGame();
                         ShowStartThenReady().Forget(); // ← 非同期の処理を別に
                         break;
 
@@ -120,7 +119,11 @@ public class GameManager : MonoBehaviour
                 }
             })
             .AddTo(this);
+    }
 
+    private void OnEnable()
+    {
+        ResetGame();
         if (IsRetry)
         {
             IsRetry = false;
@@ -128,7 +131,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ChangeGameState(GameState.TITLE); // 通常起動時
+            ChangeGameState(GameState.TITLE);
         }
     }
 
@@ -218,15 +221,10 @@ public class GameManager : MonoBehaviour
 
     // ---------- PublicMethod
 
-    public static void RequestRetry()
+    public void RequestRetry()
     {
         IsRetry = true;
         Instance.SceneLoader.ReloadScene();
-    }
-
-    public void OnRetryButtonPressed()
-    {
-        GameManager.RequestRetry();
     }
 
     // ---------- PrivateMethod

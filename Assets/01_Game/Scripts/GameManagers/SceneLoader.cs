@@ -23,11 +23,12 @@ public class SceneLoader : MonoBehaviour
     /// </summary>
     public void ReloadScene()
     {
-        if(IsRunning) return;
+        if (IsRunning) return;
 
         _transitionManager.Transition(
             SceneManager.GetActiveScene().name,
             _transitionSettings);
+        Time.timeScale = 1;
     }
 
     public void ReloadScene(float startDelay)

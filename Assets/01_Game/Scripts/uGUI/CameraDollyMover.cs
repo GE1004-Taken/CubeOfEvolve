@@ -1,3 +1,4 @@
+using Assets.IGC2025.Scripts.GameManagers;
 using DG.Tweening;
 using R3;
 using System.Collections;
@@ -49,7 +50,7 @@ namespace Assets.AT
 
             // タイトル終わったらストップ
             GameManager.Instance.CurrentGameState
-                .Where(x => x == IGC2025.Scripts.GameManagers.GameState.READY)
+                .Where(x => x != GameState.TITLE && GameManager.Instance.PrevGameState == GameState.TITLE)
                 .Take(1)
                 .Subscribe(x => { StopCoroutine(_coroutine); _panel.DOComplete(); })
                 .AddTo(this);
@@ -87,7 +88,6 @@ namespace Assets.AT
         {
             currentSplineContainerIndex = (currentSplineContainerIndex + 1) % _splineContainer.Length;
             _cinemachineSplineDolly.Spline = _splineContainer[currentSplineContainerIndex];
-            //Debug.Log($"SplineContainer を {_cinemachineSplineDolly.Spline.name} に切り替えました。");
         }
 
     }

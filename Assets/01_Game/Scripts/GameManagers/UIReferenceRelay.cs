@@ -14,11 +14,14 @@ public class UIReferenceRelay : MonoBehaviour
     /// </summary>
     public void OnRetryButtonPressed()
     {
-        GameManager.RequestRetry();
+        GameManager.Instance.RequestRetry();
     }
 
+    /// <summary>
+    /// シーン上ボタンからの「タイトルへ戻る」呼び出し
+    /// </summary>
     public void OnButtonReloadScene()
     {
-        GameManager.Instance.GetComponent<SceneLoader>().ReloadScene();
+        GameManager.Instance.SceneLoader.ReloadScene();
     }
 }
