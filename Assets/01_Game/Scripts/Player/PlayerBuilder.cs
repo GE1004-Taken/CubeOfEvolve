@@ -109,7 +109,7 @@ public class PlayerBuilder : BasePlayerComponent
 
         // 設置予測処理
         this.UpdateAsObservable()
-            .Where(_ => currentState.CurrentValue == GameState.BUILD)
+            .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.READY)
             .Subscribe(_ =>
             {
                 var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -210,7 +210,7 @@ public class PlayerBuilder : BasePlayerComponent
 
         // 回転処理
         InputEventProvider.Move
-            .Where(_ => currentState.CurrentValue == GameState.BUILD)
+            .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.READY)
             .DistinctUntilChanged()
             .Subscribe(x =>
             {
@@ -221,7 +221,7 @@ public class PlayerBuilder : BasePlayerComponent
         // 生成・削除処理
         InputEventProvider.Create
             .Where(x => x)
-            .Where(_ => currentState.CurrentValue == GameState.BUILD)
+            .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.READY)
             .Subscribe(_ =>
             {
                 // 生成モード
