@@ -9931,7 +9931,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<color=$0ff>\u30B7\u30E7\u30C3\u30D7</color>\u3078\u3088\u3046\u3053\u305D\u3002\n\n<color=$0ff>\u30B7\u30E7\u30C3\u30D7</color>\u3067\u306F\u3001\u30AF\u30EC\u30B8\u30C3\u30C8\u3092\u6D88\u8CBB\u3057\u3066\u30E2\u30B8\u30E5\u30FC\u30EB\u3092\u8CB7\u3046\u3053\u3068\u304C\u3067\u304D\u307E\u3059\u3002\n\u6700\u521D\u306F\u8CB7\u3046\u3053\u3068\u306E\u3067\u304D\u308B\u30E2\u30B8\u30E5\u30FC\u30EB\u306E\u7A2E\u985E\u306F\u5C11\u306A\u3044\u3067\u3059\u304C\u3001\n\u6226\u3063\u3066\u3044\u304F\u3053\u3068\u3067\u7A2E\u985E\u3092\u5897\u3084\u3059\u3053\u3068\u304C\u3067\u304D\u308B\u3067\u3057\u3087\u3046\u3002"
+  m_text: "<color=#0ff>\u30B7\u30E7\u30C3\u30D7</color>\u3078\u3088\u3046\u3053\u305D\u3002\n\n<color=#0ff>\u30B7\u30E7\u30C3\u30D7</color>\u3067\u306F\u3001<color=#ff0>\u30AF\u30EC\u30B8\u30C3\u30C8</color>\u3092\u6D88\u8CBB\u3057\u3066\u30E2\u30B8\u30E5\u30FC\u30EB\u3092\u8CB7\u3046\u3053\u3068\u304C\u3067\u304D\u307E\u3059\u3002\n\u6700\u521D\u306F\u8CB7\u3046\u3053\u3068\u306E\u3067\u304D\u308B\u30E2\u30B8\u30E5\u30FC\u30EB\u306E\u7A2E\u985E\u306F\u5C11\u306A\u3044\u3067\u3059\u304C\u3001\n\u6226\u3063\u3066\u3044\u304F\u3053\u3068\u3067\u7A2E\u985E\u3092\u5897\u3084\u3059\u3053\u3068\u304C\u3067\u304D\u308B\u3067\u3057\u3087\u3046\u3002"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3399f06b0509c5a449ddf28f891aead6, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: af082d5c8ce21a547ae3981a272c4300, type: 2}
@@ -15180,7 +15180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.019607844, g: 0, b: 0, a: 1}
   Color2: {r: 0.61635214, g: 0.61635214, b: 0.61635214, a: 1}
-  Angle: 1631490.8
+  Angle: 1632063.9
   _isAnime: 1
   _rotationSpeed: 300
 --- !u!1 &2966871649232209619
@@ -27487,9 +27487,9 @@ RectTransform:
   - {fileID: 7959527427413124244}
   m_Father: {fileID: 1757015202943517389}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -125}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -400, y: -125}
   m_SizeDelta: {x: 800, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5218255665521238077
@@ -33898,7 +33898,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.15686275, g: 0.14117648, b: 0.14117648, a: 1}
   Color2: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-  Angle: 245153.48
+  Angle: 238873.4
   _isAnime: 1
   _rotationSpeed: 180
 --- !u!1 &5585908736158749580
@@ -44130,7 +44130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 1631480.6
+  Angle: 1632053.8
   _isAnime: 1
   _rotationSpeed: 300
 --- !u!1 &7272389834020847404
@@ -45348,7 +45348,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.15686275, g: 0.14117648, b: 0.14117648, a: 1}
   Color2: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-  Angle: 241605.61
+  Angle: 235325.53
   _isAnime: 1
   _rotationSpeed: 180
 --- !u!1 &7717194280681923968
@@ -55038,7 +55038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 1110.9208
+  Angle: 317.52002
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1 &6157882955798168294 stripped
@@ -56016,7 +56016,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 976.36646
+  Angle: 182.9657
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &1931122794800522352
@@ -56385,7 +56385,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 939.5027
+  Angle: 146.10193
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &2339255624764757737
@@ -57065,7 +57065,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 1169.3274
+  Angle: 15.926697
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!224 &9049123938771851993 stripped
@@ -57334,7 +57334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 30175.152
+  Angle: 22181.752
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!224 &9036192598030792282 stripped
@@ -59768,7 +59768,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 31249.277
+  Angle: 23255.877
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &4733670077103505987
@@ -60198,7 +60198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 889.1356
+  Angle: 95.734924
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1 &1598265653808136447 stripped
@@ -61027,7 +61027,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 1170.3508
+  Angle: 16.950134
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!114 &2084951087912642363 stripped
@@ -61611,7 +61611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 1093.6201
+  Angle: 300.21936
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &5960330920994847885
@@ -61848,7 +61848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 28356.621
+  Angle: 20363.22
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &6119130206069801069
@@ -64513,7 +64513,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 32991.94
+  Angle: 24998.543
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1 &4124344560403777511 stripped
@@ -64853,7 +64853,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240719, guid: ffb2de42c0c9942e88ce7aab6979e17b, type: 3}
       propertyPath: Angle
-      value: 896.1708
+      value: 102.77008
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240719, guid: ffb2de42c0c9942e88ce7aab6979e17b, type: 3}
       propertyPath: Color1.b
@@ -65820,7 +65820,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 32527.45
+  Angle: 24534.049
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &8741656999104311479
@@ -66115,6 +66115,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2105301756336423226}
     m_Modifications:
+    - target: {fileID: 1333602740282119525, guid: 56dde1b2f76924b0e93e2291f5f2cbe2, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5882353
+      objectReference: {fileID: 0}
     - target: {fileID: 4990189651230657671, guid: 56dde1b2f76924b0e93e2291f5f2cbe2, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -66505,7 +66509,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e435c6437f404934d848b85c475d7d94, type: 2}
     - target: {fileID: 8693481879869899831, guid: 91cd2c6913c573d4f9853686fa513386, type: 3}
       propertyPath: Angle
-      value: 356718
+      value: 357291.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -66762,7 +66766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 29050.01
+  Angle: 21056.61
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &8981054972008349762
