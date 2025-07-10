@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 3667861190664114040}
   - component: {fileID: 9052929083457223410}
   - component: {fileID: 6744290596975991969}
+  - component: {fileID: 2811916178547420487}
   m_Layer: 8
   m_Name: Player
   m_TagString: Cube
@@ -65,7 +66,8 @@ MonoBehaviour:
     value: 100
   _maxHp:
     value: 100
-  _invincibleTime: 1
+  _hpChangeValue: 15
+  _invincibleTime: 0.5
   _moveSpeed:
     value: 5
   _rotateSpeed:
@@ -75,13 +77,14 @@ MonoBehaviour:
   _exp:
     value: 0
   _requireExp:
-    value: 100
+    value: 25
+  _AddRequireExpAmount: 25
   _cubeCount:
     value: 1
   _maxCubeCount:
-    value: 10
+    value: 1
   _money:
-    value: 1000
+    value: 50
   _skill:
     value: {fileID: 0}
 --- !u!114 &4100430175835617836
@@ -98,7 +101,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 4176307090542740963, guid: 3f1f541fac57ad84f9fa768dd2a23677, type: 3}
   _rayDist: 50
-  _isRemoving: 0
 --- !u!114 &3578453690902763032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,7 +243,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!65 &8812799401353895654
 BoxCollider:
@@ -515,6 +517,14 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!81 &2811916178547420487
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160600856621668459}
+  m_Enabled: 1
 --- !u!1 &5400399086143728076
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,8 +554,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5400399086143728076}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3826835, y: 0.000000044178453, z: -0.000000018299318, w: 0.9238795}
-  m_LocalPosition: {x: 0, y: 10, z: -10}
+  m_LocalRotation: {x: 0.0000000029047051, y: -0.9238796, z: 0.38268343, w: 0.0000000043465445}
+  m_LocalPosition: {x: 0, y: 10, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -789,8 +799,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8703840849904850160}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22975294, y: 0, z: 0, w: 0.973249}
-  m_LocalPosition: {x: 0, y: 5, z: -10}
+  m_LocalRotation: {x: 0, y: -0.973249, z: 0.22975294, w: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
