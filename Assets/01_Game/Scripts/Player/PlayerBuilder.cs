@@ -62,7 +62,7 @@ public class PlayerBuilder : BasePlayerComponent
                 // 既に生成予測キューブが生成されていたら破壊
                 if (_predictCube != null)
                 {
-                    Destroy(_predictCube);
+                    Destroy(_predictCube.gameObject);
                 }
 
                 // 武器が選択されていたら
