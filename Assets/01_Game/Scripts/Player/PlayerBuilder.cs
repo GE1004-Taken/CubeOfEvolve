@@ -137,8 +137,18 @@ public class PlayerBuilder : BasePlayerComponent
                         // 設置予測キューブの位置を更新
                         _predictCube.transform.position = _createPos;
 
-                        // 隣接するキューブがあるかチェック
-                        _predictCube?.CheckNeighboringAllCube();
+                        // キューブの設置上限を超えていないかモジュールを選択していたら
+                        if (Core.CubeCount.CurrentValue < Core.MaxCubeCount.CurrentValue
+                        || _currentModuleData != null)
+                        {
+                            // 隣接するキューブがあるかチェック
+                            _predictCube?.CheckNeighboringAllCube();
+                        }
+                        else
+                        {
+                            _predictCube.ResistCreate();
+                        }
+
                     }
                     // レイがキューブに当たらなくなったら処理
                     else
@@ -179,13 +189,14 @@ public class PlayerBuilder : BasePlayerComponent
                         .ChangeNormalColor();
                     }
 
-                    //
+                    // 現在の削除対象を更新
                     _curRemoveObject =
                         hit
                         .collider
                         .GetComponentInParent<CreatePrediction>()
                         .gameObject;
 
+                    // 現在の削除対象をの色を「置けない色」に変更
                     _curRemoveObject.GetComponent<CreatePrediction>()
                     .ChangeFalseColor();
                 }
@@ -235,10 +246,24 @@ public class PlayerBuilder : BasePlayerComponent
                         RuntimeModuleManager.Instance.ChangeModuleQuantity(
                             _currentModuleData.Id,
                             -1);
+
+                        var curRuntimeModuleData =
+                            RuntimeModuleManager
+                            .Instance
+                            .GetRuntimeModuleData(_currentModuleData.Id);
+
+                        // 選択しているモジュールの所持数が0以下なら選択解除する
+                        if (curRuntimeModuleData.Quantity.CurrentValue <= 0)
+                        {
+                            _targetCreatePrediction = null;
+                            _currentModuleData = null;
+                        }
                     }
                     // 生成するものがキューブの時
                     else
                     {
+                        // 現在設置しているキューブ数が上限以上なら処理しない
+                        if (Core.CubeCount.CurrentValue > Core.MaxCubeCount.CurrentValue) return;
                         // キューブの設置してる数を増やす
                         Core.AddCube();
                     }
