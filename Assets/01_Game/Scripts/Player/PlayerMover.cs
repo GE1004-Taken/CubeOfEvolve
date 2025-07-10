@@ -17,6 +17,7 @@ public class PlayerMover : BasePlayerComponent
 
         // 移動処理
         InputEventProvider.Move
+            .Where(_ => gameManager.CurrentGameState.CurrentValue == GameState.BATTLE)
             .Subscribe(x =>
             {
                 // カメラのxzの単位ベクトル取得

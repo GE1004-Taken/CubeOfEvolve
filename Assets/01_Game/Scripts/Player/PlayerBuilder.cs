@@ -1,6 +1,7 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.GameManagers;
+using System.Collections.Generic;
 using R3;
 using R3.Triggers;
 using UnityEngine;
@@ -18,8 +19,28 @@ public class PlayerBuilder : BasePlayerComponent
     // 対象の生成予測キューブ
     private CreatePrediction _predictCube = null;
     private Vector3 _createPos;
+    private Vector3 _createPosOffset = new Vector3(0f, 0.5f, 0f);
     // 仮
     private ModuleData _currentModuleData;
+
+    public bool _isRemoving;
+
+    private GameObject _prevRemoveObject;
+    private GameObject _curRemoveObject;
+
+    // 各方向を格納
+    private Vector3[] _directions =
+    {
+        Vector3.up,
+        -Vector3.up,
+        Vector3.right,
+        -Vector3.right,
+        Vector3.forward,
+        -Vector3.forward
+    };
+
+    // プレイヤーと繋がっているオブジェクト達
+    private List<GameObject> _connectCheckedObjects = new();
 
     // ---------- R3
     private Subject<ModuleData> _selectModuleData = new();
@@ -73,14 +94,16 @@ public class PlayerBuilder : BasePlayerComponent
             .Where(_ => currentState.CurrentValue == GameState.BATTLE)
             .Subscribe(_ =>
             {
+                _targetCreatePrediction = null;
+                _currentModuleData = null;
                 Destroy(_predictCube.gameObject);
             })
             .AddTo(this);
 
+
         // 設置予測処理
         this.UpdateAsObservable()
             .Where(_ => currentState.CurrentValue == GameState.BUILD)
-            .Where(_ => _targetCreatePrediction != null)
             .Subscribe(_ =>
             {
                 var mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -91,35 +114,91 @@ public class PlayerBuilder : BasePlayerComponent
                     mouseRay.direction * _rayDist,
                     out RaycastHit hit)) return;
 
-                // レイがキューブが当たったら処理
-                if (hit.collider.TryGetComponent<Cube>(out var cube))
+                if (!_isRemoving)
                 {
-                    // 生成位置取得
-                    _createPos = cube.transform.position + hit.normal;
+                    if (_targetCreatePrediction == null) return;
 
-                    // 設置予測キューブの多重生成防止
                     if (_predictCube == null)
                     {
                         _predictCube = Instantiate(
                             _targetCreatePrediction,
-                            _createPos,
+                            hit.point,
                             transform.rotation);
 
-                        _predictCube.transform.SetParent(transform);
+                        _predictCube.transform.SetParent(this.transform);
                     }
 
-                    // 設置予測キューブの位置を更新
-                    _predictCube.transform.position = _createPos;
+                    // レイがキューブが当たったら処理
+                    if (hit.collider.TryGetComponent<Cube>(out var cube))
+                    {
+                        // 生成位置取得
+                        _createPos = cube.transform.position + hit.normal;
 
-                    // 隣接するキューブがあるかチェック
-                    _predictCube?.CheckNeighboringAllCube();
+                        // 設置予測キューブの位置を更新
+                        _predictCube.transform.position = _createPos;
+
+                        // キューブの設置上限を超えていないかモジュールを選択していたら
+                        if (Core.CubeCount.CurrentValue < Core.MaxCubeCount.CurrentValue
+                        || _currentModuleData != null)
+                        {
+                            // 隣接するキューブがあるかチェック
+                            _predictCube?.CheckNeighboringAllCube();
+                        }
+                        else
+                        {
+                            _predictCube.ResistCreate();
+                        }
+
+                    }
+                    // レイがキューブに当たらなくなったら処理
+                    else
+                    {
+                        // レイが土台に当たっていない時は生成できないようにする
+                        _predictCube.ResistCreate();
+
+                        _predictCube.transform.position = hit.point + _createPosOffset;
+                    }
                 }
-                // レイがキューブに当たらなくなったら処理
                 else
                 {
-                    if (_predictCube == null) return;
+                    // レイに当たった物がプレイヤーの物でなかったら
+                    if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))
+                    {
+                        // 直前にプレイヤーの物に当たっていないなら処理しない
+                        if (_curRemoveObject == null) return;
 
-                    Destroy(_predictCube.gameObject);
+                        // 削除対象にレイが当たらなくなったら元の色に戻す
+                        _curRemoveObject
+                        .GetComponent<CreatePrediction>()
+                        .ChangeNormalColor();
+
+                        // 今レイに当たっている物変数をNullにする
+                        _curRemoveObject = null;
+
+                        return;
+                    }
+
+                    // レイに当たっているものが変わっていないなら処理しない
+                    if (_curRemoveObject == hit.collider.GetComponentInParent<CreatePrediction>().gameObject) return;
+
+                    // 直前にプレイヤーの物に当たっていないなら処理しない
+                    if (_curRemoveObject != null)
+                    {
+                        _curRemoveObject
+                        .GetComponent<CreatePrediction>()
+                        .ChangeNormalColor();
+                    }
+
+                    // 現在の削除対象を更新
+                    _curRemoveObject =
+                        hit
+                        .collider
+                        .GetComponentInParent<CreatePrediction>()
+                        .gameObject;
+
+                    // 現在の削除対象をの色を「置けない色」に変更
+                    _curRemoveObject.GetComponent<CreatePrediction>()
+                    .ChangeFalseColor();
                 }
             });
 
@@ -133,39 +212,83 @@ public class PlayerBuilder : BasePlayerComponent
             })
             .AddTo(this);
 
-        // 生成処理
+        // 生成・削除処理
         InputEventProvider.Create
             .Where(x => x)
             .Where(_ => currentState.CurrentValue == GameState.BUILD)
-            .Where(_ => _predictCube != null)
-            .Where(_ => _predictCube.CanCreated.CurrentValue)
             .Subscribe(_ =>
             {
-                // 武器・キューブの設置
-                _predictCube.CreateObject();
-
-                // 生成予測キューブをヌルに
-                _predictCube = null;
-
-                // 生成するものがモジュールの時
-                if (_currentModuleData != null)
+                // 生成モード
+                if (!_isRemoving)
                 {
-                    // オプションの時
-                    if (_currentModuleData.ModuleType == ModuleData.MODULE_TYPE.Options)
-                    {
-                        _currentModuleData.Model.GetComponent<OptionBase>().WhenEquipped();
-                    }
+                    // 予測キューブが生成されていないなら処理しない
+                    if (_predictCube == null) return;
 
-                    // モジュールの所持数を減らす
-                    RuntimeModuleManager.Instance.ChangeModuleQuantity(
-                        _currentModuleData.Id,
-                        -1);
+                    // 生成条件を満たしていないなら処理しない
+                    if (!_predictCube.CanCreated.CurrentValue) return;
+
+                    // 武器・キューブの設置
+                    _predictCube.CreateObject();
+
+                    // 生成予測キューブをヌルに
+                    _predictCube = null;
+
+                    // 生成するものがモジュールの時
+                    if (_currentModuleData != null)
+                    {
+                        // オプションの時
+                        if (_currentModuleData.ModuleType == ModuleData.MODULE_TYPE.Options)
+                        {
+                            _currentModuleData.Model.GetComponent<OptionBase>().WhenEquipped();
+                        }
+
+                        // モジュールの所持数を減らす
+                        RuntimeModuleManager.Instance.ChangeModuleQuantity(
+                            _currentModuleData.Id,
+                            -1);
+
+                        var curRuntimeModuleData =
+                            RuntimeModuleManager
+                            .Instance
+                            .GetRuntimeModuleData(_currentModuleData.Id);
+
+                        // 選択しているモジュールの所持数が0以下なら選択解除する
+                        if (curRuntimeModuleData.Quantity.CurrentValue <= 0)
+                        {
+                            _targetCreatePrediction = null;
+                            _currentModuleData = null;
+                        }
+                    }
+                    // 生成するものがキューブの時
+                    else
+                    {
+                        // 現在設置しているキューブ数が上限以上なら処理しない
+                        if (Core.CubeCount.CurrentValue > Core.MaxCubeCount.CurrentValue) return;
+                        // キューブの設置してる数を増やす
+                        Core.AddCube();
+                    }
                 }
-                // 生成するものがキューブの時
+                // 削除モード
                 else
                 {
-                    // キューブの設置してる数を増やす
-                    Core.AddCube();
+                    // 削除対象が存在しないなら処理しない
+                    if (_curRemoveObject == null) return;
+
+                    // WeaponBaseを継承していたらモジュールと見なす
+                    if (_curRemoveObject.TryGetComponent<WeaponBase>(out var weapon))
+                    {
+                        // 削除対象のモジュールの所持数を増やす
+                        RuntimeModuleManager.Instance.ChangeModuleQuantity(weapon.Id, 1);
+                    }
+                    // そうでないならキューブ(土台)と見なす
+                    else
+                    {
+                        // キューブの設置数を減らす
+                        Core.RemoveCube();
+                    }
+
+                    // 対象のオブジェクトを削除する
+                    Destroy(_curRemoveObject.gameObject);
                 }
             })
             .AddTo(this);
@@ -200,5 +323,51 @@ public class PlayerBuilder : BasePlayerComponent
     public void SetCube()
     {
         _selectModuleData.OnNext(null);
+    }
+
+    /// <summary>
+    /// 生成モードと削除モードを切り替える
+    /// </summary>
+    public void ChangeBuildMode()
+    {
+        // 削除中フラグを反転
+        _isRemoving = !_isRemoving;
+    }
+
+    /// <summary>
+    /// プレイヤーと繋がっているかを検証する
+    /// </summary>
+    /// <param name="cube"></param>
+    /// <param name="cubeScale"></param>
+    public void ConnectCheck(
+       GameObject cube,
+       float cubeScale)
+    {
+        _connectCheckedObjects.Add(cube);
+
+        foreach (var direction in _directions)
+        {
+            if (Physics.Raycast(
+            cube.transform.position,
+            direction,
+            out RaycastHit hit,
+            cubeScale,
+            LayerMask.GetMask("Player")))
+            {
+                // 対象のオブジェクトの生成予測スクリプトを取得
+                var prediction = GetComponentInParent<CreatePrediction>();
+
+                // 無いなら処理しない
+                if (prediction == null) continue;
+
+                // キューブスクリプトを取得
+                var targetCube = prediction.gameObject.GetComponent<Cube>();
+
+                // 対象のオブジェクトでまたこのスクリプトを実行
+                //prediction.DestroyCheck(
+                //    targetCube,
+                //    cubeScale);
+            }
+        }
     }
 }
