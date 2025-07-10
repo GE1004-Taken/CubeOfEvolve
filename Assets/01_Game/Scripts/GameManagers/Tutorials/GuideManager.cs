@@ -8,8 +8,6 @@ public class GuideManager : MonoBehaviour
 {
     public static GuideManager Instance { get; private set; }
 
-    [SerializeField] private Button guideIsenableSwichButton;
-
     public static bool GuideEnabled { get; private set; } = true;
 
     private static HashSet<string> shownGuides = new();

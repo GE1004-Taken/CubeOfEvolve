@@ -144,7 +144,7 @@ namespace Assets.IGC2025.Scripts.Presenter
 
             int level = runtime.CurrentLevelValue;
 
-            // 攻撃力・連射・射程のスケーリング
+            // 攻撃力のスケーリング
             float scaledAtk = StateValueCalculator.CalcStateValue(
                 baseValue: module.ModuleState?.Attack ?? 0f,
                 currentLevel: level,
@@ -152,7 +152,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                 maxRate: 0.5f // 最大+50%の成長
             );
 
-            // 価格スケーリング（最大30%増）
+            // 価格スケーリング（最大50%増）
             float scaledPrice = StateValueCalculator.CalcStateValue(
                 baseValue: module.BasePrice,
                 currentLevel: level,
@@ -168,8 +168,8 @@ namespace Assets.IGC2025.Scripts.Presenter
             _icon.sprite = module.BlockSprite;
 
             _atk.text = $"{(int)scaledAtk}";
-            _rpd.text = $"{(int)module.ModuleState.Interval}";
-            _rng.text = $"{(int)module.ModuleState.SearchRange}";
+            _rpd.text = $"{Mathf.FloorToInt(module?.ModuleState?.Interval ?? 0)}";
+            _rng.text = $"{Mathf.FloorToInt(module.ModuleState?.SearchRange ?? 0)}";
             _prc.text = $"{(int)scaledPrice}";
 
             _currentSelectedModuleId = moduleId;

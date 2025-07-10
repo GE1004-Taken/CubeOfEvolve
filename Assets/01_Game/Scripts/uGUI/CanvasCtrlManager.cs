@@ -5,8 +5,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq; // For LINQ's Where and ToList
-using static UnityEngine.EventSystems.EventTrigger;
+using System.Linq;
 
 
 #if UNITY_EDITOR
@@ -37,11 +36,7 @@ namespace AT.uGUI
 
         // --- Field
         [SerializeField]
-        private List<CanvasEntry> _canvasEntries; // m_Pairからより分かりやすい名前に変更
-
-        [Header("初期設定")]
-        [SerializeField]
-        private string _initialActiveCanvasKey = "TitleView"; // 初期表示するキャンバスのキー
+        private List<CanvasEntry> _canvasEntries;
 
         // --- Singleton Pattern
         public static CanvasCtrlManager Instance { get; private set; }
@@ -70,7 +65,7 @@ namespace AT.uGUI
                 _canvasEntries = _canvasEntries.Where(entry => entry.canvasCtrl != null).ToList();
             }
 
-            Initialize(_initialActiveCanvasKey);
+            Initialize();
         }
 
         // --- Private Methods
@@ -115,16 +110,14 @@ namespace AT.uGUI
         }
 
         /// <summary>
-        /// 全てのCanvasCtrlを非表示にし、指定されたキーのCanvasCtrlのみを表示します。
+        /// 依存関連の参照確認。全てのCanvasの非表示。
         /// </summary>
-        /// <param name="initialShowCanvasKey">最初に表示するCanvasCtrlのキー。</param>
-        /// <returns>初期化が成功した場合はtrue、指定されたキーのCanvasCtrlが見つからない場合はfalse。</returns>
-        private bool Initialize(string initialShowCanvasKey)
+        private void Initialize()
         {
             if (_canvasEntries == null)
             {
                 Debug.LogError("CanvasCtrlList: _canvasEntriesがnullです。Setupが実行されていませんか？", this);
-                return false;
+                return;
             }
 
             // 全てのキャンバスを非表示にする
@@ -134,24 +127,8 @@ namespace AT.uGUI
                 if (entry.canvasCtrl != null)
                 {
                     entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
-                    // entry.canvasCtrl.OnCloseCanvas(); // CanvasCtrlのHide()メソッドを使用
+                    //entry.canvasCtrl.OnCloseCanvas();
                 }
-            }
-
-            // 特定のキャンバスを表示する
-            CanvasCtrl initialCanvas = GetCanvas(initialShowCanvasKey);
-
-            if (initialCanvas == null)
-            {
-                Debug.LogError($"CanvasCtrlList: 初期表示Canvas '{initialShowCanvasKey}' が見つかりませんでした。", this);
-                return false;
-            }
-            else
-            {
-                initialCanvas.GetComponent<Canvas>().enabled = true;
-                //initialCanvas.OnOpenCanvas(); // CanvasCtrlのShow()メソッドを使用
-                //debug.log($"CanvasCtrlList: 初期化成功。'{initialShowCanvasKey}' が表示されました。");
-                return true;
             }
         }
 
