@@ -1,6 +1,7 @@
+using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.GameManagers;
+using ObservableCollections;
 using R3;
-using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,12 +9,17 @@ public class PlayerMover : BasePlayerComponent
 {
     // ---------- Field
     private Rigidbody _rb;
+    private float _currentSpeed;
 
     protected override void OnInitialize()
     {
         // 色々取得処理
         _rb = GetComponent<Rigidbody>();
         var gameManager = GameManager.Instance;
+        UpdateMoveSpeedStatus();
+
+        // オプション監視
+        ObserveStatusEffects();
 
         // 移動処理
         InputEventProvider.Move
@@ -30,7 +36,7 @@ public class PlayerMover : BasePlayerComponent
                 var moveDirection = camaraForward * x.y + Camera.main.transform.right * x.x;
 
                 _rb.linearVelocity =
-                moveDirection * Core.MoveSpeed.CurrentValue +
+                moveDirection * _currentSpeed +
                 new Vector3(0f, _rb.linearVelocity.y, 0f);
 
                 // 移動していたら回転
@@ -72,5 +78,42 @@ public class PlayerMover : BasePlayerComponent
                 }
             })
             .AddTo(this);
+    }
+
+    /// <summary>
+    /// オプションを監視
+    /// </summary>
+    private void ObserveStatusEffects()
+    {
+        var addStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
+        .ObserveAdd(destroyCancellationToken)
+        .Select(_ => Unit.Default);
+
+        var removeStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
+            .ObserveRemove(destroyCancellationToken)
+            .Select(_ => Unit.Default);
+
+        // どちらかのイベントが発生した時を監視
+        addStream.Merge(removeStream)
+            .Subscribe(_ =>
+            {
+                UpdateMoveSpeedStatus();
+            })
+            .AddTo(this);
+    }
+
+    /// <summary>
+    /// 移動速度更新
+    /// </summary>
+    private void UpdateMoveSpeedStatus()
+    {
+        _currentSpeed = 0;
+
+        foreach (var effect in RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList)
+        {
+            _currentSpeed += effect.MoveSpeed;
+        }
+
+        _currentSpeed += Core.MoveSpeed.CurrentValue;
     }
 }
