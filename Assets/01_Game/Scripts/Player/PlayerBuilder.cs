@@ -46,12 +46,18 @@ public class PlayerBuilder : BasePlayerComponent
     private Subject<ModuleData> _selectModuleData = new();
     public Observable<ModuleData> OnSelectModuleData => _selectModuleData;
 
+    private Subject<Unit> _createSubject = new();
+
+    public Observable<Unit> OnCreate => _createSubject;
+
     // ---------- UnityMessage
     /// <summary>
     /// UnityMessageのStart()と同義
     /// </summary>
     protected override void OnInitialize()
     {
+        _createSubject.AddTo(this);
+
         var currentState =
             GameManager.Instance.CurrentGameState;
 
@@ -232,6 +238,8 @@ public class PlayerBuilder : BasePlayerComponent
 
                     // 生成予測キューブをヌルに
                     _predictCube = null;
+
+                    _createSubject.OnNext(Unit.Default);
 
                     // 生成するものがモジュールの時
                     if (_currentModuleData != null)
