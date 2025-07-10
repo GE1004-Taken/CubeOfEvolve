@@ -45,10 +45,7 @@ public class Bullet_Linear : BulletBase
                     HitMethod();
                 }
 
-                if (other.CompareTag("Ground"))
-                {
-                    HitMethod();
-                }
+                HitMethod();
 
                 // “–‚½‚Á‚½‚Ì‹¤’Êˆ—
                 void HitMethod()
