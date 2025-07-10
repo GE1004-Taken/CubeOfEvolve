@@ -3,6 +3,7 @@ using UnityEngine;
 using AT.uGUI;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
+using Assets.AT;
 
 public class GuideManager : MonoBehaviour
 {
@@ -56,6 +57,18 @@ public class GuideManager : MonoBehaviour
 
             await UniTask.WaitUntil(() => !guide.GetComponent<Canvas>().enabled); // ”ñ”Ä—p
         }
+    }
+
+    public async UniTask DoBuildModeAndWaitAsync()
+    {
+        if (!GuideEnabled) return;
+
+        CanvasCtrlManager canvasCtrlManager = CanvasCtrlManager.Instance;
+
+        CameraCtrlManager.Instance.ChangeCamera("Build Camera");
+        canvasCtrlManager.ShowOnlyCanvas("BuildView");
+
+        await UniTask.WaitUntil(() => !canvasCtrlManager.GetCanvas("BuildView").GetComponent<Canvas>().enabled && !canvasCtrlManager.GetCanvas("ShopView").GetComponent<Canvas>().enabled); // ”ñ”Ä—p
     }
 
     public void ShowGuideAlways(string guideKey)

@@ -168,8 +168,8 @@ namespace AT.uGUI
             {
                 if (entry.canvasCtrl != null)
                 {
-                    entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
-                    //entry.canvasCtrl.OnCloseCanvas();
+                    //entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
+                    entry.canvasCtrl.OnCloseCanvas();
                 }
             }
         }
@@ -206,8 +206,8 @@ namespace AT.uGUI
 
             if (canvasToActivate != null)
             {
-                // canvasToActivate.OnOpenCanvas(); // 目的のキャンバスを表示
-                canvasToActivate.GetComponent<Canvas>().enabled = true;
+                canvasToActivate.OnOpenCanvas(); // 目的のキャンバスを表示
+                //canvasToActivate.GetComponent<Canvas>().enabled = true;
             }
             else
             {
