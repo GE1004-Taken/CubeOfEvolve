@@ -6,6 +6,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Assets.IGC2025.Scripts.GameManagers;
+
 
 
 #if UNITY_EDITOR
@@ -66,6 +68,12 @@ namespace AT.uGUI
             }
 
             Initialize();
+        }
+
+        private void Start()
+        {
+            ShowOnlyCanvas("TitleView");
+            GameManager.Instance.ChangeGameState(GameState.TITLE);
         }
 
         // --- Private Methods

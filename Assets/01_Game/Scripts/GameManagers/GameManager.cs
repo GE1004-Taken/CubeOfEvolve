@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
         // 初期化
         _timeManager = GetComponent<TimeManager>();
         _sceneLoader = GetComponent<SceneLoader>();
+        _currentGameState.Value = GameState.TITLE;
         _prevGameState = _currentGameState.Value;
 
     }
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
     {
         // ゲームステート変更時の処理
         _currentGameState
-            //.Skip(1)
+            .Skip(1)
             .Subscribe(x =>
             {
                 Debug.Log($"【GameManager】 ゲームステートが変更されました {_prevGameState} -> {x}");
