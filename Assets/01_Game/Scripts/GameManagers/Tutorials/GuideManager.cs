@@ -1,15 +1,19 @@
-using System.Collections.Generic;
-using UnityEngine;
+using Assets.AT;
 using AT.uGUI;
 using Cysharp.Threading.Tasks;
-using UnityEngine.UI;
-using Assets.AT;
+using R3;
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
 
 public class GuideManager : MonoBehaviour
 {
     public static GuideManager Instance { get; private set; }
 
-    public static bool GuideEnabled { get; private set; } = true;
+    // public static bool GuideEnabled { get; private set; } = true;
+
+    private static readonly ReactiveProperty<bool> isGuideEnabled = new(true);
+    public ReadOnlyReactiveProperty<bool> GuideEnabled => isGuideEnabled;
 
     private static HashSet<string> shownGuides = new();
     private CanvasCtrlManager canvasManager;
@@ -30,12 +34,12 @@ public class GuideManager : MonoBehaviour
 
     public void ToggleGuideEnabled()
     {
-        GuideEnabled = !GuideEnabled;
+        isGuideEnabled.Value = !isGuideEnabled.Value;
     }
 
     public void TryShowGuide(string guideKey)
     {
-        if (!GuideEnabled || HasShown(guideKey)) return;
+        if (!isGuideEnabled.Value || HasShown(guideKey)) return;
 
         var guide = canvasManager.GetCanvas(guideKey);
         if (guide != null)
@@ -45,9 +49,9 @@ public class GuideManager : MonoBehaviour
         }
     }
 
-    public async UniTask ShowGuideAndWaitAsync(string guideKey)
+    public async UniTask ShowGuideAndWaitAsync(string guideKey, CancellationToken token)
     {
-        if (!GuideEnabled || HasShown(guideKey)) return;
+        if (!isGuideEnabled.Value || HasShown(guideKey)) return;
 
         var guide = canvasManager.GetCanvas(guideKey);
         if (guide != null)
@@ -59,9 +63,9 @@ public class GuideManager : MonoBehaviour
         }
     }
 
-    public async UniTask DoBuildModeAndWaitAsync()
+    public async UniTask DoBuildModeAndWaitAsync(CancellationToken token)
     {
-        if (!GuideEnabled) return;
+        if (!isGuideEnabled.Value) return;
 
         CanvasCtrlManager canvasCtrlManager = CanvasCtrlManager.Instance;
 

@@ -6,7 +6,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Assets.IGC2025.Scripts.GameManagers;
 
 
 
@@ -68,12 +67,6 @@ namespace AT.uGUI
             }
 
             Initialize();
-        }
-
-        private void Start()
-        {
-            ShowOnlyCanvas("TitleView");
-            GameManager.Instance.ChangeGameState(GameState.TITLE);
         }
 
         // --- Private Methods
@@ -138,6 +131,7 @@ namespace AT.uGUI
                     //entry.canvasCtrl.OnCloseCanvas();
                 }
             }
+            Debug.Log("CanvasCtrlManager:èâä˙âªäÆóπ");
         }
 
         // --- Public Methods

@@ -8,7 +8,7 @@ public class Item_Blueprint : ItemBase
         RuntimeModuleManager.Instance.TriggerDropUI();
 
         // ガイド表示（設計図アイテムを初入手時）
-        if (GuideManager.GuideEnabled && !GuideManager.Instance.HasShown("Blueprint"))
+        if (GuideManager.Instance.GuideEnabled.CurrentValue && !GuideManager.Instance.HasShown("Blueprint"))
         {
             GuideManager.Instance.TryShowGuide("Blueprint");
         }
