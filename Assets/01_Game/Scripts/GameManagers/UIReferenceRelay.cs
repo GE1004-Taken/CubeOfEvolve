@@ -15,6 +15,7 @@ public class UIReferenceRelay : MonoBehaviour
     public void OnRetryButtonPressed()
     {
         GameManager.Instance.RequestRetry();
+        GameManager.Instance.SceneLoader.ReloadScene();
     }
 
     /// <summary>

@@ -51,7 +51,7 @@ public class EnemyStatus : MonoBehaviour, IDamageble
                 _itemDrop.DropItemProcess();
 
                 // ƒKƒCƒh•\¦iÅ‰‚Ì“G‚ª“|‚ê‚½‚Æ‚«j
-                if (GuideManager.GuideEnabled && !GuideManager.Instance.HasShown("FirstKill"))
+                if (GuideManager.Instance.GuideEnabled.CurrentValue && !GuideManager.Instance.HasShown("FirstKill"))
                 {
                     GuideManager.Instance.TryShowGuide("FirstKill");
                 }

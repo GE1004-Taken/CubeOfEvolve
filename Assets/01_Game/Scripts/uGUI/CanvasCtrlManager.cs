@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Linq;
 
 
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -130,6 +131,7 @@ namespace AT.uGUI
                     //entry.canvasCtrl.OnCloseCanvas();
                 }
             }
+            Debug.Log("CanvasCtrlManager:‰Šú‰»Š®—¹");
         }
 
         // --- Public Methods

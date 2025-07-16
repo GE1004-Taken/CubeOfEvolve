@@ -2,11 +2,12 @@ namespace Assets.IGC2025.Scripts.GameManagers
 {
     public enum GameState
     {
-        TITLE,
         INITIALIZE,
+        TITLE,
         READY,
-        BATTLE,
         BUILD,
+        BATTLE,
+        RESULT,
         PAUSE,
         TUTORIAL,
         GAMEOVER,

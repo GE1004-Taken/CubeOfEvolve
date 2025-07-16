@@ -1,6 +1,7 @@
 using Assets.AT;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace AT.uGUI
             _cameraCtrlManager = CameraCtrlManager.Instance;
         }
 
-        public async UniTask PlayReadySequenceAsync(System.Action onReadyComplete)
+        public async UniTask PlayReadySequenceAsync(System.Action onReadyComplete, CancellationToken token)
         {
             if (_canvas == null || _startText == null)
             {
