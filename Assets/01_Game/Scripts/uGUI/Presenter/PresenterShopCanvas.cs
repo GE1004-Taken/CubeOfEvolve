@@ -168,7 +168,7 @@ namespace Assets.IGC2025.Scripts.Presenter
 
             _atk.text = $"{(int)scaledAtk}";
             _rpd.text = $"{Mathf.FloorToInt(module?.ModuleState?.Interval ?? 0)}";
-            _rng.text = $"{Mathf.FloorToInt(module.ModuleState?.SearchRange ?? 0)}";
+            _rng.text = $"{Mathf.FloorToInt(module?.ModuleState?.SearchRange ?? 0)}";
             _prc.text = $"{(int)scaledPrice}";
 
             _currentSelectedModuleId = moduleId;
