@@ -139,6 +139,10 @@ public class GameManager : MonoBehaviour
             case GameState.RESULT:
                 await SetupResultAsync(token);
                 break;
+
+            case GameState.TUTORIAL:
+                await SetupTutorialAsync(token);
+                break;
             default:
                 break;
         }
@@ -233,5 +237,11 @@ public class GameManager : MonoBehaviour
         _canvasCtrlManager.ShowOnlyCanvas("ResultView");
         await UniTask.CompletedTask;
     }
+
+    private async UniTask SetupTutorialAsync(CancellationToken token)
+    {
+        await UniTask.CompletedTask;
+    }
+
     #endregion
 }
