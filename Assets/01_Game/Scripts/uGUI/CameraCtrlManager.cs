@@ -13,11 +13,14 @@ namespace Assets.AT
 {
     public class CameraCtrlManager : MonoBehaviour
     {
-        // --- 定数
+        // -----Singleton
+        public static CameraCtrlManager Instance { get; private set; }
+
+        // -----定数
         private const int BASE_PRIORITY = 10; // カメラの基本プライオリティ
         private const int ACTIVE_CAMERA_PRIORITY_OFFSET = 100; // アクティブカメラに加算するプライオリティ
 
-        // --- Inspector Control
+        // -----Inspector
         [System.Serializable]
         private class CameraEntry
         {
@@ -42,8 +45,7 @@ namespace Assets.AT
         private float _cameraBlendTime; // CinemachineBrainから取得したブレンド時間
         private string _currentActiveCameraKey = null; // 現在アクティブなカメラのキー
 
-        // ----- Singleton Pattern
-        public static CameraCtrlManager Instance { get; private set; }
+
 
         // カメラ切り替えの待機時間（ブレンド時間）を外部から取得するためのプロパティ
         public float CameraBlendTime => _cameraBlendTime;

@@ -1,8 +1,13 @@
+using Assets.AT;
 using Assets.IGC2025.Scripts.GameManagers;
 using UnityEngine;
 
 public class UIReferenceRelay : MonoBehaviour
 {
+    /// <summary>
+    /// シーン上ボタンからのGameStateの変更
+    /// </summary>
+    /// <param name="state"></param>
     [EnumAction(typeof(GameState))]
     public void OnButtonChangeGameState(int state)
     {
@@ -10,12 +15,22 @@ public class UIReferenceRelay : MonoBehaviour
     }
 
     /// <summary>
+    /// シーン上ボタンからのカメラの変更
+    /// </summary>
+    /// <param name="targetCameraKey"></param>
+    public void OnButtonChangeCamera(string targetCameraKey)
+    {
+        CameraCtrlManager.Instance.ChangeCamera(targetCameraKey);
+    }
+
+    /// <summary>
     /// シーン上ボタンからの「やり直し」呼び出し
     /// </summary>
     public void OnRetryButtonPressed()
     {
-        GameManager.Instance.RequestRetry();
-        GameManager.Instance.SceneLoader.ReloadScene();
+        var gameManager = GameManager.Instance;
+        gameManager.RequestRetry();
+        gameManager.SceneLoader.ReloadScene();
     }
 
     /// <summary>
@@ -23,6 +38,10 @@ public class UIReferenceRelay : MonoBehaviour
     /// </summary>
     public void OnButtonReloadScene()
     {
-        GameManager.Instance.SceneLoader.ReloadScene();
+        var gameManager = GameManager.Instance;
+        gameManager.RequestReturnToTitle();
+        gameManager.SceneLoader.ReloadScene();
     }
+
+
 }

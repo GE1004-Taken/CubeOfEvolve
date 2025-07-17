@@ -10,8 +10,6 @@ public class GuideManager : MonoBehaviour
 {
     public static GuideManager Instance { get; private set; }
 
-    // public static bool GuideEnabled { get; private set; } = true;
-
     private static readonly ReactiveProperty<bool> isGuideEnabled = new(true);
     public ReadOnlyReactiveProperty<bool> GuideEnabled => isGuideEnabled;
 
@@ -57,10 +55,10 @@ public class GuideManager : MonoBehaviour
         if (guide != null)
         {
             guide.OnOpenCanvas();
-            shownGuides.Add(guideKey);
-
-            await UniTask.WaitUntil(() => !guide.GetComponent<Canvas>().enabled); // 非汎用
+            shownGuides.Add(guideKey); // もう見たフラグ
         }
+
+        await UniTask.WaitUntil(() => !guide.GetComponent<Canvas>().enabled); // 非汎用 その画面が閉じるまで待機
     }
 
     public async UniTask DoBuildModeAndWaitAsync(CancellationToken token)
@@ -69,10 +67,12 @@ public class GuideManager : MonoBehaviour
 
         CanvasCtrlManager canvasCtrlManager = CanvasCtrlManager.Instance;
 
-        CameraCtrlManager.Instance.ChangeCamera("Build Camera");
+        //CameraCtrlManager.Instance.ChangeCamera("Build Camera");
         canvasCtrlManager.ShowOnlyCanvas("BuildView");
 
-        await UniTask.WaitUntil(() => !canvasCtrlManager.GetCanvas("BuildView").GetComponent<Canvas>().enabled && !canvasCtrlManager.GetCanvas("ShopView").GetComponent<Canvas>().enabled); // 非汎用
+        await UniTask.WaitUntil(() =>
+        !canvasCtrlManager.GetCanvas("BuildView").GetComponent<Canvas>().enabled
+        && !canvasCtrlManager.GetCanvas("ShopView").GetComponent<Canvas>().enabled); // 非汎用
     }
 
     public void ShowGuideAlways(string guideKey)
