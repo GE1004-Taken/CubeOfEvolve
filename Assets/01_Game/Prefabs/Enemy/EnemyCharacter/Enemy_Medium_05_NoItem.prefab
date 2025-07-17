@@ -46,7 +46,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7493165143647539368, guid: e1ce90e6c9328e64db08ef639c611baa, type: 3}
       propertyPath: m_Name
-      value: Enemy_Medium_05 1
+      value: Enemy_Medium_05_NoItem
       objectReference: {fileID: 0}
     - target: {fileID: 7554446048943423277, guid: e1ce90e6c9328e64db08ef639c611baa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -364,6 +364,10 @@ PrefabInstance:
       propertyPath: _spawnCount
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
+      propertyPath: _targetLayerMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -438,6 +442,10 @@ PrefabInstance:
       propertyPath: _spawnCount
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
+      propertyPath: _targetLayerMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -511,6 +519,10 @@ PrefabInstance:
     - target: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
       propertyPath: _spawnCount
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8370218730386169519, guid: 5c8bf8615ccc48e45a0ee72577e17f34, type: 3}
+      propertyPath: _targetLayerMask.m_Bits
+      value: 256
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1001,6 +1013,10 @@ PrefabInstance:
     - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: _targetTag
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _targetLayerMask.m_Bits
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 8252070589722386805, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: _mask.m_Bits
@@ -1599,6 +1615,10 @@ PrefabInstance:
       propertyPath: _targetTag
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _targetLayerMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 8252070589722386805, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: _mask.m_Bits
       value: 256
@@ -1989,6 +2009,10 @@ PrefabInstance:
     - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: _targetTag
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _targetLayerMask.m_Bits
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 8252070589722386805, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: _mask.m_Bits
