@@ -1,3 +1,4 @@
+using Assets.IGC2025.Scripts.GameManagers;
 using R3;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,19 +14,19 @@ public class EnemySpawner : MonoBehaviour
     private GameObject _target;
 
     // ---------------------------- UnityMessage
+
     private void Start()
     {
         _target = PlayerMonitoring.Instance.PlayerObj;
 
+        _waves.Sort((a, b) => a.delaySecond.CompareTo(b.delaySecond));
+
         GameManager.Instance.CurrentGameState
-            .Where(value => value == Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+            .Where(value => value == GameState.BATTLE)
             .Take(1)
             .Subscribe(_ =>
             {
-                // delaySecond の昇順に並び替えている
-                _waves.Sort((a, b) => a.delaySecond.CompareTo(b.delaySecond));
-
-                // 全Waveを開始
+                // 状態がBATTLEのときのみWave開始
                 foreach (var wave in _waves)
                 {
                     StartCoroutine(StartWave(wave));
@@ -38,15 +39,17 @@ public class EnemySpawner : MonoBehaviour
     /// <summary>
     /// ウェーブを開始する
     /// </summary>
-    /// <param name="wave"></param>
-    /// <returns></returns>
     private IEnumerator StartWave(SpawnWaveData wave)
     {
-        float waitTime = wave.delaySecond - GameManager.Instance.TimeManager.CurrentTimeSecond.CurrentValue;
-
-        if (waitTime > 0)
+        // バトル中のみカウントする遅延処理
+        float elapsed = 0f;
+        while (elapsed < wave.delaySecond)
         {
-            yield return new WaitForSeconds(waitTime);
+            if (GameManager.Instance.CurrentGameState.CurrentValue == GameState.BATTLE)
+            {
+                elapsed += Time.deltaTime;
+            }
+            yield return null;
         }
 
         // イベント
@@ -60,29 +63,27 @@ public class EnemySpawner : MonoBehaviour
         // ループ
         else if (wave.patternType == SpawnWaveData.SpawnPatternType.Loop)
         {
-            // Waveの開始時刻
-            float startTime = Time.time;
-            // 開始時点
-            float nextSpawnTime = startTime;
-            // wave.duration が -1 のときは無限ループ、それ以外は制限時間付きループ
-            bool isInfinite = wave.duration < 0;
-            float endTime = isInfinite ? float.MaxValue : startTime + wave.duration;
+            float loopElapsed = 0f;
+            float nextSpawnTime = wave.interval;
+            bool isInfinite = wave.duration < 0f;
 
-            // 現在時刻が終了時刻を過ぎるまでループ（または無限）
-            while (Time.time < endTime)
+            while (isInfinite || loopElapsed < wave.duration)
             {
-                // 現在時刻が次のスポーンタイミングになったか
-                if (Time.time >= nextSpawnTime)
+                if (GameManager.Instance.CurrentGameState.CurrentValue == GameState.BATTLE)
                 {
-                    for (int i = 0; i < wave.spawnCount; i++)
+                    // 出現タイミングに達したか
+                    if (loopElapsed >= nextSpawnTime)
                     {
-                        Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
+                        for (int i = 0; i < wave.spawnCount; i++)
+                        {
+                            Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
+                        }
+
+                        nextSpawnTime += wave.interval;
                     }
 
-                    // 次回のスポーン時間を interval 秒後に設定
-                    nextSpawnTime += wave.interval;
+                    loopElapsed += Time.deltaTime;
                 }
-
                 yield return null;
             }
         }
