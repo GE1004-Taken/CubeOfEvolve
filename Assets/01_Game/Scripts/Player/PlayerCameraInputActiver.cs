@@ -14,7 +14,8 @@ public class PlayerCameraInputActiver : BasePlayerComponent
     {
         // ゲームステートがビルド時に毎回初期化
         GameManager.Instance.CurrentGameState
-            .Where(x => x == GameState.BUILD)
+            .Where(x => x == GameState.BUILD
+            || x == GameState.TUTORIAL)
             .Subscribe(_ =>
             {
                 _buildCameraInput.enabled = false;
@@ -23,7 +24,8 @@ public class PlayerCameraInputActiver : BasePlayerComponent
 
         // ビルド時特定のボタンを押しているときに限りカメラ操作可能
         InputEventProvider.MoveCamera
-            .Where(_ => GameManager.Instance.CurrentGameState.CurrentValue == GameState.BUILD)
+            .Where(_ => GameManager.Instance.CurrentGameState.CurrentValue == GameState.BUILD
+            || GameManager.Instance.CurrentGameState.CurrentValue == GameState.TUTORIAL)
             .Subscribe(x =>
             {
                 // 押したらカメラ操作可能
