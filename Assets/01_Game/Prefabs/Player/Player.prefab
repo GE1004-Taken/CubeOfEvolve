@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 3667861190664114040}
   - component: {fileID: 9052929083457223410}
   - component: {fileID: 6744290596975991969}
-  - component: {fileID: 8005061039082935791}
+  - component: {fileID: 7929276025565629077}
   m_Layer: 8
   m_Name: Player
   m_TagString: Cube
@@ -202,11 +202,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 902af9e927ceed043a7337f39b6b536a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCamera: {fileID: 6463812221154307716}
-  _buildCamera: {fileID: 8229921984179564434}
-  _maxFov: 90
-  _minFov: 10
-  _zoomAmount: 10
+  _playerCamera: {fileID: 7412890912803992398}
+  _buildCamera: {fileID: 577843745337329749}
+  _maxRadius: 20
+  _minRadius: 5
+  _zoomAmount: 1
   _zoomTime: 0.1
 --- !u!114 &220927539275729124
 MonoBehaviour:
@@ -535,7 +535,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!81 &8005061039082935791
+--- !u!81 &7929276025565629077
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -572,8 +572,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5400399086143728076}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0000000015680791, y: -0.9238795, z: 0.3826835, w: -0.0000000021071358}
-  m_LocalPosition: {x: 0, y: 10, z: 10}
+  m_LocalRotation: {x: -8.584816e-17, y: -0.98836154, z: 0.15212339, w: -3.2453112e-16}
+  m_LocalPosition: {x: 0, y: 3.0070581, z: 9.537169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -637,11 +637,11 @@ MonoBehaviour:
   TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 5, y: 5, z: 5}
+    PositionDamping: {x: 0, y: 0, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  OrbitStyle: 1
+  OrbitStyle: 0
   Radius: 10
   Orbits:
     Top:
@@ -668,7 +668,7 @@ MonoBehaviour:
   VerticalAxis:
     Value: 17.5
     Center: 17.5
-    Range: {x: -10, y: 45}
+    Range: {x: 0, y: 89}
     Wrap: 0
     Recentering:
       Enabled: 0
@@ -817,8 +817,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8703840849904850160}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.973249, z: 0.22975294, w: 0}
-  m_LocalPosition: {x: 0, y: 5, z: 10}
+  m_LocalRotation: {x: 0, y: -0.98836154, z: 0.15212339, w: 0}
+  m_LocalPosition: {x: 0, y: 3.0070581, z: 9.537169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -879,14 +879,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetOffset: {x: 0, y: -5, z: 0}
+  TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 0, y: 0, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  OrbitStyle: 1
+  OrbitStyle: 0
   Radius: 10
   Orbits:
     Top:
@@ -913,7 +913,7 @@ MonoBehaviour:
   VerticalAxis:
     Value: 17.5
     Center: 17.5
-    Range: {x: -10, y: 45}
+    Range: {x: 0, y: 89}
     Wrap: 0
     Recentering:
       Enabled: 0
@@ -1025,6 +1025,10 @@ PrefabInstance:
     - target: {fileID: 1597818065742018537, guid: cb9c90f793e52214cbc1495ba47fed3f, type: 3}
       propertyPath: m_Name
       value: BuildArrow
+      objectReference: {fileID: 0}
+    - target: {fileID: 1597818065742018537, guid: cb9c90f793e52214cbc1495ba47fed3f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2118741023200996691, guid: cb9c90f793e52214cbc1495ba47fed3f, type: 3}
       propertyPath: m_LocalPosition.x
