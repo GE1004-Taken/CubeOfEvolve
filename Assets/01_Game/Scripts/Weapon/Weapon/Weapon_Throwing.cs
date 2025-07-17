@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class Weapon_Throwing : WeaponBase
 {
+    // ---------------------------- SerializeField
     [Header("弾")]
     [SerializeField] private Transform _bulletSpawnPos;
     [SerializeField] private Bullet_Bomb _bullet;
     [SerializeField] private float _shootAngle;
 
+    // ---------------------------- OverrideMethod
     protected override void Attack()
     {
         // ボールを射出する
@@ -16,6 +18,7 @@ public class Weapon_Throwing : WeaponBase
         GameSoundManager.Instance.PlaySFX(_fireSEName, transform, _fireSEName);
     }
 
+    // ---------------------------- PrivateMethod
     /// <summary>
     /// ボールを射出する
     /// </summary>
@@ -47,18 +50,18 @@ public class Weapon_Throwing : WeaponBase
 
 
             ball.Initialize(
-                _targetTag,
+                _targetLayerMask,
                 _currentAttack);
         }
     }
 
-
     /// <summary>
     /// 標的に命中する射出速度の計算
     /// </summary>
-    /// <param name="startPos">射出開始座標</param>
-    /// <param name="endPos">標的の座標</param>
-    /// <returns>射出速度</returns>
+    /// <param name="startPos"></param>
+    /// <param name="endPos"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
     private Vector3 CalculateVelocity(Vector3 startPos, Vector3 endPos, float angle)
     {
         // 射出角をラジアンに変換

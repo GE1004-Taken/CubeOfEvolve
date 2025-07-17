@@ -1,4 +1,3 @@
-using Assets.AT;
 using UnityEngine;
 
 public class Weapon_Drill : WeaponBase
@@ -12,9 +11,10 @@ public class Weapon_Drill : WeaponBase
         // LayerSearch ‚É‚æ‚éŒŸõŒ‹‰Ê‚ğg‚¤
         foreach (var obj in _layerSearch.NearestTargetList)
         {
-            string layerName = LayerMask.LayerToName(obj.layer);
-            if (obj.transform.root.TryGetComponent<IDamageble>(out var damageble)
-                && layerName == _targetTag)
+            GameObject rootObj = obj.transform.root.gameObject;
+
+            if ((_targetLayerMask.value & (1 << rootObj.layer)) != 0 &&
+                rootObj.TryGetComponent<IDamageble>(out var damageble))
             {
                 damageble.TakeDamage(_currentAttack);
 
