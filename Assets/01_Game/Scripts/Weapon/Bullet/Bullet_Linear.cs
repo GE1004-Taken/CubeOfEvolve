@@ -22,6 +22,11 @@ public class Bullet_Linear : BulletBase
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
+                if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+                {
+                    return;
+                }
+
                 if (_direction != Vector3.zero)
                 {
                     transform.rotation = Quaternion.LookRotation(_direction);
@@ -36,23 +41,25 @@ public class Bullet_Linear : BulletBase
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
-                string layerName = LayerMask.LayerToName(other.transform.root.gameObject.layer);
-                if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
-                    && layerName == _targetLayerName)
+                GameObject rootObj = other.transform.root.gameObject;
+
+                if ((_targetLayerMask.value & (1 << rootObj.layer)) != 0 &&
+                    rootObj.TryGetComponent<IDamageble>(out var damageble))
                 {
                     damageble.TakeDamage(_attack);
-
                     HitMethod();
+
+                    return;
                 }
 
+                // ìñÇΩÇ¡ÇΩéûÇÃã§í èàóù
                 HitMethod();
 
-                // ìñÇΩÇ¡ÇΩéûÇÃã§í èàóù
                 void HitMethod()
                 {
                     GameSoundManager.Instance.PlaySFX(_hitSEName, transform, _hitSEName);
-                    Instantiate(_hitEffect, transform.position, Quaternion.identity);
-
+                    var effect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
+                    effect.AddComponent<StopEffect>();
                     Destroy(gameObject);
                 }
             })
@@ -61,12 +68,12 @@ public class Bullet_Linear : BulletBase
 
     // ---------------------------- PublicMethod
     public void Initialize(
-        string targetTag,
+        LayerMask layerMask,
         float attack,
         float moveSpeed,
         Vector3 direction)
     {
-        _targetLayerName = targetTag;
+        _targetLayerMask = layerMask;
         _attack = attack;
         _moveSpeed = moveSpeed;
         _direction = direction;
