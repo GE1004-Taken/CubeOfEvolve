@@ -124,7 +124,7 @@ namespace Assets.IGC2025.Scripts.Presenter
             var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
 
             var Level = Rruntime.CurrentLevelValue;
-            var ATK = module.ModuleState.Attack;
+            var ATK = module?.ModuleState?.Attack ?? 0;
             var Price = module.BasePrice;
 
             //_unitName.text = module.ViewName;
