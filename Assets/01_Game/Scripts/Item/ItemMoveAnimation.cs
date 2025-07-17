@@ -3,7 +3,6 @@ using R3;
 using R3.Triggers;
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class ItemMoveAnimation : MonoBehaviour
 {
@@ -47,6 +46,12 @@ public class ItemMoveAnimation : MonoBehaviour
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
+                if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+                {
+                    _rb.linearVelocity = Vector3.zero;
+                    return;
+                }
+
                 SuctionProcess();
             })
             .AddTo(this);
