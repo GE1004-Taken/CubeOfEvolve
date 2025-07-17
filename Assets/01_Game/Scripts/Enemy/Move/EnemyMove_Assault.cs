@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using R3;
+using R3.Triggers;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -15,6 +17,7 @@ public class EnemyMove_Assault : EnemyMoveBase
     // ---------------------------- Field
     private Vector3 _moveForward;
     private bool _isAssault = false;
+    private float _countSecond = 0;
 
     private CancellationToken _token;
 
@@ -62,27 +65,52 @@ public class EnemyMove_Assault : EnemyMoveBase
         }
     }
 
+    private void Update()
+    {
+        if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+        {
+            return;
+        }
+
+        _countSecond += Time.deltaTime;
+
+        if (_countSecond >= _moveDelaySecond)
+        {
+            if (this != null && gameObject != null)
+            {
+                _isAssault = true;
+            }
+        }
+        if (_countSecond >= _moveDelaySecond + _destroyDelaySecond)
+        {
+            if (this != null && gameObject != null)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+
     /// <summary>
     /// 初期化
     /// </summary>
-    public override async void Initialize()
+    public override void Initialize()
     {
-        // キャンセル処理を書くところ要相談
-        await UniTask.Delay(TimeSpan.FromSeconds(_moveDelaySecond), cancellationToken: _token, delayType: DelayType.DeltaTime)
-         .SuppressCancellationThrow();
+        //// キャンセル処理を書くところ要相談
+        //await UniTask.Delay(TimeSpan.FromSeconds(_moveDelaySecond), cancellationToken: _token, delayType: DelayType.DeltaTime)
+        // .SuppressCancellationThrow();
 
-        if (this != null && gameObject != null)
-        {
-            _isAssault = true;
-        }
+        //if (this != null && gameObject != null)
+        //{
+        //    _isAssault = true;
+        //}
 
-        // キャンセル処理を書くところ要相談
-        await UniTask.Delay(TimeSpan.FromSeconds(_destroyDelaySecond), cancellationToken: _token, delayType: DelayType.DeltaTime)
-         .SuppressCancellationThrow();
+        //// キャンセル処理を書くところ要相談
+        //await UniTask.Delay(TimeSpan.FromSeconds(_destroyDelaySecond), cancellationToken: _token, delayType: DelayType.DeltaTime)
+        // .SuppressCancellationThrow();
 
-        if (this != null && gameObject != null)
-        {
-            Destroy(gameObject);
-        }
+        //if (this != null && gameObject != null)
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 }
