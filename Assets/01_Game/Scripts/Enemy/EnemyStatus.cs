@@ -38,7 +38,7 @@ public class EnemyStatus : MonoBehaviour, IDamageble
 
 
     // ---------------------------- UnityMessage
-    private void Awake()
+    private void Start()
     {
         _currentAct.Value = ActionPattern.WAIT;
 
@@ -56,7 +56,8 @@ public class EnemyStatus : MonoBehaviour, IDamageble
                     GuideManager.Instance.TryShowGuide("FirstKill");
                 }
 
-                Instantiate(_effect, transform.position, Quaternion.identity);
+                var effect = Instantiate(_effect, transform.position, Quaternion.identity);
+                effect.AddComponent<StopEffect>();
 
                 Destroy(gameObject);
             })
