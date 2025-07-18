@@ -6,7 +6,7 @@ public class Weapon_Throwing : WeaponBase
     // ---------------------------- SerializeField
     [Header("’e")]
     [SerializeField] private Transform _bulletSpawnPos;
-    [SerializeField] private Bullet_Bomb _bullet;
+    [SerializeField] private BulletBase _bullet;
     [SerializeField] private float _shootAngle;
 
     // ---------------------------- OverrideMethod
