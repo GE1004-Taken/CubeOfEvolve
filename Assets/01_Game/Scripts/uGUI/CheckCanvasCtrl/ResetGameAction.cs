@@ -9,7 +9,9 @@ public class ResetGameAction : ScriptableObject, ICheckAction
     public void OnYes()
     {
         // ここにゲームデータのリセット処理を記述します。
-        // 例：PlayerPrefs.DeleteAll(); や、セーブデータのファイルを削除するなど。
+        var gameManager = GameManager.Instance;
+        gameManager.RequestResetAll();
+        gameManager.SceneLoader.ReloadScene();
     }
 
     /// <summary>

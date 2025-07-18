@@ -29,17 +29,35 @@ namespace AT.uGUI
         // ---------------------------- button
         public void OnOpenCanvas(Button clickedButton = null) // ˆø”‚Æ‚µ‚Ä‰Ÿ‚³‚ê‚½ƒ{ƒ^ƒ“‚ğó‚¯æ‚é
         {
+            if (_canvas.enabled) return;
+
             if (clickedButton == null) Debug.Log("null‚È‚Ì‚Å‚·‚é\");
             _canvas.enabled = true;
             if (_closeBtnList.Count != 0) _closeBtnList[0].Select();
             if (clickedButton != null) _saveBtn = clickedButton;
             _openEvent?.Invoke();
         }
+
         public void OnCloseCanvas()
         {
+            if (!_canvas.enabled) return;
+
             _canvas.enabled = false;
             if (_saveBtn != null) _saveBtn.Select();
             _closeEvent?.Invoke();
+        }
+
+        public void OnSwitchCanvas()
+        {
+            switch (_canvas.enabled)
+            {
+                case true:
+                    OnCloseCanvas();
+                    break;
+                case false:
+                    OnOpenCanvas();
+                    break;
+            }
         }
 
         // ---------------------------- UnityMessage

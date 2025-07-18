@@ -26,7 +26,7 @@ namespace Assets.AT
         private float _fadeTime;
         private float _intervalTime;
 
-        Coroutine _coroutine;
+        private Coroutine _coroutine;
         private const int FIRST_SPLINE_NUM = 0;
 
         // -----UnityMessage
@@ -35,7 +35,7 @@ namespace Assets.AT
             // null 確認
             if (_cinemachineSplineDolly == null || _splineContainer == null)
             {
-                Debug.LogError("CameraDollyMover:CinemachineSplineDolly か SplineContainer 参照されてないよ");
+                Debug.LogError("CameraDollyMover:CinemachineSplineDolly か SplineContainer が設定されていません");
                 enabled = false;
                 return;
             }
@@ -44,51 +44,89 @@ namespace Assets.AT
             currentSplineContainerIndex = FIRST_SPLINE_NUM;
             _cinemachineSplineDolly.Spline = _splineContainer[currentSplineContainerIndex];
             _panel.enabled = true;
+
             _fadeTime = _intervalForChangeSpline * 0.1f;
             _intervalTime = _intervalForChangeSpline - _fadeTime * 2;
-            _coroutine = StartCoroutine(AutoChangeSpline());
 
-            // タイトル終わったらストップ
+            // GameStateがTITLEのときのみ Coroutine を開始、それ以外で停止
             GameManager.Instance.CurrentGameState
-                .Where(x => x != GameState.TITLE && GameManager.Instance.PrevGameState == GameState.TITLE)
-                .Take(1)
-                .Subscribe(x => { StopCoroutine(_coroutine); _panel.DOComplete(); })
+                .Subscribe(state =>
+                {
+                    if (state == GameState.TITLE)
+                    {
+                        // 既に動いていれば止める
+                        if (_coroutine != null)
+                        {
+                            StopCoroutine(_coroutine);
+                            _coroutine = null;
+                        }
+
+                        // Coroutine を開始
+                        _coroutine = StartCoroutine(AutoChangeSpline());
+                    }
+                    else
+                    {
+                        // Coroutine を停止、安全処理
+                        if (_coroutine != null)
+                        {
+                            StopCoroutine(_coroutine);
+                            _coroutine = null;
+                        }
+
+                        // DOTween演出も止める
+                        _panel?.DOComplete();
+                        _panel?.DOKill();
+                    }
+                })
                 .AddTo(this);
         }
 
         private void OnDestroy()
         {
-            StopCoroutine(_coroutine);
-            _panel.DOComplete();
+            // Coroutine 停止と演出停止（破棄時）
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+                _coroutine = null;
+            }
+            _panel?.DOComplete();
+            _panel?.DOKill();
         }
 
         // -----Private
         /// <summary>
-        /// 時間経過でカメラの移動ルートを切り替える
+        /// 時間経過でカメラの移動ルートを切り替える（Coroutine）
         /// </summary>
-        /// <returns></returns>
         private IEnumerator AutoChangeSpline()
         {
             while (true)
             {
-                _panel.DOFade(0, _fadeTime);
+                // フェードアウト
+                _panel?.DOFade(0, _fadeTime);
                 yield return new WaitForSeconds(_intervalTime);
-                _panel.DOFade(1, _fadeTime);
+
+                // フェードイン
+                _panel?.DOFade(1, _fadeTime);
                 yield return new WaitForSeconds(_fadeTime);
-                _cinemachineSplineDolly.CameraPosition = 0;
-                SwitchToNextSpline();
+
+                // カメラ位置をリセットしてスプライン切り替え
+                if (_cinemachineSplineDolly != null)
+                {
+                    _cinemachineSplineDolly.CameraPosition = 0;
+                    SwitchToNextSpline();
+                }
+
                 yield return new WaitForSeconds(_fadeTime);
             }
         }
 
         /// <summary>
-        /// 入れ替える中身
+        /// スプラインを順番に切り替える
         /// </summary>
         private void SwitchToNextSpline()
         {
             currentSplineContainerIndex = (currentSplineContainerIndex + 1) % _splineContainer.Length;
             _cinemachineSplineDolly.Spline = _splineContainer[currentSplineContainerIndex];
         }
-
     }
 }

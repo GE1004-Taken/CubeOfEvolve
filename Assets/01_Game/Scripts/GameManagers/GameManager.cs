@@ -41,20 +41,15 @@ public class GameManager : MonoBehaviour
     public SceneLoader SceneLoader => _sceneLoader;
     public GameState PrevGameState => _prevGameState;
 
+    // ---------- UnityMessage
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(Instance.gameObject);
-            Debug.Log("[GameManager] 重複インスタンスを削除", this);
-            return;
-        }
+        l_Singleton(); // シングルトン
 
-        Instance = this;
-        Debug.Log("[GameManager] インスタンス初期化", this);
-
+        // 初期値代入
         _prevGameState = _currentGameState.Value;
 
+        // 監視宣言
         _currentGameState
             .Skip(1)
             .Subscribe(async state =>
@@ -64,6 +59,16 @@ public class GameManager : MonoBehaviour
                 if (await task.SuppressCancellationThrow()) return;
             })
             .AddTo(this);
+
+        void l_Singleton()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(Instance.gameObject);
+                return;
+            }
+            Instance = this;
+        }
     }
 
     private async void Start()
@@ -72,6 +77,11 @@ public class GameManager : MonoBehaviour
         if (await InitTask.SuppressCancellationThrow()) { return; }
     }
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     private async UniTask InitializeGameAsync(CancellationToken ct)
     {
         Debug.Log("[GameManager] 初期化処理中...");
@@ -85,39 +95,15 @@ public class GameManager : MonoBehaviour
         _guideManager = GuideManager.Instance;
 
         ChangeGameState(GameState.TITLE);
-    }
-
-    public void ChangeGameState(GameState newState)
-    {
-        _prevGameState = _currentGameState.Value;
-        _currentGameState.Value = newState;
+        Debug.Log("[GameManager] 初期化完了！");
     }
 
     /// <summary>
-    /// ゲームステート変更(インスペクター用)
+    /// ゲームステート変更時イベント処理
     /// </summary>
-    /// <param name="stateNum"></param>
-    [EnumAction(typeof(GameState))]
-    public void ChangeGameState(int stateNum)
-    {
-        var state = (GameState)stateNum;
-
-        if (_currentGameState.Value == GameState.READY) return;
-
-        // 前のステートを更新
-        _prevGameState = _currentGameState.Value;
-
-        // 現在のステートを更新
-        _currentGameState.Value = state;
-    }
-
-
-    #region ResetGames
-    public void RequestRetry() => _pendingCommand = GameFlowCommand.RETRY;
-    public void RequestReturnToTitle() => _pendingCommand = GameFlowCommand.RETURN_TO_TITLE;
-    public void RequestResetAll() => _pendingCommand = GameFlowCommand.RESET_ALL;
-
-
+    /// <param name="newState"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     private async UniTask OnGameStateChanged(GameState newState, CancellationToken token)
     {
         Debug.Log($"[GameManager] State Changed: {_prevGameState} → {newState}");
@@ -133,6 +119,9 @@ public class GameManager : MonoBehaviour
             case GameState.BUILD:
                 await SetupBuildAsync(token);
                 break;
+            case GameState.SHOP:
+                await SetupShopAsync(token);
+                break;
             case GameState.BATTLE:
                 await SetupBattleAsync(token);
                 break;
@@ -143,6 +132,7 @@ public class GameManager : MonoBehaviour
             case GameState.TUTORIAL:
                 await SetupTutorialAsync(token);
                 break;
+
             default:
                 break;
         }
@@ -150,6 +140,11 @@ public class GameManager : MonoBehaviour
         await HandleGameFlowCommand(token);
     }
 
+    /// <summary>
+    /// ゲームのリセット処理関数
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     private async UniTask HandleGameFlowCommand(CancellationToken token)
     {
         if (_pendingCommand == GameFlowCommand.NONE) return;
@@ -173,6 +168,45 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// ゲームステート変更
+    /// </summary>
+    /// <param name="stateNum"></param>
+    public void ChangeGameState(GameState newState)
+    {
+        // 前のステートを更新
+        _prevGameState = _currentGameState.Value;
+
+        // 現在のステートを更新
+        _currentGameState.Value = newState;
+    }
+
+    /// <summary>
+    /// ゲームステート変更(インスペクター用)
+    /// </summary>
+    /// <param name="stateNum"></param>
+    [EnumAction(typeof(GameState))]
+    public void ChangeGameState(int stateNum)
+    {
+        var state = (GameState)stateNum;
+
+        //if (_currentGameState.Value == GameState.READY) return;
+
+        // 前のステートを更新
+        _prevGameState = _currentGameState.Value;
+
+        // 現在のステートを更新
+        _currentGameState.Value = state;
+    }
+
+
+    #region Reset
+    public void RequestRetry() => _pendingCommand = GameFlowCommand.RETRY;
+    public void RequestReturnToTitle() => _pendingCommand = GameFlowCommand.RETURN_TO_TITLE;
+    public void RequestResetAll() => _pendingCommand = GameFlowCommand.RESET_ALL;
+
+
     private void ResetSessionData()
     {
         _timeManager = GetComponent<TimeManager>();
@@ -192,54 +226,72 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    #region Setup
+    // ステートが変わった際に行う処理群
+    #region Setup 
 
+    /// <summary>
+    /// タイトル
+    /// </summary>
+    /// <param name="token">中断時の安全保障</param>
+    /// <returns></returns>
     private async UniTask SetupTitleAsync(CancellationToken token)
     {
         _canvasCtrlManager = CanvasCtrlManager.Instance;
+        _cameraCtrlManager = CameraCtrlManager.Instance;
         _canvasCtrlManager.ShowOnlyCanvas("TitleView");
+        _cameraCtrlManager.ChangeCamera("TitleDemoCamera");
         await UniTask.CompletedTask;
     }
 
     private async UniTask SetupReadyAsync(CancellationToken token)
     {
-        _canvasCtrlManager.HideAllCanvases();
-        _guideManager = GuideManager.Instance;
-
-        await _guideManager.ShowGuideAndWaitAsync("Start", token);
-        await _guideManager.DoBuildModeAndWaitAsync(token);
-
-        var readyCtrl = _canvasCtrlManager
+        var readyCtrl = CanvasCtrlManager.Instance
             .GetCanvas("ReadyView")
             .GetComponent<ReadyViewCanvasController>();
 
         await readyCtrl.PlayReadySequenceAsync(() =>
         {
             ChangeGameState(GameState.BATTLE);
-            _canvasCtrlManager.ShowOnlyCanvas("GameView");
         }, token);
+
+        await UniTask.CompletedTask;
     }
 
     private async UniTask SetupBuildAsync(CancellationToken token)
     {
+        _canvasCtrlManager.GetCanvas("BuildView")?.OnOpenCanvas();
         _cameraCtrlManager.ChangeCamera("Build Camera");
+        await UniTask.CompletedTask;
+    }
+
+    private async UniTask SetupShopAsync(CancellationToken token)
+    {
+        _canvasCtrlManager.GetCanvas("ShopView")?.OnOpenCanvas();
         await UniTask.CompletedTask;
     }
 
     private async UniTask SetupBattleAsync(CancellationToken token)
     {
+        _canvasCtrlManager.GetCanvas("GameView")?.OnOpenCanvas();
         _cameraCtrlManager.ChangeCamera("Player Camera");
         await UniTask.CompletedTask;
     }
 
     private async UniTask SetupResultAsync(CancellationToken token)
     {
-        _canvasCtrlManager.ShowOnlyCanvas("ResultView");
         await UniTask.CompletedTask;
     }
 
     private async UniTask SetupTutorialAsync(CancellationToken token)
     {
+        _guideManager = GuideManager.Instance;
+
+        await _guideManager.ShowGuideAndWaitAsync("Start", token);
+        await _guideManager.ShowGuideAndWaitAsync("Start (1)", token);
+        await _guideManager.DoBuildModeAndWaitAsync(token);
+
+        ChangeGameState(GameState.READY);
+
         await UniTask.CompletedTask;
     }
 

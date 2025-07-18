@@ -21,7 +21,10 @@ namespace AT.uGUI
     /// </summary>
     public class CanvasCtrlManager : MonoBehaviour
     {
-        // --- Inspector Control
+        // -----Singleton
+        public static CanvasCtrlManager Instance { get; private set; }
+
+        // -----Inspector
         [System.Serializable]
         private class CanvasEntry
         {
@@ -39,8 +42,7 @@ namespace AT.uGUI
         [SerializeField]
         private List<CanvasEntry> _canvasEntries;
 
-        // --- Singleton Pattern
-        public static CanvasCtrlManager Instance { get; private set; }
+
 
         // --- UnityMessage
         private void Awake()
@@ -69,7 +71,9 @@ namespace AT.uGUI
             Initialize();
         }
 
-        // --- Private Methods
+        // -----Private
+
+
 
         /// <summary>
         /// シーン上のCanvasCtrlコンポーネントを検出し、管理リストに登録します。
@@ -128,7 +132,6 @@ namespace AT.uGUI
                 if (entry.canvasCtrl != null)
                 {
                     entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
-                    //entry.canvasCtrl.OnCloseCanvas();
                 }
             }
             Debug.Log("CanvasCtrlManager:初期化完了");

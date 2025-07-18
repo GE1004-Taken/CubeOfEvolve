@@ -34,7 +34,7 @@ namespace AT.uGUI
 
             _cameraCtrlManager = CameraCtrlManager.Instance;
 
-            _canvas.enabled = true;
+            CanvasCtrlManager.Instance.ShowOnlyCanvas(_canvas.name);
             _startText.text = "Ready...";
             Time.timeScale = 0f;
 
@@ -71,16 +71,14 @@ namespace AT.uGUI
 
         private void AnimateTextPunch(TextMeshProUGUI text)
         {
-            text.rectTransform.DOPunchScale(Vector3.one * 0.3f, 0.4f, 8, 0.8f)
-                .SetUpdate(true); // Timescale–³Ž‹
+            text.rectTransform.DOPunchScale(Vector3.one * 0.3f, 0.4f, 8, 0.8f);
         }
 
         private void AnimateTextScaleUp(TextMeshProUGUI text)
         {
             text.rectTransform.localScale = Vector3.one * 0.6f;
             text.rectTransform.DOScale(1f, 0.5f)
-                .SetEase(Ease.OutBack)
-                .SetUpdate(true);
+                .SetEase(Ease.OutBack);
         }
     }
 }
