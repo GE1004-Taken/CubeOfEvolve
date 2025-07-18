@@ -1,5 +1,38 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4606539937921710349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7144476144033317125}
+  m_Layer: 0
+  m_Name: Joint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7144476144033317125
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4606539937921710349}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 164989187942080104}
+  - {fileID: 8558470307938452001}
+  m_Father: {fileID: 5019678938203051424}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5573525834216578035
 GameObject:
   m_ObjectHideFlags: 0
@@ -25,11 +58,11 @@ Transform:
   m_GameObject: {fileID: 5573525834216578035}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.663, z: 0.807}
+  m_LocalPosition: {x: 0, y: 0.603, z: 0.747}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3160525905035790841}
+  m_Father: {fileID: 7144476144033317125}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7328926061261567527
 GameObject:
@@ -61,7 +94,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6897894506879935523}
-  - {fileID: 164989187942080104}
+  - {fileID: 7144476144033317125}
   m_Father: {fileID: 3160525905035790841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8272194172976731747
@@ -88,16 +121,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8272194172976731747}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.28786197, y: 0, z: 0, w: 0.95767194}
+  m_LocalRotation: {x: -0.28786197, y: -0, z: -0, w: 0.95767194}
   m_LocalPosition: {x: 0, y: -0.06, z: -0.17}
-  m_LocalScale: {x: 0.86, y: 0.86, z: 0.86}
+  m_LocalScale: {x: 0.86, y: 0.85999995, z: 0.85999995}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5621975708075734180}
   - {fileID: 1532798137507313728}
   - {fileID: 1607601342466615114}
   - {fileID: 8641429887088387765}
-  m_Father: {fileID: 5019678938203051424}
+  m_Father: {fileID: 7144476144033317125}
   m_LocalEulerAnglesHint: {x: -33.46, y: 0, z: 0}
 --- !u!1001 &1532798137507700252
 PrefabInstance:
@@ -614,9 +647,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
-      insertIndex: 0
-      addedObject: {fileID: 8558470307938452001}
-    - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5019678938203051424}
     m_AddedComponents:
@@ -660,6 +690,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: a552bddedcf5db041adb6dd0243386b3, type: 2}
   _id: 906
   _fireSEName: Fire_Bom
+  _model: {fileID: 4606539937921710349}
   _layerSearch: {fileID: 711518834272932660}
   _targetLayerMask:
     serializedVersion: 2

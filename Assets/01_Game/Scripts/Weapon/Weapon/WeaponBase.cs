@@ -15,6 +15,9 @@ public abstract class WeaponBase : MonoBehaviour
     [Header("音")]
     [SerializeField, Tooltip("SE")] protected string _fireSEName;
 
+    [Header("モデル")]
+    [SerializeField, Tooltip("モデル")] private GameObject _model;
+
     [Header("索敵")]
     [SerializeField, Tooltip("対象検知用")] protected LayerSearch _layerSearch;
     [SerializeField, Tooltip("攻撃対象のレイヤー")] protected LayerMask _targetLayerMask;
@@ -58,6 +61,10 @@ public abstract class WeaponBase : MonoBehaviour
                 }
                 else if (_layerSearch.NearestTargetObj != null)
                 {
+                    if (_model != null)
+                    {
+                        ProcessingFaceEnemyOrientation();
+                    }
                     Attack();
                     _currentInterval = 0f;
                 }
@@ -144,6 +151,23 @@ public abstract class WeaponBase : MonoBehaviour
                 maxLevel: 5,
                 maxRate: 0.5f // 最大+50%の成長
             ) + _attackStatusEffects;
+    }
+
+    /// <summary>
+    /// 対象の方向を向く処理
+    /// </summary>
+    private void ProcessingFaceEnemyOrientation()
+    {
+        var target = _layerSearch.NearestTargetObj.transform;
+
+        // 砲台の回転はY軸のみ（高さを無視して水平方向に向ける）
+        Vector3 flatTargetPos = new Vector3(target.position.x, transform.position.y, target.position.z);
+        Vector3 turretDir = (flatTargetPos - transform.position).normalized;
+
+        if (turretDir != Vector3.zero)
+        {
+            _model.transform.rotation = Quaternion.LookRotation(turretDir);
+        }
     }
 
     // ---------------------------- Abstract Method
