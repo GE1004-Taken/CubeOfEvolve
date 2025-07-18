@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class Weapon_Missile : WeaponBase
 {
+    // ---------------------------- SerializeField
     [SerializeField] private Bullet_Missile _bulletPrefab;
     [SerializeField] private int _spawnCount;
 
+    // ---------------------------- OverrideMethod
     protected override void Attack()
     {
         for (int i = 0; i < _spawnCount; i++)
@@ -22,7 +24,7 @@ public class Weapon_Missile : WeaponBase
                 = transform.right * randomDir * Random.Range(1, 5) * 5 + new Vector3(0, Random.Range(1, 4) * 5, 0);
 
             bullet.Initialize(
-                _targetTag,
+                _targetLayerMask,
                 _currentAttack,
                 velocity,
                 _layerSearch.NearestTargetObj.transform,

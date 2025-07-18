@@ -12,19 +12,40 @@ public class Bullet_Bomb : BulletBase
     [SerializeField] private GameObject _hitEffect;
 
     // ---------------------------- Field
+    private Vector3 _velocity;
 
     // ---------------------------- UnityMessage
     private void Start()
     {
-        _layerSearch.Initialize(_range, _targetLayerName);
+        _layerSearch.Initialize(_range, _targetLayerMask);
+
+        GameManager.Instance.CurrentGameState
+            .Subscribe(value =>
+            {
+                var rb = GetComponent<Rigidbody>();
+
+                if (value != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+                {
+                    _velocity = rb.linearVelocity;
+
+                    rb.isKinematic = true;
+                }
+                else
+                {
+                    rb.isKinematic = false;
+
+                    rb.linearVelocity = _velocity;
+                }
+            })
+            .AddTo(this);
 
         // Õ“Ëˆ—
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
-                string layerName = LayerMask.LayerToName(other.transform.root.gameObject.layer);
-                if (other.transform.root.TryGetComponent<IDamageble>(out var damageble)
-                    && layerName == _targetLayerName)
+                GameObject rootObj = other.transform.root.gameObject;
+
+                if ((_targetLayerMask.value & (1 << rootObj.layer)) != 0)
                 {
                     Explosion();
                 }
@@ -46,24 +67,28 @@ public class Bullet_Bomb : BulletBase
         // LayerSearch ‚É‚æ‚éŒŸõŒ‹‰Ê‚ðŽg‚¤
         foreach (var obj in _layerSearch.NearestTargetList)
         {
-            if (obj.TryGetComponent<IDamageble>(out var damageble))
+            GameObject rootObj = obj.transform.root.gameObject;
+
+            if ((_targetLayerMask.value & (1 << rootObj.layer)) != 0 &&
+                rootObj.TryGetComponent<IDamageble>(out var damageble))
             {
                 damageble.TakeDamage(_attack);
             }
         }
 
         GameSoundManager.Instance.PlaySFX(_hitSEName, transform, _hitSEName);
-        Instantiate(_hitEffect, transform.position, Quaternion.identity);
+        var effect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
+        effect.AddComponent<StopEffect>();
         Destroy(gameObject);
     }
 
 
     // ---------------------------- PublicMethod
     public void Initialize(
-        string targetTag,
+        LayerMask layerMask,
         float attack)
     {
-        _targetLayerName = targetTag;
+        _targetLayerMask = layerMask;
         _attack = attack;
     }
 

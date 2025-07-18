@@ -21,6 +21,12 @@ public abstract class EnemyMoveBase : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+        {
+            _rb.linearVelocity = Vector3.zero;
+            return;
+        }
+
         switch (_status.CurrentAct.CurrentValue)
         {
             case EnemyStatus.ActionPattern.IDLE:

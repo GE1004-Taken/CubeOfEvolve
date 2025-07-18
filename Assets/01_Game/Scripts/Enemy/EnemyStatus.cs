@@ -56,7 +56,8 @@ public class EnemyStatus : MonoBehaviour, IDamageble
                     GuideManager.Instance.TryShowGuide("FirstKill");
                 }
 
-                Instantiate(_effect, transform.position, Quaternion.identity);
+                var effect = Instantiate(_effect, transform.position, Quaternion.identity);
+                effect.AddComponent<StopEffect>();
 
                 Destroy(gameObject);
             })

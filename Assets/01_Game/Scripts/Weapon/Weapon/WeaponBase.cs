@@ -1,6 +1,4 @@
 using App.GameSystem.Modules;
-using Assets.IGC2025.Scripts.Presenter;
-using Assets.IGC2025.Scripts.View;
 using Game.Utils;
 using ObservableCollections;
 using R3;
@@ -19,7 +17,7 @@ public abstract class WeaponBase : MonoBehaviour
 
     [Header("õ“G")]
     [SerializeField, Tooltip("‘ÎÛŒŸ’m—p")] protected LayerSearch _layerSearch;
-    [SerializeField, Tooltip("UŒ‚‘ÎÛ‚Ìƒ^ƒO")] protected string _targetTag;
+    [SerializeField, Tooltip("UŒ‚‘ÎÛ‚ÌƒŒƒCƒ„[")] protected LayerMask _targetLayerMask;
 
     [Header("UŒ‚—Í")]
     [SerializeField, Tooltip("Å‘åƒŒƒxƒ‹")] private int _maxLevel = 5;
@@ -49,6 +47,11 @@ public abstract class WeaponBase : MonoBehaviour
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
+                if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+                {
+                    return;
+                }
+
                 if (_currentInterval < _data.Interval)
                 {
                     _currentInterval += Time.deltaTime;
@@ -71,7 +74,7 @@ public abstract class WeaponBase : MonoBehaviour
     /// </summary>
     protected virtual void Initialize()
     {
-        _layerSearch.Initialize(_data.SearchRange, _targetTag);
+        _layerSearch.Initialize(_data.SearchRange, _targetLayerMask);
     }
 
     /// <summary>

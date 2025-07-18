@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class LayerSearch : MonoBehaviour
 {
-    // ---------------------------- Fields
-
+    // ---------------------------- Field
     private float _range;                 // 探索範囲
-    private string _layerMaskName;       // 検出対象のレイヤー名
+    private LayerMask _layerMask;       // 検出対象のレイヤー名
 
     private GameObject _nearestTargetObj; // 最も近い対象オブジェクト
     private readonly List<GameObject> _nearestTargetList = new(); // 範囲内の敵オブジェクト一覧
@@ -50,7 +49,7 @@ public class LayerSearch : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
             _range,
-            LayerMask.GetMask(_layerMaskName));
+            _layerMask);
 
         foreach (var hit in hits)
         {
@@ -80,9 +79,9 @@ public class LayerSearch : MonoBehaviour
     /// </summary>
     /// <param name="range">探索範囲</param>
     /// <param name="layerName">対象レイヤー名</param>
-    public void Initialize(float range, string layerName)
+    public void Initialize(float range, LayerMask layerMask)
     {
         _range = range;
-        _layerMaskName = layerName;
+        _layerMask = layerMask;
     }
 }

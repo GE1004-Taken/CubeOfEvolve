@@ -1010,7 +1010,9 @@ MonoBehaviour:
   _id: 903
   _fireSEName: Fire
   _layerSearch: {fileID: 8252070589722386805}
-  _targetTag: Enemy
+  _targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
   _maxLevel: 5
   _enemyRate: 0.5
   _model: {fileID: 3152658309307378843}

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Weapon_Turret : WeaponBase
 {
+    // ---------------------------- SerializeField
     [Header("ƒ‚ƒfƒ‹")]
     [SerializeField] private GameObject _model;
 
@@ -10,6 +11,7 @@ public class Weapon_Turret : WeaponBase
     [SerializeField] private Transform _bulletSpawnPos;
     [SerializeField] private Bullet_Linear _bulletPrefab;
 
+    // ---------------------------- OverrideMethod
     protected override void Attack()
     {
         var target = _layerSearch.NearestTargetObj.transform;
@@ -33,7 +35,7 @@ public class Weapon_Turret : WeaponBase
             shootRotation);
 
         bullet.Initialize(
-            _targetTag,
+            _targetLayerMask,
             _currentAttack,
             _data.BulletSpeed,
             shootDir);

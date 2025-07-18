@@ -43,7 +43,7 @@ public class EnemyMove_Avoid : EnemyMoveBase
             .AddTo(this);
 
         this.OnTriggerEnterAsObservable()
-            .Where(other => other.TryGetComponent<BulletBase>(out var component) && gameObject.CompareTag(component.TargetLayerName))
+            .Where(other => other.TryGetComponent<BulletBase>(out var component) && gameObject.CompareTag(component.TargetLayerMask))
             .Subscribe(x =>
             {
                 if (_currentInterval >= _interval)

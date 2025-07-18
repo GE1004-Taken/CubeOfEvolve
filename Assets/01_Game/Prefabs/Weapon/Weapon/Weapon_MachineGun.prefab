@@ -683,7 +683,9 @@ MonoBehaviour:
   _id: 905
   _fireSEName: Fire_MachineGun
   _layerSearch: {fileID: 7774860755542700008}
-  _targetTag: Enemy
+  _targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
   _maxLevel: 5
   _enemyRate: 0.5
   _model: {fileID: 218126412398508174}
