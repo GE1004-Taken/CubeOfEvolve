@@ -38,7 +38,7 @@ public class EnemyStatus : MonoBehaviour, IDamageble
 
 
     // ---------------------------- UnityMessage
-    private void Start()
+    private void Awake()
     {
         _currentAct.Value = ActionPattern.WAIT;
 
