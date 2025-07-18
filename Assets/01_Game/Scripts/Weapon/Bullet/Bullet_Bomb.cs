@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Bullet_Bomb : BulletBase
 {
-    // ---------------------------- Field
+    // ---------------------------- SerializeField
     [SerializeField] private float _range;
     [SerializeField] private LayerSearch _layerSearch;
 
@@ -80,16 +80,6 @@ public class Bullet_Bomb : BulletBase
         var effect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
         effect.AddComponent<StopEffect>();
         Destroy(gameObject);
-    }
-
-
-    // ---------------------------- PublicMethod
-    public void Initialize(
-        LayerMask layerMask,
-        float attack)
-    {
-        _targetLayerMask = layerMask;
-        _attack = attack;
     }
 
     private void OnDrawGizmosSelected()
