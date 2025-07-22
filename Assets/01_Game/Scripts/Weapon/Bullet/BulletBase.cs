@@ -13,4 +13,12 @@ public class BulletBase : MonoBehaviour
 
     // ---------------------------- Property
     public string TargetLayerMask => LayerMask.LayerToName(_targetLayerMask);
+
+    public void Initialize(
+        LayerMask layerMask,
+        float attack)
+    {
+        _targetLayerMask = layerMask;
+        _attack = attack;
+    }
 }

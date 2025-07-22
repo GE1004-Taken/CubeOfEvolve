@@ -3,39 +3,26 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 
-public class Bullet_Bomb : BulletBase
+public class Bullet_Decoy : BulletBase, IDamageble
 {
     // ---------------------------- SerializeField
-    [SerializeField] private float _range;
+    [SerializeField] float _maxHp;
     [SerializeField] private LayerSearch _layerSearch;
-
     [SerializeField] private GameObject _hitEffect;
 
     // ---------------------------- Field
-    private Vector3 _velocity;
+    private ReactiveProperty<float> _currentHp = new();
 
     // ---------------------------- UnityMessage
-    private void Start()
+    private void Awake()
     {
-        _layerSearch.Initialize(_range, _targetLayerMask);
+        _currentHp.Value = _maxHp;
 
-        GameManager.Instance.CurrentGameState
-            .Subscribe(value =>
+        _currentHp
+            .Where(value => value <= 0)
+            .Subscribe(_ =>
             {
-                var rb = GetComponent<Rigidbody>();
-
-                if (value != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
-                {
-                    _velocity = rb.linearVelocity;
-
-                    rb.isKinematic = true;
-                }
-                else
-                {
-                    rb.isKinematic = false;
-
-                    rb.linearVelocity = _velocity;
-                }
+                Explosion();
             })
             .AddTo(this);
 
@@ -43,16 +30,10 @@ public class Bullet_Bomb : BulletBase
         this.OnTriggerEnterAsObservable()
             .Subscribe(other =>
             {
-                GameObject rootObj = other.transform.root.gameObject;
-
-                if ((_targetLayerMask.value & (1 << rootObj.layer)) != 0)
-                {
-                    Explosion();
-                }
-
                 if (other.CompareTag("Ground"))
                 {
-                    Explosion();
+                    Debug.Log("AAA");
+                    GetComponent<Rigidbody>().isKinematic = true;
                 }
             })
             .AddTo(this);
@@ -82,9 +63,9 @@ public class Bullet_Bomb : BulletBase
         Destroy(gameObject);
     }
 
-    private void OnDrawGizmosSelected()
+    // ---------------------------- Interface
+    public void TakeDamage(float damage)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, _range);
+        _currentHp.Value -= damage;
     }
 }
