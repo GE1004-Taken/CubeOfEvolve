@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3765971621821305050
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1489078981636038879}
+    m_Modifications:
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5048169418152637995, guid: aced246db6f113f409917e73972c5007, type: 3}
+      propertyPath: m_Name
+      value: Model_Drill
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: aced246db6f113f409917e73972c5007, type: 3}
+--- !u!4 &962920454805894200 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4116167128719418594, guid: aced246db6f113f409917e73972c5007, type: 3}
+  m_PrefabInstance: {fileID: 3765971621821305050}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4759360394579866861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10,7 +72,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 461157199515958589, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3767028282445145877, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       propertyPath: m_Name
@@ -58,12 +120,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 962920454805894200}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3767028282445145877, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8431714175781951356}
   m_SourcePrefab: {fileID: 100100000, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+--- !u!4 &1489078981636038879 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6243924643599897650, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
+  m_PrefabInstance: {fileID: 4759360394579866861}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3938932775136541202 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8405198416410758911, guid: edd9654859e99b24cbb905f9672792b6, type: 3}
@@ -95,10 +165,10 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 0542530cbbd4cba4d97266645c965e04, type: 2}
   _id: 901
   _fireSEName: Fire_Drill
+  _model: {fileID: 0}
   _layerSearch: {fileID: 3938932775136541202}
   _targetLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  _maxLevel: 5
   _enemyRate: 1
   _hitEffect: {fileID: 1845955007268882, guid: 67a684e320da6e7439421a07e3fa265c, type: 3}
