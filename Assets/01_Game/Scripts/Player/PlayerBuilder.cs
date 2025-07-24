@@ -5,9 +5,13 @@ using System.Collections.Generic;
 using R3;
 using R3.Triggers;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class PlayerBuilder : BasePlayerComponent
 {
+
+    private int _runningConnectCheckCount;
+
     // ---------- SerializeField
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private float _rayDist = 50f;
@@ -15,19 +19,18 @@ public class PlayerBuilder : BasePlayerComponent
     // ---------- Field
     // 対象の生成予測スクリプト
     private CreatePrediction _targetCreatePrediction;
-
     // 対象の生成予測キューブ
     private CreatePrediction _predictCube = null;
     private Vector3 _createPos;
     private Vector3 _createPosOffset = new Vector3(0f, 0.5f, 0f);
     // 仮
     private ModuleData _currentModuleData;
-
+    // 削除モード中か
     public bool _isRemoving;
-
+    // 1個前の消す対象だったオブジェクト
     private GameObject _prevRemoveObject;
+    // 現在消す対象のオブジェクト
     private GameObject _curRemoveObject;
-
     // 各方向を格納
     private Vector3[] _directions =
     {
@@ -39,6 +42,8 @@ public class PlayerBuilder : BasePlayerComponent
         -Vector3.forward
     };
 
+    // 既に生成されているオブジェクト達
+    public List<GameObject> _createdObjects = new();
     // プレイヤーと繋がっているオブジェクト達
     private List<GameObject> _connectCheckedObjects = new();
 
@@ -47,7 +52,6 @@ public class PlayerBuilder : BasePlayerComponent
     public Observable<ModuleData> OnSelectModuleData => _selectModuleData;
 
     private Subject<Unit> _createSubject = new();
-
     public Observable<Unit> OnCreate => _createSubject;
 
     // ---------- UnityMessage
@@ -148,7 +152,7 @@ public class PlayerBuilder : BasePlayerComponent
                         || _currentModuleData != null)
                         {
                             // 隣接するキューブがあるかチェック
-                            _predictCube?.CheckNeighboringAllCube();
+                            _predictCube?.CheckCanCreate();
                         }
                         else
                         {
@@ -236,9 +240,14 @@ public class PlayerBuilder : BasePlayerComponent
                     // 武器・キューブの設置
                     _predictCube.CreateObject();
 
+                    _predictCube.name += _createdObjects.Count.ToString();
+
+                    _createdObjects.Add(_predictCube.gameObject);
+
                     // 生成予測キューブをヌルに
                     _predictCube = null;
 
+                    // 生成したことを通知する
                     _createSubject.OnNext(Unit.Default);
 
                     // 生成するものがモジュールの時
@@ -282,21 +291,12 @@ public class PlayerBuilder : BasePlayerComponent
                     // 削除対象が存在しないなら処理しない
                     if (_curRemoveObject == null) return;
 
-                    // WeaponBaseを継承していたらモジュールと見なす
-                    if (_curRemoveObject.TryGetComponent<WeaponBase>(out var weapon))
-                    {
-                        // 削除対象のモジュールの所持数を増やす
-                        RuntimeModuleManager.Instance.ChangeModuleQuantity(weapon.Id, 1);
-                    }
-                    // そうでないならキューブ(土台)と見なす
-                    else
-                    {
-                        // キューブの設置数を減らす
-                        Core.RemoveCube();
-                    }
+                    // 対象を削除
+                    RemoveObject(_curRemoveObject);
 
-                    // 対象のオブジェクトを削除する
-                    Destroy(_curRemoveObject.gameObject);
+                    _runningConnectCheckCount++;
+
+                    ConnectCheck(this.gameObject, 1f);
                 }
             })
             .AddTo(this);
@@ -347,10 +347,13 @@ public class PlayerBuilder : BasePlayerComponent
     /// </summary>
     /// <param name="cube"></param>
     /// <param name="cubeScale"></param>
-    public void ConnectCheck(
+    private async void ConnectCheck(
        GameObject cube,
        float cubeScale)
     {
+        await UniTask.DelayFrame(1, cancellationToken: this.destroyCancellationToken);
+
+        // プレイヤーと繋がっているかチェック済みリストに追加
         _connectCheckedObjects.Add(cube);
 
         foreach (var direction in _directions)
@@ -363,19 +366,77 @@ public class PlayerBuilder : BasePlayerComponent
             LayerMask.GetMask("Player")))
             {
                 // 対象のオブジェクトの生成予測スクリプトを取得
-                var prediction = GetComponentInParent<CreatePrediction>();
+                var prediction = hit.collider.gameObject.GetComponentInParent<CreatePrediction>();
 
                 // 無いなら処理しない
                 if (prediction == null) continue;
 
-                // キューブスクリプトを取得
-                var targetCube = prediction.gameObject.GetComponent<Cube>();
+                // 既にチェック済みのものなら処理しない
+                if (_connectCheckedObjects.Contains(prediction.gameObject)) continue;
+
+                // すべてのキューブに隣接していないなら消す
+                if (!prediction.CheckNeighboringAllCube())
+                {
+                    Destroy(prediction.gameObject);
+                    continue;
+                }
+
+                _runningConnectCheckCount++;
 
                 // 対象のオブジェクトでまたこのスクリプトを実行
-                //prediction.DestroyCheck(
-                //    targetCube,
-                //    cubeScale);
+                ConnectCheck(prediction.gameObject, cubeScale);
             }
         }
+
+
+        // 現在実行されている関数の数を減算
+        _runningConnectCheckCount--;
+
+        // 現在実行されている関数が無くなったら処理
+        if (_runningConnectCheckCount <= 0)
+        {
+            RemoveDisconnectedObject();
+        }
     }
+
+    /// <summary>
+    /// プレイヤーと繋がっていないモジュール/キューブを消す
+    /// </summary>
+    private void RemoveDisconnectedObject()
+    {
+        foreach (var createdObject in _createdObjects)
+        {
+            // Nullなら処理しない
+            if(createdObject == null) continue;
+            // プレイヤーと繋がっていたら消さない
+            if (_connectCheckedObjects.Contains(createdObject)) continue;
+
+            RemoveObject(createdObject);
+        }
+
+        // 消されたオブジェクトのリストの要素を消す
+        _createdObjects.RemoveAll(x => x == null);
+        // プレイヤーとの接続確認用のリストを初期化
+        _connectCheckedObjects.Clear();
+    }
+
+    /// <summary>
+    /// 設置済みのモジュール・キューブを消す
+    /// </summary>
+    /// <param name="gameObject"></param>
+    private void RemoveObject(GameObject gameObject)
+    {
+        // WeaponBaseを継承していたらモジュールと見なす
+        if(gameObject.TryGetComponent<WeaponBase>(out var module))
+        {
+            RuntimeModuleManager.Instance.ChangeModuleQuantity(module.Id, 1);
+        }
+        else
+        {
+            Core.RemoveCube();
+        }
+
+        Destroy(gameObject);
+    }
+
 }

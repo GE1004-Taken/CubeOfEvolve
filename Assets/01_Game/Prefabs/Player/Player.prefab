@@ -104,6 +104,7 @@ MonoBehaviour:
   _cubePrefab: {fileID: 4176307090542740963, guid: 3f1f541fac57ad84f9fa768dd2a23677, type: 3}
   _rayDist: 50
   _isRemoving: 0
+  _createdObjects: []
 --- !u!114 &3578453690902763032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,8 +573,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5400399086143728076}
   serializedVersion: 2
-  m_LocalRotation: {x: -8.584816e-17, y: -0.98836154, z: 0.15212339, w: -3.2453112e-16}
-  m_LocalPosition: {x: 0, y: 3.0070581, z: 9.537169}
+  m_LocalRotation: {x: 0.15212333, y: -0.000000043202654, z: 0.000000006649522, w: 0.98836154}
+  m_LocalPosition: {x: 0, y: 3.0070581, z: -9.537169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -817,8 +818,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8703840849904850160}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.98836154, z: 0.15212339, w: 0}
-  m_LocalPosition: {x: 0, y: 3.0070581, z: 9.537169}
+  m_LocalRotation: {x: 0.15212339, y: 0, z: 0, w: 0.98836154}
+  m_LocalPosition: {x: 0, y: 3.0070581, z: -9.537169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -978,7 +979,7 @@ MonoBehaviour:
       Enabled: 1
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: 1
+        Gain: -1
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
