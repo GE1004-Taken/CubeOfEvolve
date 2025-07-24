@@ -75,6 +75,12 @@ public class PlayerBuilder : BasePlayerComponent
                     Destroy(_predictCube.gameObject);
                 }
 
+                // 削除モード中に設置したいものが選択されたら削除モードを終える
+                if (_isRemoving)
+                {
+                    _isRemoving = false;
+                }
+
                 // 武器が選択されていたら
                 if (moduleData != null)
                 {
@@ -351,6 +357,7 @@ public class PlayerBuilder : BasePlayerComponent
        GameObject cube,
        float cubeScale)
     {
+        // 選択して消した物が反映されるのを待つ
         await UniTask.DelayFrame(1, cancellationToken: this.destroyCancellationToken);
 
         // プレイヤーと繋がっているかチェック済みリストに追加
@@ -430,6 +437,11 @@ public class PlayerBuilder : BasePlayerComponent
         if(gameObject.TryGetComponent<WeaponBase>(out var module))
         {
             RuntimeModuleManager.Instance.ChangeModuleQuantity(module.Id, 1);
+        }
+        // プレイヤーコアは消せない
+        else if(gameObject.GetComponent<PlayerCore>())
+        {
+            return;
         }
         else
         {
