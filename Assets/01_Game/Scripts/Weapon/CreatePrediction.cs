@@ -76,20 +76,28 @@ public class CreatePrediction : MonoBehaviour
 
     // ---------- PrivateMethod
     /// <summary>
+    /// 生成可能フラグを変えながら隣接チェック
+    /// </summary>
+    /// <returns></returns>
+    public void CheckCanCreate()
+    {
+        _canCreated.Value = CheckNeighboringAllCube();
+    }
+
+    /// <summary>
     /// 全てのキューブが隣接しているかチェック
     /// </summary>
     /// <returns></returns>
-    public void CheckNeighboringAllCube()
+    public bool CheckNeighboringAllCube()
     {
         foreach (var cube in _cubes)
         {
             if (CheckNeighboringCube(cube, 1f)) continue;
 
-            _canCreated.Value = false;
-            return;
+            return false;
         }
 
-        _canCreated.Value = true;
+        return true;
     }
 
     /// <summary>
@@ -122,8 +130,15 @@ public class CreatePrediction : MonoBehaviour
                     cube.transform.rotation,
                     LayerMask.GetMask("Player"));
 
-                // その数が0より大きいなら設置済みとみなす
-                if (cubeInsideColliders.Length > 0) return false;
+                // その数が0より大きいなら重なっている
+                if (cubeInsideColliders.Length > 0)
+                {
+                    // 自分自身が重なっている判定になるのを防止
+                    if (cubeInsideColliders[0] != cube.GetComponent<Collider>())
+                    {
+                        return false;
+                    }
+                }
 
                 return true;
             };
