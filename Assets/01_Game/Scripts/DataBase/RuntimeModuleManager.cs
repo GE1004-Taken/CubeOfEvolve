@@ -92,7 +92,6 @@ namespace App.GameSystem.Modules
 
             // 全ての要素を追加し終えた後に一度だけ変更を通知。
             _collectionChangedSubject.OnNext(Unit.Default);
-            //debug.log($"RuntimeModuleManager: {_allRuntimeModuleDataInternal.Count}個のモジュールを初期化しました。");
         }
 
         // ----- Public Methods (公開メソッド)
@@ -117,9 +116,7 @@ namespace App.GameSystem.Modules
             if (_runtimeModuleDictionary.TryGetValue(moduleId, out RuntimeModuleData rmd))
             {
                 rmd.ChangeQuantity(amount); // RuntimeModuleData内のReactivePropertyを更新。
-                // 個別のRuntimeModuleDataが変更された場合、コレクションの変更も通知。
                 _collectionChangedSubject.OnNext(Unit.Default);
-                //debug.log($"RuntimeModuleManager: モジュールID {moduleId} の数量を {amount} 変更しました。現在の数量: {rmd.CurrentQuantityValue}");
             }
             else
             {
@@ -152,12 +149,10 @@ namespace App.GameSystem.Modules
         /// <param name="moduleId">対象モジュールのID。</param>
         public void LevelUpModule(int moduleId)
         {
-            if (_runtimeModuleDictionary.TryGetValue(moduleId, out RuntimeModuleData rmd))// 高速アクセス
+            if (_runtimeModuleDictionary.TryGetValue(moduleId, out RuntimeModuleData rmd))
             {
-                rmd.LevelUp(); // RuntimeModuleData内のReactivePropertyを更新。
-                // 個別のRuntimeModuleDataが変更された場合、コレクションの変更も通知。
+                rmd.LevelUp();
                 _collectionChangedSubject.OnNext(Unit.Default);
-                //debug.log($"RuntimeModuleManager: モジュールID {moduleId} のレベルを上げました。現在のレベル: {rmd.CurrentLevelValue}");
             }
             else
             {
@@ -176,13 +171,15 @@ namespace App.GameSystem.Modules
             var candidatePool = new List<RuntimeModuleData>();
             foreach (var runtime in AllRuntimeModuleData)
             {
-                if (runtime.CurrentLevelValue < 5)
+                if (/*Lv5未満の武器*/(_moduleDataStore.FindWithId(runtime.Id).ModuleType == ModuleData.MODULE_TYPE.Weapons && runtime.CurrentLevelValue < 5) ||
+                    /*Lv0のオプション*/(_moduleDataStore.FindWithId(runtime.Id).ModuleType == ModuleData.MODULE_TYPE.Options && runtime.CurrentLevelValue == 0))
                     candidatePool.Add(runtime);
             }
 
             if (candidatePool.Count == 0)
                 return new List<int>(); // 全モジュールが最大レベル
 
+            // チュートリアル時は選出されるIDが固定になる
             if (currentGameState == GameState.TUTORIAL)
                 return new List<int> { 0, 1, 2 };
 
