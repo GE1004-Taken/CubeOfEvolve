@@ -1,3 +1,4 @@
+using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using Game.Utils;
 using ObservableCollections;
@@ -5,12 +6,11 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 
-public abstract class WeaponBase : MonoBehaviour
+public abstract class WeaponBase : MonoBehaviour, IModuleID
 {
     // ---------------------------- SerializeField
     [Header("データ")]
-    [SerializeField, Tooltip("データ")] protected WeaponData _data;
-    [SerializeField, Tooltip("データID")] protected int _id = -1;
+    [SerializeField, Tooltip("データ")] protected ModuleData _data;
 
     [Header("音")]
     [SerializeField, Tooltip("SE")] protected string _fireSEName;
@@ -34,7 +34,7 @@ public abstract class WeaponBase : MonoBehaviour
     /// <summary>
     /// ID
     /// </summary>
-    public int Id => _id;
+    public int Id => _data.Id;
 
     // ---------------------------- Unity Method
     private void Start()
@@ -52,7 +52,7 @@ public abstract class WeaponBase : MonoBehaviour
                     return;
                 }
 
-                if (_currentInterval < _data.Interval)
+                if (_currentInterval < _data.ModuleState.Interval)
                 {
                     _currentInterval += Time.deltaTime;
                 }
@@ -78,7 +78,7 @@ public abstract class WeaponBase : MonoBehaviour
     /// </summary>
     protected virtual void Initialize()
     {
-        _layerSearch.Initialize(_data.SearchRange, _targetLayerMask);
+        _layerSearch.Initialize(_data.ModuleState.SearchRange, _targetLayerMask);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public abstract class WeaponBase : MonoBehaviour
     {
         if (transform.root.CompareTag("Cube"))
         {
-            RuntimeModuleManager.Instance.GetRuntimeModuleData(_id).Level
+            RuntimeModuleManager.Instance.GetRuntimeModuleData(_data.Id).Level
                 .Subscribe(level =>
                 {
                     UpdateAttackStatus();
@@ -97,7 +97,7 @@ public abstract class WeaponBase : MonoBehaviour
         }
         else if (transform.root.CompareTag("Enemy"))
         {
-            _currentAttack = _data.Attack * _enemyRate;
+            _currentAttack = _data.ModuleState.Attack * _enemyRate;
         }
     }
 
@@ -139,11 +139,11 @@ public abstract class WeaponBase : MonoBehaviour
             _attackStatusEffects += effect.Attack;
         }
 
-        var level = RuntimeModuleManager.Instance.GetRuntimeModuleData(_id).Level.CurrentValue;
+        var level = RuntimeModuleManager.Instance.GetRuntimeModuleData(_data.Id).Level.CurrentValue;
 
         // 攻撃力計算
         _currentAttack = StateValueCalculator.CalcStateValue(
-                baseValue: _data.Attack,
+                baseValue: _data.ModuleState.Attack,
                 currentLevel: level,
                 maxLevel: 5,
                 maxRate: 0.5f // 最大+50%の成長

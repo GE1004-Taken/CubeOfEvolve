@@ -25,7 +25,7 @@ public class Weapon_Turret : WeaponBase
         bullet.Initialize(
             _targetLayerMask,
             _currentAttack,
-            _data.BulletSpeed,
+            _data.ModuleState.BulletSpeed,
             shootDir);
 
         GameSoundManager.Instance.PlaySFX(_fireSEName, transform, _fireSEName);
