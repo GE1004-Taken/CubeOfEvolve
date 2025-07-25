@@ -29,7 +29,19 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 4164037406212568113, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: _data
+      value: 
+      objectReference: {fileID: 11400000, guid: ac225a6fbe0e944489b1882ef0724b4d, type: 2}
+    - target: {fileID: 4164037406212568113, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
       propertyPath: '_data.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b03c87178fe570741a0baa033f7e6d71, type: 2}
+    - target: {fileID: 4164037406212568113, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: _statusEffectData.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164037406212568113, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: '_statusEffectData.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: b03c87178fe570741a0baa033f7e6d71, type: 2}
     - target: {fileID: 7185627214972387187, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
