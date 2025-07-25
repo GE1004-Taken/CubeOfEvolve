@@ -32,7 +32,6 @@ public class Bullet_Decoy : BulletBase, IDamageble
             {
                 if (other.CompareTag("Ground"))
                 {
-                    Debug.Log("AAA");
                     GetComponent<Rigidbody>().isKinematic = true;
                 }
             })
