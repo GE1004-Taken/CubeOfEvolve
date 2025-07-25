@@ -414,7 +414,7 @@ public class PlayerBuilder : BasePlayerComponent
         foreach (var createdObject in _createdObjects)
         {
             // Nullなら処理しない
-            if(createdObject == null) continue;
+            if (createdObject == null) continue;
             // プレイヤーと繋がっていたら消さない
             if (_connectCheckedObjects.Contains(createdObject)) continue;
 
@@ -434,12 +434,17 @@ public class PlayerBuilder : BasePlayerComponent
     private void RemoveObject(GameObject gameObject)
     {
         // WeaponBaseを継承していたらモジュールと見なす
-        if(gameObject.TryGetComponent<WeaponBase>(out var module))
+        if (gameObject.TryGetComponent<IModuleID>(out var module))
         {
             RuntimeModuleManager.Instance.ChangeModuleQuantity(module.Id, 1);
+
+            if (gameObject.TryGetComponent<OptionBase>(out var option))
+            {
+                option.ProcessingWhenRemoved();
+            }
         }
         // プレイヤーコアは消せない
-        else if(gameObject.GetComponent<PlayerCore>())
+        else if (gameObject.GetComponent<PlayerCore>())
         {
             return;
         }
