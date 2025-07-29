@@ -5,6 +5,16 @@ using UnityEngine;
 public class UIReferenceRelay : MonoBehaviour
 {
     /// <summary>
+    /// シーン上ボタンからのGameStateの変更(直前のステートに戻る)
+    /// </summary>
+    /// <param name="state"></param>
+    [EnumAction(typeof(GameState))]
+    public void OnButtonChangeGameState()
+    {
+        GameManager.Instance.ChangeGameState(GameManager.Instance.PrevGameState);
+    }
+
+    /// <summary>
     /// シーン上ボタンからのGameStateの変更
     /// </summary>
     /// <param name="state"></param>
