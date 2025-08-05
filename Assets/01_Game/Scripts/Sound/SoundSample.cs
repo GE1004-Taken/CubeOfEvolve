@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using App.GameSystem.Modules;
+using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 
 namespace Assets.AT
 {
     public class SoundSample : MonoBehaviour
     {
         [SerializeField] private GameObject _soundSourceObj;
+        [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを格納するデータストア。
 
         private GameSoundManager SM;
         private bool _isPlay = true;
@@ -44,6 +47,26 @@ namespace Assets.AT
                 SM.PlayBGM("SampleBGM", "BGM", 3f);
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
+            }
+
+            /* L を押すと、全部のモジュールの数量を10個に、オプションを除くすべてのレベルを5にするコード */
+            if (Input.GetKeyDown(KeyCode.L) && _isPlay)
+            {
+                var runtimeModuleManager = RuntimeModuleManager.Instance;
+                foreach (var module in runtimeModuleManager.AllRuntimeModuleData)
+                {
+                    if (_moduleDataStore.FindWithId(module.Id).ModuleType != ModuleData.MODULE_TYPE.Options)
+                    {
+                        module.SetLevel(5);
+                    }
+                    else
+                    {
+                        // オプションはレベルを1に設定
+                        module.SetLevel(1);
+                    }
+                    module.SetQuantity(10);
+                }
+                _isPlay = false;
             }
         }
 
