@@ -9,20 +9,19 @@ using System.Linq;
 public class PlayerEffecter : BasePlayerComponent
 {
     // ---------- SerializeField
-    [SerializeField] private Volume _damageVolume;
-    [SerializeField] private float _damageEffectSec;
-
-    // ---------- Field
-    private Vignette _vignette;
+    [SerializeField, Tooltip("ダメージエフェクト用のボリューム")]
+    private Volume _damageVolume;
+    [SerializeField, Tooltip("ダメージエフェクト表示時間")]
+    private float _damageEffectSec;
 
     // ---------- Method
     protected override void OnInitialize()
     {
-        // Vignetteを取得
-        _damageVolume.profile.TryGet(out _vignette);
+        // ダメージエフェクト用のVignetteを取得
+        _damageVolume.profile.TryGet(out Vignette damageVignette);
 
         // nullチェック
-        if (_vignette != null)
+        if (damageVignette != null)
         {
             Debug.LogError("Vignetteが無いよ");
         }
@@ -33,11 +32,12 @@ public class PlayerEffecter : BasePlayerComponent
             .Where(x => x.Last() < x.First())
             .Subscribe(_ =>
             {
+                // 画面端がダメージエフェクト表示時間分赤くなる
                 DOVirtual.Float(
                     0.0f,
                     1.0f,
                     _damageEffectSec,
-                    value => _vignette.smoothness.value = value
+                    value => damageVignette.smoothness.value = value
                     )
                 .SetLoops(2, LoopType.Yoyo)
                 .SetLink(this.gameObject);
