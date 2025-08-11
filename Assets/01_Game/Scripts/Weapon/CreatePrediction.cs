@@ -5,14 +5,22 @@ using UnityEngine;
 public class CreatePrediction : MonoBehaviour
 {
     // ---------- SerializeField
-    [SerializeField] private List<Cube> _cubes = new();
-    [SerializeField] private List<Renderer> _renderer = new();
+    [SerializeField, Tooltip("モデルの当たり判定のキューブ達")]
+    private List<Cube> _cubes = new();
+    [SerializeField, Tooltip("モデルの全てのレンダラー")]
+    private List<Renderer> _renderer = new();
+    [SerializeField, Tooltip("設置可能を示す色のマテリアル")]
+    private Material _trueMaterial;
+    [SerializeField, Tooltip("設置不可能を示す色のマテリアル")]
+    private Material _falseMaterial;
 
-    [SerializeField] private Material _normalMaterial;
-    [SerializeField] private Material _trueMaterial;
-    [SerializeField] private Material _falseMaterial;
+    // ---------- Field
+    // モデルの通常のマテリアル達
+    private List<Material> _normalMaterials = new List<Material>();
 
-    [SerializeField] private SerializableReactiveProperty<bool> _isActived;
+    // ---------- R3
+    [SerializeField]
+    private SerializableReactiveProperty<bool> _isActived;
     public ReadOnlyReactiveProperty<bool> IsActived => _isActived;
 
     private ReactiveProperty<bool> _canCreated = new();
@@ -31,6 +39,12 @@ public class CreatePrediction : MonoBehaviour
     // ---------- UnityMessage
     private void Start()
     {
+        // 通常のマテリアルに戻すために全てのレンダラーのマテリアル取得
+        foreach (var renderer in _renderer)
+        {
+            _normalMaterials.Add(renderer.material);
+        }
+
         // 設置が出来るかで色を変える
         _canCreated
             .Where(_ => !_isActived.Value)
@@ -57,10 +71,10 @@ public class CreatePrediction : MonoBehaviour
             {
                 if (x)
                 {
-                    foreach (var renderer in _renderer)
-                    {
-                        renderer.material = _normalMaterial;
-                    }
+                    // モデルのマテリアルを通常のもの戻す
+                    ChangeNormalMaterial();
+
+                    // 当たり判定をオンにする
                     foreach (var cube in _cubes)
                     {
                         cube.GetComponent<BoxCollider>().enabled = true;
@@ -173,29 +187,24 @@ public class CreatePrediction : MonoBehaviour
     }
 
     /// <summary>
-    /// このスクリプトがアタッチされているオブジェクトの色を戻す
+    /// モデルのマテリアルを通常のもの戻す
     /// </summary>
-    public void ChangeNormalColor()
+    public void ChangeNormalMaterial()
     {
-        foreach (var renderer in _renderer)
+        for (int i = 0; i < _renderer.Count; i++)
         {
-            renderer.material = _normalMaterial;
+            _renderer[i].material = _normalMaterials[i];
         }
     }
 
     /// <summary>
     /// このスクリプトがアタッチされているオブジェクトを色を不可能を示す色に変える
     /// </summary>
-    public void ChangeFalseColor()
+    public void ChangeFalseMaterial()
     {
         foreach (var renderer in _renderer)
         {
             renderer.material = _falseMaterial;
         }
-    }
-
-    public void DestroyCheck()
-    {
-
     }
 }

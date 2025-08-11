@@ -186,7 +186,7 @@ public class PlayerBuilder : BasePlayerComponent
                         // 削除対象にレイが当たらなくなったら元の色に戻す
                         _curRemoveObject
                         .GetComponent<CreatePrediction>()
-                        .ChangeNormalColor();
+                        .ChangeNormalMaterial();
 
                         // 今レイに当たっている物変数をNullにする
                         _curRemoveObject = null;
@@ -202,7 +202,7 @@ public class PlayerBuilder : BasePlayerComponent
                     {
                         _curRemoveObject
                         .GetComponent<CreatePrediction>()
-                        .ChangeNormalColor();
+                        .ChangeNormalMaterial();
                     }
 
                     // 現在の削除対象を更新
@@ -214,7 +214,7 @@ public class PlayerBuilder : BasePlayerComponent
 
                     // 現在の削除対象をの色を「置けない色」に変更
                     _curRemoveObject.GetComponent<CreatePrediction>()
-                    .ChangeFalseColor();
+                    .ChangeFalseMaterial();
                 }
             });
 
