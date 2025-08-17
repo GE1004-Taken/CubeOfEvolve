@@ -9,9 +9,6 @@ using Cysharp.Threading.Tasks;
 
 public class PlayerBuilder : BasePlayerComponent
 {
-
-    private int _runningConnectCheckCount;
-
     // ---------- SerializeField
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private float _rayDist = 50f;
@@ -23,10 +20,10 @@ public class PlayerBuilder : BasePlayerComponent
     private CreatePrediction _predictCube = null;
     private Vector3 _createPos;
     private Vector3 _createPosOffset = new Vector3(0f, 0.5f, 0f);
-    // 仮
+    // 選択されているモジュールのデータ
     private ModuleData _currentModuleData;
     // 削除モード中か
-    public bool _isRemoving;
+    private bool _isRemoving;
     // 1個前の消す対象だったオブジェクト
     private GameObject _prevRemoveObject;
     // 現在消す対象のオブジェクト
@@ -41,11 +38,14 @@ public class PlayerBuilder : BasePlayerComponent
         Vector3.forward,
         -Vector3.forward
     };
-
     // 既に生成されているオブジェクト達
-    public List<GameObject> _createdObjects = new();
+    private List<GameObject> _createdObjects = new();
     // プレイヤーと繋がっているオブジェクト達
     private List<GameObject> _connectCheckedObjects = new();
+    // プレイヤーと繋がって居なかったオブジェクト達
+    private List<CreatePrediction> _disconnectObjects = new();
+    // プレイヤーコアと繋がっているか確認している関数の現在の実行数
+    private int _runningConnectCheckCount;
 
     // ---------- R3
     private Subject<ModuleData> _selectModuleData = new();
@@ -110,6 +110,7 @@ public class PlayerBuilder : BasePlayerComponent
             .Where(_ => currentState.CurrentValue == GameState.BATTLE)
             .Subscribe(_ =>
             {
+                _isRemoving = false;
                 _targetCreatePrediction = null;
                 _currentModuleData = null;
                 Destroy(_predictCube.gameObject);
@@ -117,7 +118,7 @@ public class PlayerBuilder : BasePlayerComponent
             .AddTo(this);
 
 
-        // 設置予測処理
+        // 生成・削除予測処理
         this.UpdateAsObservable()
             .Where(_ => currentState.CurrentValue == GameState.BUILD || currentState.CurrentValue == GameState.TUTORIAL)
             .Subscribe(_ =>
@@ -130,6 +131,7 @@ public class PlayerBuilder : BasePlayerComponent
                     mouseRay.direction * _rayDist,
                     out RaycastHit hit)) return;
 
+                // 生成予測処理
                 if (!_isRemoving)
                 {
                     if (_targetCreatePrediction == null) return;
@@ -175,18 +177,14 @@ public class PlayerBuilder : BasePlayerComponent
                         _predictCube.transform.position = hit.point + _createPosOffset;
                     }
                 }
+                // 削除予測処理
                 else
                 {
                     // レイに当たった物がプレイヤーの物でなかったら
                     if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))
                     {
-                        // 直前にプレイヤーの物に当たっていないなら処理しない
-                        if (_curRemoveObject == null) return;
-
-                        // 削除対象にレイが当たらなくなったら元の色に戻す
-                        _curRemoveObject
-                        .GetComponent<CreatePrediction>()
-                        .ChangeNormalMaterial();
+                        // 繋がっていない物リストをリセット
+                        ResetDisconnectObjects();
 
                         // 今レイに当たっている物変数をNullにする
                         _curRemoveObject = null;
@@ -195,15 +193,8 @@ public class PlayerBuilder : BasePlayerComponent
                     }
 
                     // レイに当たっているものが変わっていないなら処理しない
-                    if (_curRemoveObject == hit.collider.GetComponentInParent<CreatePrediction>().gameObject) return;
-
-                    // 直前にプレイヤーの物に当たっていないなら処理しない
-                    if (_curRemoveObject != null)
-                    {
-                        _curRemoveObject
-                        .GetComponent<CreatePrediction>()
-                        .ChangeNormalMaterial();
-                    }
+                    if (_curRemoveObject
+                    == hit.collider.GetComponentInParent<CreatePrediction>().gameObject) return;
 
                     // 現在の削除対象を更新
                     _curRemoveObject =
@@ -212,9 +203,11 @@ public class PlayerBuilder : BasePlayerComponent
                         .GetComponentInParent<CreatePrediction>()
                         .gameObject;
 
-                    // 現在の削除対象をの色を「置けない色」に変更
-                    _curRemoveObject.GetComponent<CreatePrediction>()
-                    .ChangeFalseMaterial();
+                    // 繋がっていない物リストをリセット
+                    ResetDisconnectObjects();
+
+                    // 生成済みの物が削除後も繋がっているか確認
+                    ConnectCheck(this.gameObject, 1f);
                 }
             });
 
@@ -297,12 +290,8 @@ public class PlayerBuilder : BasePlayerComponent
                     // 削除対象が存在しないなら処理しない
                     if (_curRemoveObject == null) return;
 
-                    // 対象を削除
-                    RemoveObject(_curRemoveObject);
-
-                    _runningConnectCheckCount++;
-
-                    ConnectCheck(this.gameObject, 1f);
+                    // 繋がっていないオブジェクト達を削除
+                    RemoveDisconnectObjects();
                 }
             })
             .AddTo(this);
@@ -346,6 +335,14 @@ public class PlayerBuilder : BasePlayerComponent
     {
         // 削除中フラグを反転
         _isRemoving = !_isRemoving;
+
+        // 削除モードに移行時生成する対象をリセットする
+        if (_isRemoving )
+        {
+            _targetCreatePrediction = null;
+            _currentModuleData = null;
+            Destroy(_predictCube.gameObject);
+        }
     }
 
     /// <summary>
@@ -353,12 +350,12 @@ public class PlayerBuilder : BasePlayerComponent
     /// </summary>
     /// <param name="cube"></param>
     /// <param name="cubeScale"></param>
-    private async void ConnectCheck(
+    private void ConnectCheck(
        GameObject cube,
        float cubeScale)
     {
-        // 選択して消した物が反映されるのを待つ
-        await UniTask.DelayFrame(1, cancellationToken: this.destroyCancellationToken);
+        // 現在実行されている関数の数を加算
+        _runningConnectCheckCount++;
 
         // プレイヤーと繋がっているかチェック済みリストに追加
         _connectCheckedObjects.Add(cube);
@@ -378,6 +375,9 @@ public class PlayerBuilder : BasePlayerComponent
                 // 無いなら処理しない
                 if (prediction == null) continue;
 
+                // 対象を削除した時に繋がっているか確認したいので最初の削除対象は処理しない
+                if (prediction.gameObject == _curRemoveObject) continue;
+
                 // 既にチェック済みのものなら処理しない
                 if (_connectCheckedObjects.Contains(prediction.gameObject)) continue;
 
@@ -388,13 +388,10 @@ public class PlayerBuilder : BasePlayerComponent
                     continue;
                 }
 
-                _runningConnectCheckCount++;
-
                 // 対象のオブジェクトでまたこのスクリプトを実行
                 ConnectCheck(prediction.gameObject, cubeScale);
             }
         }
-
 
         // 現在実行されている関数の数を減算
         _runningConnectCheckCount--;
@@ -402,29 +399,67 @@ public class PlayerBuilder : BasePlayerComponent
         // 現在実行されている関数が無くなったら処理
         if (_runningConnectCheckCount <= 0)
         {
-            RemoveDisconnectedObject();
+            SearchDisconnectedObjects();
         }
     }
 
     /// <summary>
-    /// プレイヤーと繋がっていないモジュール/キューブを消す
+    /// プレイヤーと繋がっていないモジュール/キューブを洗い出す
     /// </summary>
-    private void RemoveDisconnectedObject()
+    private void SearchDisconnectedObjects()
     {
         foreach (var createdObject in _createdObjects)
         {
             // Nullなら処理しない
             if (createdObject == null) continue;
-            // プレイヤーと繋がっていたら消さない
+            // プレイヤーと繋がっていたら処理しない
             if (_connectCheckedObjects.Contains(createdObject)) continue;
-
-            RemoveObject(createdObject);
+            // 現在の対象のCreatePredictionを取得
+            var curCreatePrediction = createdObject.GetComponent<CreatePrediction>();
+            // 繋がっていないリストに追加
+            _disconnectObjects.Add(curCreatePrediction);
+            // 消える色に変更
+            curCreatePrediction.ChangeFalseMaterial();
         }
 
-        // 消されたオブジェクトのリストの要素を消す
-        _createdObjects.RemoveAll(x => x == null);
         // プレイヤーとの接続確認用のリストを初期化
         _connectCheckedObjects.Clear();
+    }
+
+    /// <summary>
+    /// プレイヤーコアと繋がっていないオブジェクトを削除
+    /// </summary>
+    private void RemoveDisconnectObjects()
+    {
+        foreach(var removeTarget in _disconnectObjects)
+        {
+            // 削除対象を設置済みオブジェクトリストから消しておく(Null対策)
+            _createdObjects.Remove(removeTarget.gameObject);
+
+            // 対象を削除
+            RemoveObject(removeTarget.gameObject);
+        }
+
+        // 繋がっていないオブジェクトリストを空に
+        ResetDisconnectObjects();
+    }
+
+    /// <summary>
+    /// 繋がっていないオブジェクトリストをリセット
+    /// </summary>
+    private void ResetDisconnectObjects()
+    {
+        // 消える色になっていた物を元の色に戻す
+        foreach( var disconnectObject in _disconnectObjects)
+        {
+            // 中身が無かったら処理しない
+            if (disconnectObject == null) continue;
+
+            disconnectObject.ChangeNormalMaterial();
+        }
+
+        // 繋がっていないオブジェクトリストをリセット
+        _disconnectObjects.Clear();
     }
 
     /// <summary>
@@ -442,11 +477,6 @@ public class PlayerBuilder : BasePlayerComponent
             {
                 option.ProcessingWhenRemoved();
             }
-        }
-        // プレイヤーコアは消せない
-        else if (gameObject.GetComponent<PlayerCore>())
-        {
-            return;
         }
         else
         {
