@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using R3;
-using R3.Triggers;
 using DG.Tweening;
 using System.Linq;
+using Assets.IGC2025.Scripts.GameManagers;
 
 public class PlayerEffecter : BasePlayerComponent
 {
@@ -30,6 +30,11 @@ public class PlayerEffecter : BasePlayerComponent
         Core.Hp
             .Chunk(2,1)
             .Where(x => x.Last() < x.First())
+            .Where(_ =>
+            GameManager.
+            Instance.
+            CurrentGameState.
+            CurrentValue == GameState.BATTLE)
             .Subscribe(_ =>
             {
                 // 画面端がダメージエフェクト表示時間分赤くなる
