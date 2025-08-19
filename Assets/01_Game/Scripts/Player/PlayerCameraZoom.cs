@@ -8,15 +8,12 @@ public class PlayerCameraZoom : BasePlayerComponent
 {
     // ---------- SerializeField
     [SerializeField, Tooltip("プレイヤーカメラ")] private CinemachineOrbitalFollow _playerCamera;
-    [SerializeField, Tooltip("ビルドカメラ")] private CinemachineOrbitalFollow _buildCamera;
     [SerializeField, Tooltip("最大の半径")] private float _maxRadius = 20f;
     [SerializeField, Tooltip("最小の半径")] private float _minRadius = 1f;
     [SerializeField, Tooltip("一回のスクロールでズームする量")] private float _zoomAmount = 10f;
     [SerializeField, Tooltip("一回のズームにかかる時間")] private float _zoomTime = 0.1f;
 
     // ---------- Field
-    // 現在使用しているカメラ
-    private CinemachineOrbitalFollow _currentCamera = null;
     // 現在のFOV
     private float _currentRadius = 0f;
     // 目標のFOV
@@ -27,31 +24,14 @@ public class PlayerCameraZoom : BasePlayerComponent
     // ---------- UnityMessage
     protected override void OnInitialize()
     {
-        // ゲームステートによってカメラを切り替える
-        GameManager.Instance.CurrentGameState
-            .Where(x => x == GameState.BATTLE || x == GameState.BUILD || x == GameState.TUTORIAL)
-            .Subscribe(x =>
-            {
-                // 切り替える処理
-                if(x == GameState.BATTLE)
-                {
-                    _currentCamera = _playerCamera;
-                }
-                else if(x == GameState.BUILD || x == GameState.TUTORIAL)
-                {
-                    _currentCamera = _buildCamera;
-                }
-
-                _currentRadius = _currentCamera.Radius;
-                _targetRadius = _currentCamera.Radius;
-            })
-            .AddTo(this);
+        // 現在のゲームステートのRPを取得
+        var currentGameState = GameManager.Instance.CurrentGameState;
 
         // マウスホイールによるズーム処理
         InputEventProvider.Zoom
-            .Where(x => GameManager.Instance.CurrentGameState.CurrentValue == GameState.BATTLE
-            || GameManager.Instance.CurrentGameState.CurrentValue == GameState.BUILD
-            || GameManager.Instance.CurrentGameState.CurrentValue == GameState.TUTORIAL)
+            .Where(x => currentGameState.CurrentValue == GameState.BATTLE
+            || currentGameState.CurrentValue == GameState.BUILD
+            || currentGameState.CurrentValue == GameState.TUTORIAL)
             .Subscribe(x =>
             {
                 // 前スクロール時
@@ -87,15 +67,15 @@ public class PlayerCameraZoom : BasePlayerComponent
 
         // 実際のズーム処理
         this.UpdateAsObservable()
-            .Where(x => GameManager.Instance.CurrentGameState.CurrentValue == GameState.BATTLE
-            || GameManager.Instance.CurrentGameState.CurrentValue == GameState.BUILD
-            || GameManager.Instance.CurrentGameState.CurrentValue == GameState.TUTORIAL)
+            .Where(x => currentGameState.CurrentValue == GameState.BATTLE
+            || currentGameState.CurrentValue == GameState.BUILD
+            || currentGameState.CurrentValue == GameState.TUTORIAL)
             .Where(_ => _currentRadius != _targetRadius)
             .Subscribe(x =>
             {
                 // 滑らかにFOVを変える
                 _currentRadius = Mathf.SmoothDamp(
-                    _currentCamera.Radius,
+                    _playerCamera.Radius,
                     _targetRadius,
                     ref _currentVelocity,
                     _zoomTime,
@@ -103,7 +83,7 @@ public class PlayerCameraZoom : BasePlayerComponent
                     Time.unscaledDeltaTime);
 
                 // 変わったFOVをセットする
-                _currentCamera.Radius = _currentRadius;
+                _playerCamera.Radius = _currentRadius;
             });
     }
 }

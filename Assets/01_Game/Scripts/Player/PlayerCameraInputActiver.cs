@@ -7,36 +7,43 @@ using Assets.IGC2025.Scripts.GameManagers;
 public class PlayerCameraInputActiver : BasePlayerComponent
 {
     // ---------- SerializeField
-    [SerializeField] private CinemachineInputAxisController _buildCameraInput;
+    [SerializeField] private CinemachineInputAxisController _playerCameraInput;
 
     // ---------- UnityMessage
     protected override void OnInitialize()
     {
-        // ゲームステートがビルド時に毎回初期化
-        GameManager.Instance.CurrentGameState
-            .Where(x => x == GameState.BUILD
-            || x == GameState.TUTORIAL)
-            .Subscribe(_ =>
+        var currentGameState = GameManager.Instance.CurrentGameState;
+
+        // ステートが変わるごとにカメラが操作できるかを変える
+        currentGameState
+            .Subscribe(x =>
             {
-                _buildCameraInput.enabled = false;
+                if (x == GameState.BATTLE)
+                {
+                    _playerCameraInput.enabled = true;
+                }
+                else
+                {
+                    _playerCameraInput.enabled = false;
+                }
             })
             .AddTo(this);
 
         // ビルド時特定のボタンを押しているときに限りカメラ操作可能
         InputEventProvider.MoveCamera
-            .Where(_ => GameManager.Instance.CurrentGameState.CurrentValue == GameState.BUILD
-            || GameManager.Instance.CurrentGameState.CurrentValue == GameState.TUTORIAL)
+            .Where(_ => currentGameState.CurrentValue == GameState.BUILD
+            || currentGameState.CurrentValue == GameState.TUTORIAL)
             .Subscribe(x =>
             {
                 // 押したらカメラ操作可能
                 if(x)
                 {
-                    _buildCameraInput.enabled = true;
+                    _playerCameraInput.enabled = true;
                 }
                 // 離したらカメラ操作不可
                 else
                 {
-                    _buildCameraInput.enabled = false;
+                    _playerCameraInput.enabled = false;
                 }
             })
             .AddTo(this);
