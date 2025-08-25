@@ -15,7 +15,7 @@ namespace Assets.AT
 
         public void SliderAnime(float value)
         {
-            // アニメーションしながらSliderを動かす
+            // 繧｢繝九Γ繝ｼ繧ｷ繝ｧ繝ｳ縺励↑縺後ｉSlider繧貞虚縺九☆
             DOTween.To(() => _slider.value,
                 n => _slider.value = n,
                 value,

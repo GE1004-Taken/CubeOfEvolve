@@ -1,6 +1,7 @@
 using Assets.IGC2025.Scripts.GameManagers;
 using Assets.IGC2025.Scripts.View;
 using R3;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ namespace Assets.IGC2025.Scripts.Presenter
 
         [Header("Views")]
         [SerializeField] private ViewResultCanvas _view;
+        [SerializeField] private GameEndController _gameEndController;
         [SerializeField] private Button[] _endGameButton;
         [SerializeField] private TextMeshProUGUI _finishTimeTextUGUI;
 
@@ -26,8 +28,9 @@ namespace Assets.IGC2025.Scripts.Presenter
                     .Where(x => x == GameState.GAMEOVER || x == GameState.GAMECLEAR)
                     .Subscribe(x =>
                     {
-                        _view.ShowCanvas(x);
-                        _finishTimeTextUGUI.text = $"{GameManager.Instance.GetComponent<TimeManager>().CurrentTimeSecond.CurrentValue.ToString("F1")}ƒJƒEƒ“ƒg";
+                        //_view.ShowCanvas(x);
+                        _gameEndController.PlayGameEndSequence(x).Forget();
+                        _finishTimeTextUGUI.text = $"{GameManager.Instance.GetComponent<TimeManager>().CurrentTimeSecond.CurrentValue.ToString("F1")}ã‚«ã‚¦ãƒ³ãƒˆ";
                     })
                     .AddTo(this);
             }

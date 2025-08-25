@@ -14,7 +14,6 @@ namespace AT.uGUI
         private CameraCtrlManager _cameraCtrlManager;
 
         [SerializeField] private float preCountdownDelay = 1f;
-        [SerializeField] private float countInterval = 1f;
         [SerializeField] private int countdownFrom = 3;
 
         private void Awake()
@@ -28,7 +27,7 @@ namespace AT.uGUI
         {
             if (_canvas == null || _startText == null)
             {
-                Debug.LogError("[ReadyViewCanvasController] Canvas ‚Ü‚½‚Í Text ‚ªæ“¾‚Å‚«‚Ä‚¢‚Ü‚¹‚ñ");
+                Debug.LogError("[ReadyViewCanvasController] Canvas ã¾ãŸã¯ Text ãŒå–å¾—ã§ãã¦ã„ã¾ã›ã‚“");
                 return;
             }
 
@@ -38,11 +37,11 @@ namespace AT.uGUI
             _startText.text = "Ready...";
             Time.timeScale = 0f;
 
-            // ƒJƒƒ‰ˆÚ“®
+            // ã‚«ãƒ¡ãƒ©ç§»å‹•
             _cameraCtrlManager.ChangeCamera("Player Camera");
             await UniTask.WaitForSeconds(_cameraCtrlManager.CameraBlendTime, ignoreTimeScale: true);
 
-            // ƒJƒEƒ“ƒgƒ_ƒEƒ“‘O‚Ì‘Ò‹@
+            // ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³å‰ã®å¾…æ©Ÿ
             await UniTask.WaitForSeconds(preCountdownDelay, ignoreTimeScale: true);
 
             for (int i = countdownFrom; i > 0; i--)
@@ -50,16 +49,16 @@ namespace AT.uGUI
                 _startText.text = i.ToString();
                 AnimateTextPunch(_startText);
 
-                // ƒJƒEƒ“ƒgƒ_ƒEƒ“Œø‰Ê‰¹i‚±‚±‚É‹Lq‚µ‚Ä‚­‚¾‚³‚¢j
+                // ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³åŠ¹æœéŸ³
                 GameSoundManager.Instance.PlaySE("Sys_Click_1", "System");
 
-                await UniTask.WaitForSeconds(countInterval, ignoreTimeScale: true);
+                await UniTask.WaitForSeconds(1f, ignoreTimeScale: true);
             }
 
             _startText.text = "START!";
             AnimateTextScaleUp(_startText);
 
-            // ƒXƒ^[ƒgŒø‰Ê‰¹i‚±‚±‚É‹Lq‚µ‚Ä‚­‚¾‚³‚¢j
+            // ã‚¹ã‚¿ãƒ¼ãƒˆåŠ¹æœéŸ³
             GameSoundManager.Instance.PlaySE("Sys_Start", "System");
 
             await UniTask.WaitForSeconds(0.6f, ignoreTimeScale: true);
@@ -71,14 +70,20 @@ namespace AT.uGUI
 
         private void AnimateTextPunch(TextMeshProUGUI text)
         {
-            text.rectTransform.DOPunchScale(Vector3.one * 0.3f, 0.4f, 8, 0.8f);
+            var rect = text.rectTransform;
+            rect.DOKill();
+            rect.localScale = Vector3.one;
+            rect.DOPunchScale(Vector3.one * 0.3f, 0.4f, 8, 0.8f)
+                .SetUpdate(true);
         }
 
         private void AnimateTextScaleUp(TextMeshProUGUI text)
         {
-            text.rectTransform.localScale = Vector3.one * 0.6f;
-            text.rectTransform.DOScale(1f, 0.5f)
-                .SetEase(Ease.OutBack);
+            var rect = text.rectTransform;
+            rect.localScale = Vector3.one * 0.6f;
+            rect.DOScale(1f, 0.5f)
+                .SetEase(Ease.OutBack)
+                .SetUpdate(true);
         }
     }
 }
