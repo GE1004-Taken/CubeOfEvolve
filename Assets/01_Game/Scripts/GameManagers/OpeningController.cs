@@ -12,18 +12,18 @@ using UnityEngine.InputSystem; // 新InputSystem
 
 public class OpeningController : MonoBehaviour
 {
-    [Header("References")]
+    [Header("参照")]
     [SerializeField] private CanvasGroup logo;
 
-    [Header("Timings (sec)")]
+    [Header("タイミング(秒)")]
     [SerializeField] private float logoFadeIn = 1.2f;
     [SerializeField] private float logoHold = 1.0f;
     [SerializeField] private float logoFadeOut = 0.8f;
 
-    [Header("Next Scene")]
+    [Header("次シーン")]
     [SerializeField] private string nextSceneName = "";
 
-    [Header("Options")]
+    [Header("オプション")]
     [SerializeField] private bool allowSkip = true;
 
     private CancellationTokenSource _lifeCts;
