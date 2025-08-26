@@ -202,6 +202,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _status: {fileID: 7830914000392364375}
+  _obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1024
   _minDistance: 10
 --- !u!114 &7830914000392364375 stripped
 MonoBehaviour:

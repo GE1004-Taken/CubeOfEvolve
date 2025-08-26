@@ -52,8 +52,11 @@ public class Bullet_Linear : BulletBase
                     return;
                 }
 
-                // “–‚½‚Á‚½‚Ì‹¤’Êˆ—
-                HitMethod();
+                // ’n–Ê‚É“–‚½‚Á‚½
+                if (other.CompareTag("Ground"))
+                {
+                    HitMethod();
+                }
 
                 void HitMethod()
                 {

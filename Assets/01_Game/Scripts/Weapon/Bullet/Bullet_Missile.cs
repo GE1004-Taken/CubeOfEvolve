@@ -78,9 +78,9 @@ public class Bullet_Missile : BulletBase
                     return;
                 }
 
+                // ’n–Ê‚É“–‚½‚Á‚½
                 if (other.CompareTag("Ground"))
                 {
-                    // “–‚½‚Á‚½‚Ì‹¤’Êˆ—
                     HitMethod();
                 }
 

@@ -32,17 +32,19 @@ public class EnemyMove_Flying : EnemyMoveBase
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, _layerMask))
         {
-            float dis = hit.transform.position.y - transform.position.y;
+            float dis = transform.position.y - hit.point.y;
 
-            // 指定の高度以下の時
-            if (Mathf.Abs(dis) < _minFlyingHeight)
+            if (dis < _minFlyingHeight)
             {
+                // 高度が低すぎるので上昇
                 _rb.AddForce(Vector3.up * _flyingPower, ForceMode.Impulse);
             }
-            else if (Mathf.Abs(dis) > _maxFlyingHeight)
+            else if (dis > _maxFlyingHeight)
             {
-                _rb.linearVelocity = new(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+                // 高度が高すぎるので上昇を止める
+                _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
             }
         }
     }
+
 }
