@@ -6,4 +6,6 @@ public class StatusEffectData : ScriptableObject
     public float MoveSpeed;
 
     public float Attack;
+
+    public float SpawnRate;
 }
