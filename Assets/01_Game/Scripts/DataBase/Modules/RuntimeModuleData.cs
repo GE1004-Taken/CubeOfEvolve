@@ -6,69 +6,69 @@ using UnityEngine;
 namespace App.GameSystem.Modules
 {
     /// <summary>
-    /// ƒQ[ƒ€’†‚É“®“I‚É•Ï‰»‚·‚éƒ‚ƒWƒ…[ƒ‹ƒf[ƒ^‚ğŠÇ—‚·‚éƒNƒ‰ƒXB
-    /// ƒ}ƒXƒ^[ƒf[ƒ^ (ModuleData) ‚ğŠî‚É‰Šú‰»‚³‚êAƒŒƒxƒ‹‚â”—Ê‚È‚Ç‚Ìó‘Ô‚ğ•Û‚µ‚Ü‚·B
+    /// ã‚²ãƒ¼ãƒ ä¸­ã«å‹•çš„ã«å¤‰åŒ–ã™ã‚‹ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒ‡ãƒ¼ã‚¿ã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+    /// ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ (ModuleData) ã‚’åŸºã«åˆæœŸåŒ–ã•ã‚Œã€ãƒ¬ãƒ™ãƒ«ã‚„æ•°é‡ãªã©ã®çŠ¶æ…‹ã‚’ä¿æŒã—ã¾ã™ã€‚
     /// </summary>
     [Serializable]
     public class RuntimeModuleData
     {
-        // ----- Property (ŒöŠJƒvƒƒpƒeƒB)
-        public int Id { get; private set; } // ƒ‚ƒWƒ…[ƒ‹‚ÌˆêˆÓ‚ÈIDB
+        // ----- Property (å…¬é–‹ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£)
+        public int Id { get; private set; } // ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ä¸€æ„ãªIDã€‚
 
-        // ----- ReactiveProperty (ƒŠƒAƒNƒeƒBƒuƒvƒƒpƒeƒB)
-        private ReactiveProperty<int> _currentLevel; // Œ»İ‚ÌƒŒƒxƒ‹‚ğŠÇ—‚·‚éReactivePropertyB
-        public ReadOnlyReactiveProperty<int> Level => _currentLevel; // ŠO•”ŒöŠJ—p‚Ì“Ç‚İæ‚èê—pƒŒƒxƒ‹ƒvƒƒpƒeƒBB
-        public int CurrentLevelValue => _currentLevel.Value; // Œ»İ‚ÌƒŒƒxƒ‹‚Ì’¼Ú’lB
+        // ----- ReactiveProperty (ãƒªã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£)
+        private ReactiveProperty<int> _currentLevel; // ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’ç®¡ç†ã™ã‚‹ReactivePropertyã€‚
+        public ReadOnlyReactiveProperty<int> Level => _currentLevel; // å¤–éƒ¨å…¬é–‹ç”¨ã®èª­ã¿å–ã‚Šå°‚ç”¨ãƒ¬ãƒ™ãƒ«ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã€‚
+        public int CurrentLevelValue => _currentLevel.Value; // ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã®ç›´æ¥å€¤ã€‚
 
         private ReactiveProperty<int> _quantity;
         public ReadOnlyReactiveProperty<int> Quantity => _quantity;
         public int CurrentQuantityValue => _quantity.Value;
 
-        // ----- Constructor (ƒRƒ“ƒXƒgƒ‰ƒNƒ^)
+        // ----- Constructor (ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿)
         /// <summary>
-        /// ModuleDataƒ}ƒXƒ^[ƒf[ƒ^‚©‚çRuntimeModuleData‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‰Šú‰»‚µ‚Ü‚·B
+        /// ModuleDataãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰RuntimeModuleDataã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’åˆæœŸåŒ–ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="masterData">ƒ‚ƒWƒ…[ƒ‹‚Ìƒ}ƒXƒ^[ƒf[ƒ^B</param>
+        /// <param name="masterData">ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã€‚</param>
         public RuntimeModuleData(ModuleData masterData)
         {
-            Id = masterData.Id; // ƒ}ƒXƒ^[ƒf[ƒ^‚©‚çID‚ğİ’èB
-            _currentLevel = new ReactiveProperty<int>(masterData.Level); // ‰ŠúƒŒƒxƒ‹‚Íƒ}ƒXƒ^[ƒf[ƒ^‚©‚ç‘ã“üB
-            _quantity = new ReactiveProperty<int>(masterData.Quantity); // ‰Šú”—Ê‚Íƒ}ƒXƒ^[ƒf[ƒ^‚©‚ç‘ã“üB
+            Id = masterData.Id; // ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰IDã‚’è¨­å®šã€‚
+            _currentLevel = new ReactiveProperty<int>(masterData.Level); // åˆæœŸãƒ¬ãƒ™ãƒ«ã¯ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ä»£å…¥ã€‚
+            _quantity = new ReactiveProperty<int>(masterData.Quantity); // åˆæœŸæ•°é‡ã¯ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ä»£å…¥ã€‚
         }
 
         // ----- Private
 
-        // ----- Public Methods (ŒöŠJƒƒ\ƒbƒh)
+        // ----- Public Methods (å…¬é–‹ãƒ¡ã‚½ãƒƒãƒ‰)
         /// <summary>
-        /// ƒ‚ƒWƒ…[ƒ‹‚ÌƒŒƒxƒ‹‚ğXV‚µ‚Ü‚·B
+        /// ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ãƒ¬ãƒ™ãƒ«ã‚’æ›´æ–°ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="newLevel">İ’è‚·‚éV‚µ‚¢ƒŒƒxƒ‹B</param>
+        /// <param name="newLevel">è¨­å®šã™ã‚‹æ–°ã—ã„ãƒ¬ãƒ™ãƒ«ã€‚</param>
         public void SetLevel(int newLevel)
         {
-            if (newLevel < 0) newLevel = 0; // ƒŒƒxƒ‹‚ª•‰‚Ì’l‚É‚È‚ç‚È‚¢‚æ‚¤‚É§ŒÀB
-            _currentLevel.Value = newLevel; // ReactiveProperty‚Ì’l‚ğXVB
+            if (newLevel < 0) newLevel = 0; // ãƒ¬ãƒ™ãƒ«ãŒè² ã®å€¤ã«ãªã‚‰ãªã„ã‚ˆã†ã«åˆ¶é™ã€‚
+            _currentLevel.Value = newLevel; // ReactivePropertyã®å€¤ã‚’æ›´æ–°ã€‚
         }
 
         /// <summary>
-        /// ƒ‚ƒWƒ…[ƒ‹‚Ì”—Ê‚ğXV‚µ‚Ü‚·B
+        /// ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®æ•°é‡ã‚’æ›´æ–°ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="newQuantity">İ’è‚·‚éV‚µ‚¢”—ÊB</param>
+        /// <param name="newQuantity">è¨­å®šã™ã‚‹æ–°ã—ã„æ•°é‡ã€‚</param>
         public void SetQuantity(int newQuantity)
         {
-            if (newQuantity < 0) newQuantity = 0; // ”—Ê‚ª•‰‚Ì’l‚É‚È‚ç‚È‚¢‚æ‚¤‚É§ŒÀB
-            _quantity.Value = newQuantity; // ReactiveProperty‚Ì’l‚ğXVB
+            if (newQuantity < 0) newQuantity = 0; // æ•°é‡ãŒè² ã®å€¤ã«ãªã‚‰ãªã„ã‚ˆã†ã«åˆ¶é™ã€‚
+            _quantity.Value = newQuantity; // ReactivePropertyã®å€¤ã‚’æ›´æ–°ã€‚
         }
 
         /// <summary>
-        /// ƒ‚ƒWƒ…[ƒ‹‚ÌƒŒƒxƒ‹‚ğ1ã‚°‚Ü‚·B
+        /// ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ãƒ¬ãƒ™ãƒ«ã‚’1ä¸Šã’ã¾ã™ã€‚
         /// </summary>
         public void LevelUp()
             => SetLevel(_currentLevel.Value + 1);
 
         /// <summary>
-        /// ƒ‚ƒWƒ…[ƒ‹‚Ì”—Ê‚ğw’è‚³‚ê‚½—Ê‚¾‚¯•ÏX‚µ‚Ü‚·B
+        /// ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®æ•°é‡ã‚’æŒ‡å®šã•ã‚ŒãŸé‡ã ã‘å¤‰æ›´ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="amount">”—Ê‚Ì‘Œ¸—ÊB</param>
+        /// <param name="amount">æ•°é‡ã®å¢—æ¸›é‡ã€‚</param>
         public void ChangeQuantity(int amount)
             => SetQuantity(_quantity.Value + amount);
     }

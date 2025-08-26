@@ -31,11 +31,14 @@ public class GameManager : MonoBehaviour
 
     private TimeManager _timeManager;
     private SceneLoader _sceneLoader;
-    private CameraCtrlManager _cameraCtrlManager;
+    //private CameraCtrlManager _cameraCtrlManager;
     private CanvasCtrlManager _canvasCtrlManager;
     private GameSoundManager _gameSoundManager;
     private GuideManager _guideManager;
 
+    // #ボスが撃破されたときにトランスフォームを格納しておく変数
+    public Transform BossTransform { get; set; }
+    
     // ---------- Property
     public TimeManager TimeManager => _timeManager;
     public SceneLoader SceneLoader => _sceneLoader;
@@ -89,7 +92,7 @@ public class GameManager : MonoBehaviour
 
         _timeManager = GetComponent<TimeManager>();
         _sceneLoader = GetComponent<SceneLoader>();
-        _cameraCtrlManager = CameraCtrlManager.Instance;
+        //_cameraCtrlManager = CameraCtrlManager.Instance;
         _canvasCtrlManager = CanvasCtrlManager.Instance;
         _gameSoundManager = GameSoundManager.Instance;
         _guideManager = GuideManager.Instance;
@@ -227,7 +230,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     // ステートが変わった際に行う処理群
-    #region Setup 
+    #region Setup
 
     /// <summary>
     /// タイトル
@@ -237,9 +240,9 @@ public class GameManager : MonoBehaviour
     private async UniTask SetupTitleAsync(CancellationToken token)
     {
         _canvasCtrlManager = CanvasCtrlManager.Instance;
-        _cameraCtrlManager = CameraCtrlManager.Instance;
+        //_cameraCtrlManager = CameraCtrlManager.Instance;
         _canvasCtrlManager.ShowOnlyCanvas("TitleView");
-        _cameraCtrlManager.ChangeCamera("TitleDemoCamera");
+        //_cameraCtrlManager.ChangeCamera("TitleDemoCamera");
         await UniTask.CompletedTask;
     }
 
@@ -260,7 +263,7 @@ public class GameManager : MonoBehaviour
     private async UniTask SetupBuildAsync(CancellationToken token)
     {
         _canvasCtrlManager.GetCanvas("BuildView")?.OnOpenCanvas();
-        _cameraCtrlManager.ChangeCamera("Build Camera");
+        //_cameraCtrlManager.ChangeCamera("Build Camera");
         await UniTask.CompletedTask;
     }
 
@@ -273,7 +276,7 @@ public class GameManager : MonoBehaviour
     private async UniTask SetupBattleAsync(CancellationToken token)
     {
         _canvasCtrlManager.GetCanvas("GameView")?.OnOpenCanvas();
-        _cameraCtrlManager.ChangeCamera("Player Camera");
+        //_cameraCtrlManager.ChangeCamera("Player Camera");
         await UniTask.CompletedTask;
     }
 
@@ -285,7 +288,9 @@ public class GameManager : MonoBehaviour
     private async UniTask SetupTutorialAsync(CancellationToken token)
     {
         _guideManager = GuideManager.Instance;
+        var _cameraCtrlManager = CameraCtrlManager.Instance;
 
+        _cameraCtrlManager.ChangeCamera("Player Camera");
         await _guideManager.ShowGuideAndWaitAsync("Start", token);
         await _guideManager.ShowGuideAndWaitAsync("Start (1)", token);
         await _guideManager.DoBuildModeAndWaitAsync(token);

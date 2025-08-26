@@ -7,7 +7,6 @@ namespace Assets.IGC2025.Scripts.View
     public class ViewResultCanvas : MonoBehaviour
     {
         // -----SerializedField
-
         [SerializeField] private Canvas _resultCanvas;
         [SerializeField] private Canvas _clearCanvas;
         [SerializeField] private Canvas _overCanvas;
@@ -16,25 +15,24 @@ namespace Assets.IGC2025.Scripts.View
         // -----CompositeDisposable
         private CompositeDisposable _disposables = new CompositeDisposable();
 
-        // ----- Events (Presenter��R3�ōw�ǂ���)
+        // ----- Events (PresenterがR3で購読する)
 
         // ----- UnityMessage
 
         private void OnDestroy()
         {
-            _disposables.Dispose(); // �I�u�W�F�N�g���j�������ۂɁA���ׂĂ̍w�ǂ�����
+            _disposables.Dispose(); // オブジェクトが破棄される際に、すべての購読を解除
         }
 
         // -----PrivateMethods
 
         // -----PublicMethods
         /// <summary>
-        /// 
+        /// /*加筆項目*/
         /// </summary>
         /// <param name="gameState"></param>
         public void ShowCanvas(GameState gameState)
         {
-
             _resultCanvas.enabled = true;
             if (gameState == GameState.GAMEOVER)
             {

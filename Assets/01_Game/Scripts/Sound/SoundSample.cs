@@ -8,7 +8,7 @@ namespace Assets.AT
     public class SoundSample : MonoBehaviour
     {
         [SerializeField] private GameObject _soundSourceObj;
-        [SerializeField] private ModuleDataStore _moduleDataStore; // ƒ‚ƒWƒ…[ƒ‹ƒ}ƒXƒ^[ƒf[ƒ^‚ğŠi”[‚·‚éƒf[ƒ^ƒXƒgƒAB
+        [SerializeField] private ModuleDataStore _moduleDataStore; // ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒã‚¹ã‚¿ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ã€‚
 
         private GameSoundManager SM;
         private bool _isPlay = true;
@@ -20,14 +20,14 @@ namespace Assets.AT
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R) && _isPlay) // ‰¹–Â‚ç‚·
+            if (Input.GetKeyDown(KeyCode.R) && _isPlay) // éŸ³é³´ã‚‰ã™
             {
                 SM.PlaySE("SampleSE", "SE");
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
             }
 
-            if (Input.GetKeyDown(KeyCode.F) && _isPlay) // ƒuƒbƒsƒKƒ“I w’è‰ÓŠ‚©‚ç
+            if (Input.GetKeyDown(KeyCode.F) && _isPlay) // ãƒ–ãƒƒãƒ”ã‚¬ãƒ³ï¼ æŒ‡å®šç®‡æ‰€ã‹ã‚‰
             {
                 //_soundSourceObj.GetComponent<SFXManagerComponent>().PlaySFX("SampleSE", "SE", false);
                 GameSoundManager.Instance.PlaySFX("Hit_Bom", _soundSourceObj.transform, "SE");
@@ -35,23 +35,24 @@ namespace Assets.AT
                 StartCoroutine(ResetLogFlag());
             }
 
-            if (Input.GetKeyDown(KeyCode.T) && _isPlay) // bgmÁ‚·ƒtƒF[ƒh
+            if (Input.GetKeyDown(KeyCode.T) && _isPlay) // bgmæ¶ˆã™ãƒ•ã‚§ãƒ¼ãƒ‰
             {
                 SM.StopBGMWithFade(1f);
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
             }
 
-            if (Input.GetKeyDown(KeyCode.G) && _isPlay) // bgm–Â‚ç‚·
+            if (Input.GetKeyDown(KeyCode.G) && _isPlay) // bgmé³´ã‚‰ã™
             {
                 SM.PlayBGM("SampleBGM", "BGM", 3f);
                 _isPlay = false;
                 StartCoroutine(ResetLogFlag());
             }
 
-            /* L ‚ğ‰Ÿ‚·‚ÆA‘S•”‚Ìƒ‚ƒWƒ…[ƒ‹‚Ì”—Ê‚ğ10ŒÂ‚ÉAƒIƒvƒVƒ‡ƒ“‚ğœ‚­‚·‚×‚Ä‚ÌƒŒƒxƒ‹‚ğ5‚É‚·‚éƒR[ƒh */
+            /* L ã‚’æŠ¼ã™ã¨ã€å…¨éƒ¨ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®æ•°é‡ã‚’10å€‹ã«ã€ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’é™¤ãã™ã¹ã¦ã®ãƒ¬ãƒ™ãƒ«ã‚’5ã«ã™ã‚‹ã‚³ãƒ¼ãƒ‰ */
             if (Input.GetKeyDown(KeyCode.L) && _isPlay)
             {
+                _isPlay = false;
                 var runtimeModuleManager = RuntimeModuleManager.Instance;
                 foreach (var module in runtimeModuleManager.AllRuntimeModuleData)
                 {
@@ -61,12 +62,12 @@ namespace Assets.AT
                     }
                     else
                     {
-                        // ƒIƒvƒVƒ‡ƒ“‚ÍƒŒƒxƒ‹‚ğ1‚Éİ’è
+                        // ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ãƒ¬ãƒ™ãƒ«ã‚’1ã«è¨­å®š
                         module.SetLevel(1);
                     }
                     module.SetQuantity(10);
                 }
-                _isPlay = false;
+                StartCoroutine(ResetLogFlag());
             }
         }
 
