@@ -1,4 +1,7 @@
+using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.GameManagers;
+using Game.Utils;
+using ObservableCollections;
 using R3;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,9 +12,12 @@ public class EnemySpawner : MonoBehaviour
     // ---------------------------- SerializeField
     [SerializeField] private List<SpawnWaveData> _waves;
     [SerializeField] private float _playerDistance = 10f;
+    [SerializeField] private GameObject _spawnEffect;
 
     // ---------------------------- Field
     private GameObject _target;
+    private float _spawnRate = 1f;
+    private float _currentSpawnRate = 1f;
 
     // ---------------------------- UnityMessage
 
@@ -20,6 +26,8 @@ public class EnemySpawner : MonoBehaviour
         _target = PlayerMonitoring.Instance.PlayerObj;
 
         _waves.Sort((a, b) => a.delaySecond.CompareTo(b.delaySecond));
+
+        ObserveStatusEffects();
 
         GameManager.Instance.CurrentGameState
             .Where(value => value == GameState.BATTLE)
@@ -36,6 +44,41 @@ public class EnemySpawner : MonoBehaviour
     }
 
     // ---------------------------- PrivateMethod
+    /// <summary>
+    /// オプションを監視
+    /// </summary>
+    private void ObserveStatusEffects()
+    {
+        var addStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
+        .ObserveAdd(destroyCancellationToken)
+        .Select(_ => Unit.Default);
+
+        var removeStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
+            .ObserveRemove(destroyCancellationToken)
+            .Select(_ => Unit.Default);
+
+        // どちらかのイベントが発生した時を監視
+        addStream.Merge(removeStream)
+            .Subscribe(_ =>
+            {
+                UpdateSpawnRate();
+            })
+            .AddTo(this);
+    }
+
+    /// <summary>
+    /// 湧き率更新
+    /// </summary>
+    private void UpdateSpawnRate()
+    {
+        _currentSpawnRate = _spawnRate;
+
+        foreach (var effect in RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList)
+        {
+            _currentSpawnRate += effect.SpawnRate;
+        }
+    }
+
     /// <summary>
     /// ウェーブを開始する
     /// </summary>
@@ -74,7 +117,7 @@ public class EnemySpawner : MonoBehaviour
                     // 出現タイミングに達したか
                     if (loopElapsed >= nextSpawnTime)
                     {
-                        for (int i = 0; i < wave.spawnCount; i++)
+                        for (int i = 0; i < wave.spawnCount * _currentSpawnRate; i++)
                         {
                             Spawn(wave.enemyList[Random.Range(0, wave.enemyList.Count)]);
                         }
@@ -112,5 +155,11 @@ public class EnemySpawner : MonoBehaviour
 
         // 生成後に敵の初期化メソッドを呼び出す（EnemyStatusコンポーネントがあれば）
         enemy.GetComponent<EnemyStatus>()?.EnemySpawn();
+
+        if (_spawnEffect != null)
+        {
+            var effect = Instantiate(_spawnEffect, enemy.transform.position, Quaternion.identity);
+            effect.AddComponent<StopEffect>();
+        }
     }
 }
