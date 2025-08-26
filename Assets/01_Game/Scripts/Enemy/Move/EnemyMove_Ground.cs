@@ -13,7 +13,8 @@ public class EnemyMove_Ground : EnemyMoveBase
     {
         if (Vector3.Distance(_targetObj.transform.position, transform.position) >= _minDistance)
         {
-            LinearMovement();
+            // ‰ñ”ð•t‚«ˆÚ“®‚ðŽg‚¤
+            LinearMovementWithAvoidance();
         }
     }
 }
