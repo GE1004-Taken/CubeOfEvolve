@@ -11550,6 +11550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _view: {fileID: 361916883573543560}
+  _gameEndController: {fileID: 0}
   _endGameButton:
   - {fileID: 4549700125175870550}
   - {fileID: 5898170090180096236}
@@ -12994,7 +12995,7 @@ GameObject:
   - component: {fileID: 61418790943778544}
   - component: {fileID: 6209542248182782072}
   m_Layer: 0
-  m_Name: GuideManager
+  m_Name: GuideViews
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15723,7 +15724,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: aaa
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3399f06b0509c5a449ddf28f891aead6, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: af082d5c8ce21a547ae3981a272c4300, type: 2}
@@ -17194,7 +17195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.019607844, g: 0, b: 0, a: 1}
   Color2: {r: 0.61635214, g: 0.61635214, b: 0.61635214, a: 1}
-  Angle: 3290202.5
+  Angle: 2357584
   _isAnime: 1
   _rotationSpeed: 300
 --- !u!1 &2966871649232209619
@@ -17515,7 +17516,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 917455911146631894}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.9985838
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -23514,7 +23515,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00048604727}
+  m_AnchoredPosition: {x: 0, y: -0.0003860954}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1030651825821008766
@@ -36944,7 +36945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.15686275, g: 0.14117648, b: 0.14117648, a: 1}
   Color2: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-  Angle: 1187602.8
+  Angle: 986521.06
   _isAnime: 1
   _rotationSpeed: 180
 --- !u!1 &5585908736158749580
@@ -46624,7 +46625,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3231528483057716651}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99869746
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -48002,7 +48003,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 3290550.2
+  Angle: 2357573.8
   _isAnime: 1
   _rotationSpeed: 300
 --- !u!1 &7272389834020847404
@@ -49356,7 +49357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.15686275, g: 0.14117648, b: 0.14117648, a: 1}
   Color2: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-  Angle: 1183984.2
+  Angle: 982973.3
   _isAnime: 1
   _rotationSpeed: 180
 --- !u!1 &7717194280681923968
@@ -53250,7 +53251,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000977266}
+  m_AnchoredPosition: {x: 0, y: -0.00023673024}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &249048786212175310
@@ -56109,7 +56110,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8714392412142635637}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -60123,7 +60124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 704359.6
+  Angle: 686250.1
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1 &6157882955798168294 stripped
@@ -61866,7 +61867,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 557714.2
+  Angle: 539604.75
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &1930682642832775210
@@ -62380,7 +62381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 625134.7
+  Angle: 607025.2
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &2339255624764757737
@@ -63326,7 +63327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 635224.75
+  Angle: 617115.25
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!224 &9049123938771851993 stripped
@@ -63595,7 +63596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 793472.6
+  Angle: 775362
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!224 &9036192598030792282 stripped
@@ -64475,7 +64476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240719, guid: ffb2de42c0c9942e88ce7aab6979e17b, type: 3}
       propertyPath: Angle
-      value: 11065.747
+      value: 10179.905
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240719, guid: ffb2de42c0c9942e88ce7aab6979e17b, type: 3}
       propertyPath: Color1.b
@@ -66847,7 +66848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 692105.5
+  Angle: 673996
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &4733670077103505987
@@ -66930,9 +66931,33 @@ PrefabInstance:
       propertyPath: m_UpdateMode
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6774652464955240715, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6774652464955240715, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6774652464955240715, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6774652464955240715, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPause
+      objectReference: {fileID: 0}
+    - target: {fileID: 6774652464955240715, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240717, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_Name
       value: Btn_Resume
+      objectReference: {fileID: 0}
+    - target: {fileID: 6774652464955240717, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_Pivot.x
@@ -66948,7 +66973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_AnchorMin.x
@@ -66956,7 +66981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_SizeDelta.x
@@ -66996,11 +67021,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -110
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240718, guid: 08204957c09d64507ad5fc5686307cd1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -67422,7 +67447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 708923.9
+  Angle: 690814.4
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1 &1598265653808136447 stripped
@@ -68497,7 +68522,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 557710.7
+  Angle: 539601.3
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!114 &2084951087912642363 stripped
@@ -69591,7 +69616,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 557903.5
+  Angle: 539794.1
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &5960330920994847885
@@ -69832,7 +69857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 791654.06
+  Angle: 773543.4
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &5991054640800426132
@@ -72784,7 +72809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 676988.94
+  Angle: 658879.44
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1 &4124344560403777511 stripped
@@ -72998,7 +73023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0.015686275, g: 0, b: 0, a: 1}
   Color2: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
-  Angle: 2402596.5
+  Angle: 2201580.8
   _isAnime: 1
   _rotationSpeed: 180
 --- !u!224 &4554957705807384150 stripped
@@ -73148,7 +73173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240719, guid: ffb2de42c0c9942e88ce7aab6979e17b, type: 3}
       propertyPath: Angle
-      value: 180
+      value: 22112.195
       objectReference: {fileID: 0}
     - target: {fileID: 6774652464955240719, guid: ffb2de42c0c9942e88ce7aab6979e17b, type: 3}
       propertyPath: Color1.b
@@ -74665,7 +74690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 795825.3
+  Angle: 777714.44
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &8741656999104311479
@@ -75068,7 +75093,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2386533977244884902, guid: 4a227cfeb6636514aa71a74402bb58ec, type: 3}
       propertyPath: Angle
-      value: -118.66705
+      value: 82.6933
       objectReference: {fileID: 0}
     - target: {fileID: 7604937168537590404, guid: 4a227cfeb6636514aa71a74402bb58ec, type: 3}
       propertyPath: OutputAudioMixerGroup
@@ -75168,7 +75193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8730422018647662595, guid: 4a227cfeb6636514aa71a74402bb58ec, type: 3}
       propertyPath: Angle
-      value: -118.66705
+      value: 82.6933
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -75354,7 +75379,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e435c6437f404934d848b85c475d7d94, type: 2}
     - target: {fileID: 8693481879869899831, guid: 91cd2c6913c573d4f9853686fa513386, type: 3}
       propertyPath: Angle
-      value: 3290053.8
+      value: 2357435.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -75615,7 +75640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Color1: {r: 0, g: 0.61968195, b: 0.6320754, a: 1}
   Color2: {r: 0, g: 0.4357442, b: 0.8352941, a: 1}
-  Angle: 792347.44
+  Angle: 774236.8
   _isAnime: 1
   _rotationSpeed: 150
 --- !u!1001 &8981054972008349762
