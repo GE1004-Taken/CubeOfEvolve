@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class LayerSearch : MonoBehaviour
 {
-    // ---------------------------- Field
-    private float _range;                 // 探索範囲
-    private LayerMask _layerMask;       // 検出対象のレイヤー名
+    // ---------------------------- SerializeField
+    [Header("障害物を貫通するサーチを行うか設定")]
+    [SerializeField] private bool _canPenetrate; // 障害物を貫通するサーチを行うかどうか
 
-    private GameObject _nearestTargetObj; // 最も近い対象オブジェクト
+    // ---------------------------- Field
+    private float _range;                        // 探索範囲
+    private LayerMask _layerMask;                // 検出対象のレイヤー
+    private GameObject _nearestTargetObj;        // 最も近い対象オブジェクト
     private readonly List<GameObject> _nearestTargetList = new(); // 範囲内の敵オブジェクト一覧
 
     // ---------------------------- Property
@@ -45,7 +48,6 @@ public class LayerSearch : MonoBehaviour
         _nearestTargetObj = null;
         _nearestTargetList.Clear();
 
-        // 指定レイヤー内で、一定範囲内にあるコライダーを取得
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
             _range,
@@ -57,6 +59,22 @@ public class LayerSearch : MonoBehaviour
 
             GameObject enemyRoot = hit.transform.root.gameObject;
 
+            // 貫通サーチが無効なら Raycast で遮蔽物チェック
+            if (!_canPenetrate)
+            {
+                Vector3 dir = (hit.transform.position - transform.position).normalized;
+                float distance = Vector3.Distance(transform.position, hit.transform.position);
+
+                if (Physics.Raycast(transform.position, dir, out RaycastHit rayHit, distance))
+                {
+                    // Rayが敵に当たらなければブロックされている
+                    if (rayHit.transform.root.gameObject != enemyRoot)
+                    {
+                        continue;
+                    }
+                }
+            }
+
             // リストに未追加なら追加
             if (!_nearestTargetList.Contains(enemyRoot))
             {
@@ -64,14 +82,15 @@ public class LayerSearch : MonoBehaviour
             }
 
             // 最も近い敵を更新
-            float distance = Vector3.Distance(transform.position, hit.transform.position);
-            if (distance < nearestDistance)
+            float dist = Vector3.Distance(transform.position, hit.transform.position);
+            if (dist < nearestDistance)
             {
-                nearestDistance = distance;
-                _nearestTargetObj = hit.gameObject.transform.root.gameObject;
+                nearestDistance = dist;
+                _nearestTargetObj = enemyRoot;
             }
         }
     }
+
 
     // ---------------------------- PublicMethod
     /// <summary>
