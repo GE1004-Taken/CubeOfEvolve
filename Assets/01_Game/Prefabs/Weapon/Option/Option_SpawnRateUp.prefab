@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: _renderer.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1003692335004641134, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 805487a24eecbcf4a923c3ff4746bd22, type: 2}
     - target: {fileID: 1652021358941718203, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -86,7 +90,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7574932125258139350, guid: 3490bcaee76490a46a27c0a93412ab66, type: 3}
       propertyPath: m_Name
-      value: Option_SpeedUp_2
+      value: Option_SpawnRateUp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
