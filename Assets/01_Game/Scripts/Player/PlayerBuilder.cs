@@ -6,6 +6,7 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using Assets.AT;
 
 public class PlayerBuilder : BasePlayerComponent
 {
@@ -47,12 +48,25 @@ public class PlayerBuilder : BasePlayerComponent
     // プレイヤーコアと繋がっているか確認している関数の現在の実行数
     private int _runningConnectCheckCount;
 
+    // ---------- Property
+    public List<GameObject> CreatedObjects
+    {
+        get => _createdObjects;
+        set => _createdObjects = value;
+    }
+
+    public bool GetIsRemoving => _isRemoving;
+
     // ---------- R3
     private Subject<ModuleData> _selectModuleData = new();
     public Observable<ModuleData> OnSelectModuleData => _selectModuleData;
 
     private Subject<Unit> _createSubject = new();
     public Observable<Unit> OnCreate => _createSubject;
+
+    private Subject<Unit> _removeSubject = new();
+
+    public Subject<Unit> OnRemove => _removeSubject;
 
     // ---------- UnityMessage
     /// <summary>
@@ -192,6 +206,9 @@ public class PlayerBuilder : BasePlayerComponent
                         return;
                     }
 
+                    // レイに当たった物がプレイヤーコアなら処理しない
+                    if (hit.collider.gameObject == this.gameObject) return;
+
                     // レイに当たっているものが変わっていないなら処理しない
                     if (_curRemoveObject
                     == hit.collider.GetComponentInParent<CreatePrediction>().gameObject) return;
@@ -238,8 +255,6 @@ public class PlayerBuilder : BasePlayerComponent
 
                     // 武器・キューブの設置
                     _predictCube.CreateObject();
-
-                    _predictCube.name += _createdObjects.Count.ToString();
 
                     _createdObjects.Add(_predictCube.gameObject);
 
@@ -440,6 +455,9 @@ public class PlayerBuilder : BasePlayerComponent
             RemoveObject(removeTarget.gameObject);
         }
 
+        // 削除イベントを通知
+        OnRemove.OnNext(Unit.Default);
+
         // 繋がっていないオブジェクトリストを空に
         ResetDisconnectObjects();
     }
@@ -484,6 +502,16 @@ public class PlayerBuilder : BasePlayerComponent
         }
 
         Destroy(gameObject);
+    }
+
+    public void RemoveAllObjects()
+    {
+        foreach (var obj in CreatedObjects)
+        {
+            RemoveObject(obj);
+        }
+
+        CreatedObjects.Clear();
     }
 
 }
