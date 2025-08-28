@@ -356,6 +356,10 @@ public class PlayerBuilder : BasePlayerComponent
         {
             _targetCreatePrediction = null;
             _currentModuleData = null;
+
+            // 生成予測オブジェクト出ていないなら処理しない
+            if (_predictCube == null) return;
+
             Destroy(_predictCube.gameObject);
         }
     }
