@@ -1,14 +1,23 @@
+using System;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
 using Unity.Cinemachine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using Assets.IGC2025.Scripts.GameManagers;
 using Assets.IGC2025.Scripts.View;
 using Assets.AT;
 
+
 public class GameEndController : MonoBehaviour
 {
     // ----- SerializedField
+    [Header("演出時間")]
+    [SerializeField] private float _postExplosionWait = 2.0f;                        // 3) 撃破演出後の待機
+
     [Header("演出ターゲット")]
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private ViewResultCanvas _viewResultCanvas;
@@ -17,13 +26,29 @@ public class GameEndController : MonoBehaviour
     //[SerializeField] private CinemachineCamera _cinemachineCamera;                  // シーンのメインCinemachineカメラ
     //[SerializeField] private Transform _cameraFollowDummy;                           // カメラが追従するダミー（空のGameObject推奨）
 
-     [Header("ゲームセット演出パラメータ")]
+    // [Header("ゲームセット演出パラメータ")]
     // [SerializeField] private Vector3 _offsetLocal = new Vector3(0f, 1f, -1f);       // 1) プレイヤー基準のオフセット
     // [SerializeField] private float _approachDuration = 0.6f;                         // カメラ初期移動の慣れ時間
     // [SerializeField] private float _orbitDuration = 3.0f;                            // 2) 右回りターンの最大継続時間
     // [SerializeField] private float _orbitAngularSpeedDegPerSec = 40f;                // 右回り角速度（度/秒）
     // [SerializeField] private bool  _endOnAnyKeyOrClick = true;                       // 入力でターン終了を許可
-     [SerializeField] private float _postExplosionWait = 2.0f;                        // 3) 撃破演出後の待機
+
+    [Header("ダメージエフェクト")]
+    [SerializeField] private Volume _damageVolume;
+    [SerializeField] private float _damageEffectSec = 0.1f;
+    [SerializeField] private int _damageEffectCount = 3;
+
+    [Header("背景暗転")]
+    [SerializeField] private Graphic _backPanel;          // 例：Image, RawImage など
+    [Min(0f)][SerializeField] private float _backFadeDuration = 0.35f;
+    [Range(0f, 1f)][SerializeField] private float _backTargetAlpha = 1.0f; // どれくらい暗くするか(透過)
+    [SerializeField] private bool _useUnscaledTime = true; // フェードや待機を非スケール時間で動かすか
+
+    [Header("爆発パラメータ")]
+    [Min(1)][SerializeField] private int _explosionCount = 5;            // 発生回数
+    [SerializeField] private Vector2 _explosionRadiusRange = new(1f, 3f);     // 半径[min,max]
+    [SerializeField] private float _explosionHeight = 0f;                   // プレイヤー基準の高さ差分
+    [Min(0f)][SerializeField] private float _betweenExplosionsDelay = 0.05f; // 連続発生の間隔秒
 
     [Header("敗北演出（任意）")]
     [SerializeField] private ParticleSystem _explosionVfxPrefab;                     // 3) 爆発など
@@ -31,7 +56,7 @@ public class GameEndController : MonoBehaviour
 
     // ----- Field
     private CinemachineCamera _camera;
-    
+
     // ゲーム終了時に外部から呼ぶ入口（勝敗は state で受けるが演出は共通）
     public async UniTask PlayGameEndSequence(GameState state)
     {
@@ -48,8 +73,11 @@ public class GameEndController : MonoBehaviour
         //await OrbitRightAsync(_playerTransform, _cameraFollowDummy,
         //                      _orbitAngularSpeedDegPerSec, _orbitDuration, _endOnAnyKeyOrClick);
 
-        // 3) 撃破演出（爆発など） → 数秒待機
-        await PlayExplosionAsync(_playerTransform);
+        if (state == GameState.GAMEOVER)
+        {
+            // 3) 撃破演出（爆発など） → 数秒待機
+            await PlayExplosionAsync(_playerTransform);
+        }
 
         // 4) 完了 → リザルト表示
         _viewResultCanvas?.ShowCanvas(state);
@@ -137,23 +165,108 @@ public class GameEndController : MonoBehaviour
     /// <summary>
     /// 3) 爆発などの被撃破演出 → 数秒待機
     /// </summary>
+
+
     private async UniTask PlayExplosionAsync(Transform player)
     {
-        if (_explosionVfxPrefab != null)
-        {
-            // プレイヤー基準の相対位置に爆発を出す（回転も考慮）
-            Vector3 vfxPos = player.TransformPoint(_explosionOffsetLocal);
-            var vfx = Instantiate(_explosionVfxPrefab, vfxPos, Quaternion.identity);
-            vfx.Play();
-        }
+        if (player == null || _explosionVfxPrefab == null) return;
 
-        // 被撃破モーション再生などがあればここで呼ぶ
-        // e.g., playerAnimator.SetTrigger("Defeat");
+        // オブジェクト破棄時に全体を止めるためのトークン
+        var token = this.GetCancellationTokenOnDestroy();
 
-        // 余韻待機（スケール非依存）
-        if (_postExplosionWait > 0f)
+        // (1)(2)(3) を同時に走らせる
+        //CameraCtrlManager.Instance.ChangeCamera("Player Camera Death");
+        var bgTask = FadeBackPanelToBlackAsync(token);          // (1) 背景暗転
+        var dmgTask = PlayDamagePostEffectAsync(token);          // (2) ダメージエフェクト
+        var explTask = RunExplosionsAsync(player, token);         // (3) ランダム多発爆発
+
+        await UniTask.WhenAll(bgTask, dmgTask, explTask);
+    }
+
+    private async UniTask FadeBackPanelToBlackAsync(CancellationToken token)
+    {
+        if (_backPanel == null) return;
+
+        _backPanel.DOKill(); // 競合Tween除去
+
+        // 目標色：黒 + 指定のAlpha（RGBは0,0,0）
+        var target = new Color(0f, 0f, 0f, _backTargetAlpha);
+
+        var tween = _backPanel.DOColor(target, Mathf.Max(_backFadeDuration, 0.0001f))
+                            .SetEase(Ease.InOutSine)
+                            .SetUpdate(_useUnscaledTime)
+                            .SetLink(gameObject); // 破棄でKill
+
+        // killOnCancel が無い環境向け：キャンセル時は明示Kill
+        using (token.Register(() => { if (tween.IsActive()) tween.Kill(); }))
         {
-            await UniTask.Delay(System.TimeSpan.FromSeconds(_postExplosionWait), ignoreTimeScale: true);
+            await tween.ToUniTask(cancellationToken: token);
         }
     }
+
+    private async UniTask PlayDamagePostEffectAsync(CancellationToken token)
+    {
+        // ここで画面の被ダメ演出などを起動
+        // ダメージエフェクト用のVignetteを取得
+        _damageVolume.profile.TryGet(out Vignette damageVignette);
+
+        // nullチェック
+        if (damageVignette == null)
+        {
+            Debug.LogError("Vignetteが無いよ");
+        }
+
+        // 画面端がダメージエフェクト表示時間分赤くなる
+        DOVirtual.Float(0.0f,
+            1.0f,
+            _damageEffectSec,
+            value => damageVignette.smoothness.value = value
+            )
+        .SetLoops(_damageEffectCount, LoopType.Yoyo)
+        .SetLink(this.gameObject);
+
+        // 継続時間を待ちたいなら:
+        // await UniTask.WaitForSeconds(_damageEffectDuration, ignoreTimeScale: _useUnscaledTime, cancellationToken: token);
+
+        await UniTask.CompletedTask;
+    }
+
+    private async UniTask RunExplosionsAsync(Transform player, CancellationToken token)
+    {
+        // パラメータ正規化（あなたの元コードを流用）
+        int count = Mathf.Max(1, _explosionCount);
+        float rMin = Mathf.Max(0f, Mathf.Min(_explosionRadiusRange.x, _explosionRadiusRange.y));
+        float rMax = Mathf.Max(_explosionRadiusRange.x, _explosionRadiusRange.y);
+        if (Mathf.Approximately(rMax, 0f)) rMax = 0.1f;
+
+        for (int i = 0; i < count; i++)
+        {
+            // 面積一様な半径サンプル
+            float u = UnityEngine.Random.value;
+            float r = Mathf.Sqrt(Mathf.Lerp(rMin * rMin, rMax * rMax, u));
+            float ang = UnityEngine.Random.value * Mathf.PI * 2f;
+            float x = Mathf.Cos(ang) * r;
+            float z = Mathf.Sin(ang) * r;
+
+            Vector3 local = _explosionOffsetLocal + new Vector3(x, _explosionHeight, z);
+            Vector3 worldPos = player.TransformPoint(local);
+
+            // エフェクト再生
+            var vfx = Instantiate(_explosionVfxPrefab, worldPos, Quaternion.identity);
+            vfx.Play();
+            // サウンド再生
+            GameSoundManager.Instance.PlaySE("Ene_Death_1");
+
+            if (_betweenExplosionsDelay > 0f && i < count - 1)
+            {
+                await UniTask.WaitForSeconds(_betweenExplosionsDelay, ignoreTimeScale: _useUnscaledTime, cancellationToken: token);
+            }
+        }
+
+        if (_postExplosionWait > 0f)
+        {
+            await UniTask.WaitForSeconds(_postExplosionWait, ignoreTimeScale: _useUnscaledTime, cancellationToken: token);
+        }
+    }
+
 }
