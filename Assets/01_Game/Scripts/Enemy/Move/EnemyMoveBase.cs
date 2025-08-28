@@ -122,7 +122,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
         float detectDistance = Mathf.Min(10f, targetDist);
 
         // 1. まず直進チェック
-        Debug.DrawRay(origin, dirToTarget * detectDistance, Color.green); // 直進方向
+        // Debug.DrawRay(origin, dirToTarget * detectDistance, Color.green); // 直進方向
         if (!Physics.SphereCast(origin, sphereRadius, dirToTarget, out RaycastHit hit, detectDistance, _obstacleMask))
         {
             _isSlidingWall = false;
@@ -136,8 +136,8 @@ public abstract class EnemyMoveBase : MonoBehaviour
         bool canSlideRight = !Physics.SphereCast(origin, sphereRadius, slideRight, out _, slideCheckDistance, _obstacleMask);
         bool canSlideLeft = !Physics.SphereCast(origin, sphereRadius, slideLeft, out _, slideCheckDistance, _obstacleMask);
 
-        Debug.DrawRay(origin, slideRight * slideCheckDistance, Color.cyan); // 壁沿い右
-        Debug.DrawRay(origin, slideLeft * slideCheckDistance, Color.cyan);  // 壁沿い左
+        // Debug.DrawRay(origin, slideRight * slideCheckDistance, Color.cyan); // 壁沿い右
+        // Debug.DrawRay(origin, slideLeft * slideCheckDistance, Color.cyan);  // 壁沿い左
 
         if (canSlideRight ^ canSlideLeft) // 片方だけ空いている場合はスライド確定
         {
@@ -149,7 +149,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
             // プレイヤー方向とのブレンド
             Vector3 blendedDir = (slideDir * 0.7f + dirToTarget * 0.3f).normalized;
 
-            Debug.DrawRay(origin, blendedDir * slideCheckDistance, Color.magenta); // スライド＋プレイヤー方向
+            // Debug.DrawRay(origin, blendedDir * slideCheckDistance, Color.magenta); // スライド＋プレイヤー方向
 
             return blendedDir;
         }
@@ -164,7 +164,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
             foreach (int sign in new int[] { 1, -1 }) // 右回り、左回り
             {
                 Vector3 testDir = Quaternion.Euler(0, sign * angle, 0) * dirToTarget;
-                Debug.DrawRay(origin, testDir * detectDistance, Color.yellow); // 探索方向
+                // Debug.DrawRay(origin, testDir * detectDistance, Color.yellow); // 探索方向
                 if (!Physics.SphereCast(origin, sphereRadius, testDir, out _, detectDistance, _obstacleMask))
                     return testDir.normalized;
             }
@@ -172,7 +172,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
 
         // 4. 完全に塞がれていたら微小ランダム移動して再探索
         Vector3 microMove = Quaternion.Euler(0, Random.Range(-45, 45), 0) * dirToTarget;
-        Debug.DrawRay(origin, microMove * detectDistance, Color.red); // ランダム方向
+        // Debug.DrawRay(origin, microMove * detectDistance, Color.red); // ランダム方向
         return microMove.normalized;
     }
 
