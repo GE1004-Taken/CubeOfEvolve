@@ -11,6 +11,7 @@ public class PlayerAudio : BasePlayerComponent
 
         var soundManager = GameSoundManager.Instance;
 
+        // ¶¬‰¹‚ð–Â‚ç‚·
         builder.OnCreate
             .Subscribe(_ =>
             {
@@ -18,6 +19,7 @@ public class PlayerAudio : BasePlayerComponent
             })
             .AddTo(this);
 
+        // íœ‰¹‚ð–Â‚ç‚·
         builder.OnRemove
             .Subscribe(_ =>
             {

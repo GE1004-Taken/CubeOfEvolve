@@ -61,9 +61,11 @@ public class PlayerBuilder : BasePlayerComponent
     private Subject<ModuleData> _selectModuleData = new();
     public Observable<ModuleData> OnSelectModuleData => _selectModuleData;
 
+    // 生成時のイベント発行用
     private Subject<Unit> _createSubject = new();
     public Observable<Unit> OnCreate => _createSubject;
 
+    // 削除時のイベント発行用
     private Subject<Unit> _removeSubject = new();
 
     public Subject<Unit> OnRemove => _removeSubject;
