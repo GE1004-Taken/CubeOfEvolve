@@ -35,25 +35,41 @@ public class ArrowController : MonoBehaviour
         _builder.OnCreate
             .Subscribe(_ =>
             {
-                var ray = new Ray(
+                MoveArrow();
+            })
+            .AddTo(this);
+
+        _builder.OnRemove
+            .Subscribe(_ =>
+            {
+                MoveArrow();
+            })
+            .AddTo(this);
+    }
+
+    // ---------- Method
+    /// <summary>
+    /// プレイヤーの正面を表す矢印の位置を調整
+    /// </summary>
+    private void MoveArrow()
+    {
+        var ray = new Ray(
                     _arrow.transform.position,
                     -_arrow.transform.forward);
 
-                var dist = Vector3.Distance(
-                    _arrow.transform.position,
-                    this.transform.position);
+        var dist = Vector3.Distance(
+            _arrow.transform.position,
+            this.transform.position);
 
-                var hits = Physics.RaycastAll(
-                    ray.origin,
-                    ray.direction,
-                    dist,
-                    LayerMask.GetMask("Player"));
+        var hits = Physics.RaycastAll(
+            ray.origin,
+            ray.direction,
+            dist,
+            LayerMask.GetMask("Player"));
 
-                _arrow.transform.localPosition = new Vector3(
-                    _arrow.transform.localPosition.x,
-                    _arrow.transform.localPosition.y,
-                    _initialPosZ + _moveAmount * (hits.Length - 1));
-            })
-            .AddTo(this);
+        _arrow.transform.localPosition = new Vector3(
+            _arrow.transform.localPosition.x,
+            _arrow.transform.localPosition.y,
+            _initialPosZ + _moveAmount * (hits.Length - 1));
     }
 }
