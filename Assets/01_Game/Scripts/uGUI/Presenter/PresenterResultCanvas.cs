@@ -19,6 +19,8 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private Button[] _endGameButton;
         [SerializeField] private TextMeshProUGUI _finishTimeTextUGUI;
 
+        [SerializeField] private Canvas _canvas;
+
         // ----- UnityMessage
         private void Start()
         {
@@ -28,7 +30,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                     .Where(x => x == GameState.GAMEOVER || x == GameState.GAMECLEAR)
                     .Subscribe(x =>
                     {
-                        //_view.ShowCanvas(x);
+                        _canvas.enabled = true;
                         _gameEndController.PlayGameEndSequence(x).Forget();
                         _finishTimeTextUGUI.text = $"{GameManager.Instance.GetComponent<TimeManager>().CurrentTimeSecond.CurrentValue.ToString("F1")}カウント";
                     })
