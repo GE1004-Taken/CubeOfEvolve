@@ -149,7 +149,7 @@ public abstract class EnemyMoveBase : MonoBehaviour
             // プレイヤー方向とのブレンド
             Vector3 blendedDir = (slideDir * 0.7f + dirToTarget * 0.3f).normalized;
 
-            Debug.DrawRay(origin, blendedDir * slideCheckDistance, Color.magenta); // スライド＋プレイヤー方向
+            //Debug.DrawRay(origin, blendedDir * slideCheckDistance, Color.magenta); // スライド＋プレイヤー方向
 
             return blendedDir;
         }
