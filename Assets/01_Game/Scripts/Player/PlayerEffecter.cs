@@ -21,7 +21,7 @@ public class PlayerEffecter : BasePlayerComponent
         _damageVolume.profile.TryGet(out Vignette damageVignette);
 
         // nullチェック
-        if (damageVignette != null)
+        if (damageVignette == null)
         {
             Debug.LogError("Vignetteが無いよ");
         }
