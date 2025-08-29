@@ -82,7 +82,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                 //debug.log("全モジュールが最大レベル。選択肢なし。");
                 var Player = FindFirstObjectByType(typeof(PlayerCore));
                 //Player.GetComponent<PlayerCore>().ReceirveMoney(500); // 500金追加
-                Player.GetComponent<PlayerCore>().ReceiveExp(100); // 500Exp追加
+                Player.GetComponent<PlayerCore>().ReceiveExp(30); // 30Exp追加
                 return;
             }
 
