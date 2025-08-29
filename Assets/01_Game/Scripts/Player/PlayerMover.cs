@@ -62,20 +62,20 @@ public class PlayerMover : BasePlayerComponent
             .Subscribe(x =>
             {
                 // ゲーム中のみポーズを開けるように
-                if(gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
+                if (gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
                 || gameManager.CurrentGameState.CurrentValue == GameState.BUILD)
                 {
                     gameManager.ChangeGameState(GameState.PAUSE);
                 }
                 // ポーズ中のみ処理
-                else if(gameManager.CurrentGameState.CurrentValue == GameState.PAUSE)
+                else if (gameManager.CurrentGameState.CurrentValue == GameState.PAUSE)
                 {
                     // ポーズする前のゲームステートに戻す
                     if (gameManager.PrevGameState == GameState.BATTLE)
                     {
                         gameManager.ChangeGameState(GameState.BATTLE);
                     }
-                    else if(gameManager.PrevGameState == GameState.BUILD)
+                    else if (gameManager.PrevGameState == GameState.BUILD)
                     {
                         gameManager.ChangeGameState(GameState.BUILD);
                     }
@@ -93,7 +93,7 @@ public class PlayerMover : BasePlayerComponent
                     gameManager.ChangeGameState(GameState.BATTLE);
                     ccm.GetCanvas("ShopView")?.OnCloseCanvas();
                 }
-                else if(gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
+                else if (gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
                 || gameManager.CurrentGameState.CurrentValue == GameState.BUILD)
                 {
                     gameManager.ChangeGameState(GameState.SHOP);
@@ -161,13 +161,13 @@ public class PlayerMover : BasePlayerComponent
     /// </summary>
     private void UpdateMoveSpeedStatus()
     {
-        _currentSpeed = 0;
+        var speedRate = 0f;
 
         foreach (var effect in RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList)
         {
-            _currentSpeed += effect.MoveSpeed;
+            speedRate += effect.MoveSpeed;
         }
 
-        _currentSpeed += Core.MoveSpeed.CurrentValue;
+        _currentSpeed = Core.MoveSpeed.CurrentValue * (1f + speedRate / 100f);
     }
 }

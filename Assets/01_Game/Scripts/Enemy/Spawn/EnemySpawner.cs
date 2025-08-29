@@ -16,7 +16,6 @@ public class EnemySpawner : MonoBehaviour
 
     // ---------------------------- Field
     private GameObject _target;
-    private float _spawnRate = 1f;
     private float _currentSpawnRate = 1f;
 
     // ---------------------------- UnityMessage
@@ -71,12 +70,14 @@ public class EnemySpawner : MonoBehaviour
     /// </summary>
     private void UpdateSpawnRate()
     {
-        _currentSpawnRate = _spawnRate;
+        var spawnRate = 0f;
 
         foreach (var effect in RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList)
         {
-            _currentSpawnRate += effect.SpawnRate;
+            spawnRate += effect.SpawnRate;
         }
+
+        _currentSpawnRate = 1f + (spawnRate / 100f);
     }
 
     /// <summary>
