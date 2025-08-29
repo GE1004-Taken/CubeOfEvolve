@@ -9,4 +9,8 @@ public interface IInputEventProvider
     public ReadOnlyReactiveProperty<bool> Skill { get; }
     public ReadOnlyReactiveProperty<float> Zoom { get; }
     public ReadOnlyReactiveProperty<bool> MoveCamera { get; }
+    public ReadOnlyReactiveProperty<bool> Shop { get; }
+    public ReadOnlyReactiveProperty<bool> Build { get; }
+
+    public ReadOnlyReactiveProperty<bool> Remove { get; }
 }

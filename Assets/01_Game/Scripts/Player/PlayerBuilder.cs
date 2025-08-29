@@ -55,7 +55,7 @@ public class PlayerBuilder : BasePlayerComponent
         set => _createdObjects = value;
     }
 
-    public bool GetIsRemoving => _isRemoving;
+    public bool IsRemoving => _isRemoving;
 
     // ---------- R3
     private Subject<ModuleData> _selectModuleData = new();
@@ -363,6 +363,13 @@ public class PlayerBuilder : BasePlayerComponent
             if (_predictCube == null) return;
 
             Destroy(_predictCube.gameObject);
+        }
+        else
+        {
+            // 現在選択中の削除対象をリセット
+            _curRemoveObject = null;
+            // 消える物の色やリストをリセット
+            ResetDisconnectObjects();
         }
     }
 

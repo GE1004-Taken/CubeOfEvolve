@@ -24,6 +24,15 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
     private ReactiveProperty<bool> _isPushedMoveCameraButton = new ReactiveProperty<bool>();
     public ReadOnlyReactiveProperty<bool> MoveCamera => _isPushedMoveCameraButton;
 
+    private ReactiveProperty<bool> _isShop = new();
+    public ReadOnlyReactiveProperty<bool> Shop => _isShop;
+
+    private ReactiveProperty<bool> _isBuild = new();
+    public ReadOnlyReactiveProperty<bool> Build => _isBuild;
+
+    public ReactiveProperty<bool> _isRemove = new();
+
+    public ReadOnlyReactiveProperty<bool> Remove => _isRemove;
     // ---------- Field
     private Vector2 _moveContextReadValue;
 
@@ -83,6 +92,42 @@ public class PlayerInputer : MonoBehaviour, IInputEventProvider
         else
         {
             _isPushedMoveCameraButton.Value = false;
+        }
+    }
+
+    public void OnShop(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _isShop.Value = true;
+        }
+        else if(context.canceled)
+        {
+            _isShop.Value = false;
+        }
+    }
+
+    public void OnBuild(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _isBuild.Value = true;
+        }
+        else if (context.canceled)
+        {
+            _isBuild.Value = false;
+        }
+    }
+
+    public void OnRemove(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _isRemove.Value = true;
+        }
+        else if (context.canceled)
+        {
+            _isRemove.Value = false;
         }
     }
 
