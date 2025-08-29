@@ -9,10 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bde3006938faad4f9c668044b972b97, type: 3}
-  m_Name: WeaponData_Drill
+  m_Script: {fileID: 11500000, guid: 2943ccd97d586214b87275bcf713d8be, type: 3}
+  m_Name: SpawnEvent_05
   m_EditorClassIdentifier: 
-  Attack: 10
-  BulletSpeed: 10
-  Interval: 0.5
-  SearchRange: 1
+  delaySecond: 200
+  duration: 0
+  spawnCount: 2
+  enemyList:
+  - {fileID: 613721161528825185, guid: 949010228a6f7754b9500ceb73467674, type: 3}
+  patternType: 0
+  interval: 0
