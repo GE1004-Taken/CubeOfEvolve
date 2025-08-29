@@ -15,8 +15,10 @@ public class PlayerCore : MonoBehaviour, IDamageble
     [SerializeField, Tooltip("レベル")] private SerializableReactiveProperty<int> _level;
     [SerializeField, Tooltip("経験値")] private SerializableReactiveProperty<float> _exp;
     [SerializeField, Tooltip("必要経験値")] private SerializableReactiveProperty<float> _requireExp;
-    [SerializeField, Tooltip("必要経験値の増加量(累乗)")] private float _AddRequireExpAmount;
+    [SerializeField, Tooltip("必要経験値の増加量")] private float _AddRequireExpAmount;
+    [SerializeField, Tooltip("必要経験値の増加量の増加倍率")] private float _AddRequireExpAmountRate;
     [SerializeField, Tooltip("キューブ数")] private SerializableReactiveProperty<int> _cubeCount;
+    [SerializeField, Tooltip("増えるキューブ数")] private int _addCubeCount;
     [SerializeField, Tooltip("最大キューブ数")] private SerializableReactiveProperty<int> _maxCubeCount;
     [SerializeField, Tooltip("お金")] private SerializableReactiveProperty<int> _money;
     [SerializeField, Tooltip("テストスキル")] private SerializableReactiveProperty<BaseSkill> _skill;
@@ -60,9 +62,9 @@ public class PlayerCore : MonoBehaviour, IDamageble
             .Skip(1)
             .Subscribe(x =>
             {
-                _maxCubeCount.Value += 2;
+                _maxCubeCount.Value += _addCubeCount;
                 _requireExp.Value += _AddRequireExpAmount;
-                _AddRequireExpAmount *= 2;
+                _AddRequireExpAmount *= _AddRequireExpAmountRate;
             })
             .AddTo(this);
 

@@ -73,7 +73,7 @@ MonoBehaviour:
     value: 100
   _maxHp:
     value: 100
-  _hpChangeValue: 20
+  _hpChangeValue: 10
   _invincibleTime: 0.1
   _moveSpeed:
     value: 5
@@ -86,8 +86,10 @@ MonoBehaviour:
   _requireExp:
     value: 25
   _AddRequireExpAmount: 25
+  _AddRequireExpAmountRate: 0
   _cubeCount:
     value: 1
+  _addCubeCount: 3
   _maxCubeCount:
     value: 1
   _money:
@@ -756,9 +758,9 @@ MonoBehaviour:
       Rotation:
         value:
           x: 0.123776786
-          y: -0.0000000018981032
-          z: -0.14728148
-          w: 0.9813193
+          y: -0.000000001898103
+          z: -0.1472815
+          w: 0.98131925
     m_MetaData:
     - Mode: 2
       Tension: 0.5
@@ -986,8 +988,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5400399086143728076}
   serializedVersion: 2
-  m_LocalRotation: {x: -8.584816e-17, y: -0.98836154, z: 0.15212339, w: -3.2453112e-16}
-  m_LocalPosition: {x: 0, y: 3.0070581, z: 9.537169}
+  m_LocalRotation: {x: 0.15212333, y: -0.000000043202654, z: 0.000000006649522, w: 0.98836154}
+  m_LocalPosition: {x: 0, y: 3.0070581, z: -9.537169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1179,7 +1181,7 @@ MonoBehaviour:
       Enabled: 1
       Input:
         InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: 1
+        Gain: -1
         LegacyInput: 
         LegacyGain: 1
         CancelDeltaTime: 0
@@ -1466,8 +1468,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7710454181938598944}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06915315, y: -0.92363733, z: 0.19980729, w: -0.31967017}
-  m_LocalPosition: {x: -1.5, y: 1.6014116, z: 1.9074339}
+  m_LocalRotation: {x: 0.19980723, y: -0.31967017, z: 0.06915312, w: 0.92363733}
+  m_LocalPosition: {x: 1.5, y: 1.6014116, z: -1.9074339}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
