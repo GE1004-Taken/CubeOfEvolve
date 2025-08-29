@@ -14,9 +14,9 @@ public class PlayerCameraZoom : BasePlayerComponent
     [SerializeField, Tooltip("一回のズームにかかる時間")] private float _zoomTime = 0.1f;
 
     // ---------- Field
-    // 現在のFOV
+    // 現在の半径
     private float _currentRadius = 0f;
-    // 目標のFOV
+    // 目標の半径
     private float _targetRadius = 0f;
     // SmoothDamp用の変数
     private float _currentVelocity = 0f;
@@ -26,6 +26,10 @@ public class PlayerCameraZoom : BasePlayerComponent
     {
         // 現在のゲームステートのRPを取得
         var currentGameState = GameManager.Instance.CurrentGameState;
+
+        // 初期の半径を取得
+        _currentRadius = _playerCamera.Radius;
+        _targetRadius = _currentRadius;
 
         // マウスホイールによるズーム処理
         InputEventProvider.Zoom
