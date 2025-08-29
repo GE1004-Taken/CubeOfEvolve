@@ -12,6 +12,8 @@ public class ResetGameAction : ScriptableObject, ICheckAction
         var gameManager = GameManager.Instance;
         gameManager.RequestResetAll();
         gameManager.SceneLoader.ReloadScene();
+        var guideManager = GuideManager.Instance;
+        guideManager.ResetShownGuides(); // ガイドの表示履歴をリセット
     }
 
     /// <summary>

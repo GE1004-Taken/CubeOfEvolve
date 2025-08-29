@@ -84,5 +84,7 @@ public class GuideManager : MonoBehaviour
         }
     }
 
+    public void ResetShownGuides() => shownGuides.Clear();
+
     public bool HasShown(string guideKey) => shownGuides.Contains(guideKey);
 }

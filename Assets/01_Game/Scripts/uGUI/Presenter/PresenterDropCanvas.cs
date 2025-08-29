@@ -81,7 +81,8 @@ namespace Assets.IGC2025.Scripts.Presenter
             {
                 //debug.log("全モジュールが最大レベル。選択肢なし。");
                 var Player = FindFirstObjectByType(typeof(PlayerCore));
-                Player.GetComponent<PlayerCore>().ReceiveMoney(500); // 500金追加
+                //Player.GetComponent<PlayerCore>().ReceirveMoney(500); // 500金追加
+                Player.GetComponent<PlayerCore>().ReceiveExp(100); // 500Exp追加
                 return;
             }
 
@@ -131,10 +132,10 @@ namespace Assets.IGC2025.Scripts.Presenter
             _infoText.text = module.Description;
             _level.text = $"{Level}";
             _levelNext.text = $"{Level + 1}";
-            _ATK.text = $"{StateValueCalculator.CalcStateValue(ATK, Level, 5, 0.5f)}";
-            _ATKNext.text = $"{StateValueCalculator.CalcStateValue(ATK, Level + 1, 5, 0.5f)}";
-            _Price.text = $"{StateValueCalculator.CalcStateValue(Price, Level, 5, 0.5f)}";
-            _PriceNext.text = $"{StateValueCalculator.CalcStateValue(Price, Level + 1, 5, 0.5f)}";
+            _ATK.text = $"{StateValueCalculator.CalcStateValue(ATK, Level, 5, 0.5f).ToString("F1")}";
+            _ATKNext.text = $"{StateValueCalculator.CalcStateValue(ATK, Level + 1, 5, 0.5f).ToString("F1")}";
+            _Price.text = $"{StateValueCalculator.CalcStateValue(Price, Level, 5, 0.5f).ToString("F1")}";
+            _PriceNext.text = $"{StateValueCalculator.CalcStateValue(Price, Level + 1, 5, 0.5f).ToString("F1")}";
             //_image.sprite = module.MainSprite;
             //_icon.sprite = module.BlockSprite;
             //_atk.text = $"{module.ModuleState?.Attack ?? 0}";
