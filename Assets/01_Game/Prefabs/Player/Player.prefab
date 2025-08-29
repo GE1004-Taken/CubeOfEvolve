@@ -89,7 +89,7 @@ MonoBehaviour:
   _cubeCount:
     value: 1
   _maxCubeCount:
-    value: 999
+    value: 1
   _money:
     value: 50
   _skill:
@@ -517,6 +517,54 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 52ed0405-bb7e-4aee-8bd5-2969c0a6b5d0
     m_ActionName: 'Player/CameraMove[/Mouse/rightButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3578453690902763032}
+        m_TargetAssemblyTypeName: PlayerInputer, Assembly-CSharp
+        m_MethodName: OnShop
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1ea2bde6-b522-4b46-a568-c5a3874f4159
+    m_ActionName: 'Player/Shop[/Keyboard/v]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3578453690902763032}
+        m_TargetAssemblyTypeName: PlayerInputer, Assembly-CSharp
+        m_MethodName: OnBuild
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: fc7821b3-b112-4b7f-9e4e-381db5eda355
+    m_ActionName: 'Player/Build[/Keyboard/b]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3578453690902763032}
+        m_TargetAssemblyTypeName: PlayerInputer, Assembly-CSharp
+        m_MethodName: OnRemove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 46031321-780b-4c56-9a38-a59cf77c56c5
+    m_ActionName: 'Player/Remove[/Keyboard/delete]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -708,9 +756,9 @@ MonoBehaviour:
       Rotation:
         value:
           x: 0.123776786
-          y: -0.000000001898103
-          z: -0.1472815
-          w: 0.98131925
+          y: -0.0000000018981032
+          z: -0.14728148
+          w: 0.9813193
     m_MetaData:
     - Mode: 2
       Tension: 0.5

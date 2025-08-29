@@ -1,5 +1,6 @@
 using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.GameManagers;
+using AT.uGUI;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -16,6 +17,9 @@ public class PlayerMover : BasePlayerComponent
         // 色々取得処理
         _rb = GetComponent<Rigidbody>();
         var gameManager = GameManager.Instance;
+        var ccm = CanvasCtrlManager.Instance;
+        var builder = GetComponent<PlayerBuilder>();
+
         UpdateMoveSpeedStatus();
 
         // オプション監視
@@ -76,6 +80,56 @@ public class PlayerMover : BasePlayerComponent
                         gameManager.ChangeGameState(GameState.BUILD);
                     }
                 }
+            })
+            .AddTo(this);
+
+        // ショップ画面の開閉処理
+        InputEventProvider.Shop
+            .Where(x => x)
+            .Subscribe(_ =>
+            {
+                if (gameManager.CurrentGameState.CurrentValue == GameState.SHOP)
+                {
+                    gameManager.ChangeGameState(GameState.BATTLE);
+                    ccm.GetCanvas("ShopView")?.OnCloseCanvas();
+                }
+                else if(gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
+                || gameManager.CurrentGameState.CurrentValue == GameState.BUILD)
+                {
+                    gameManager.ChangeGameState(GameState.SHOP);
+                    ccm.GetCanvas("GameView")?.OnCloseCanvas();
+                    ccm.GetCanvas("BuildView")?.OnCloseCanvas();
+                }
+            })
+            .AddTo(this);
+
+        // ビルド画面の開閉処理
+        InputEventProvider.Build
+            .Where(x => x)
+            .Subscribe(_ =>
+            {
+                if (gameManager.CurrentGameState.CurrentValue == GameState.BUILD)
+                {
+                    gameManager.ChangeGameState(GameState.BATTLE);
+                    ccm.GetCanvas("BuildView")?.OnCloseCanvas();
+                }
+                else if (gameManager.CurrentGameState.CurrentValue == GameState.BATTLE
+                || gameManager.CurrentGameState.CurrentValue == GameState.SHOP)
+                {
+                    gameManager.ChangeGameState(GameState.BUILD);
+                    ccm.GetCanvas("GameView")?.OnCloseCanvas();
+                    ccm.GetCanvas("ShopView")?.OnCloseCanvas();
+                }
+            })
+            .AddTo(this);
+
+        // ビルド時のモード切替
+        InputEventProvider.Remove
+            .Where(x => x)
+            .Where(_ => gameManager.CurrentGameState.CurrentValue == GameState.BUILD)
+            .Subscribe(_ =>
+            {
+                builder.ChangeBuildMode();
             })
             .AddTo(this);
     }
