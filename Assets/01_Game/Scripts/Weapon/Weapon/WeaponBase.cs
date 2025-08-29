@@ -141,13 +141,16 @@ public abstract class WeaponBase : MonoBehaviour, IModuleID
 
         var level = RuntimeModuleManager.Instance.GetRuntimeModuleData(_data.Id).Level.CurrentValue;
 
-        // UŒ‚—ÍŒvZ
+        // ƒŒƒxƒ‹@UŒ‚—ÍŒvZ
         _currentAttack = StateValueCalculator.CalcStateValue(
                 baseValue: _data.ModuleState.Attack,
                 currentLevel: level,
                 maxLevel: 5,
                 maxRate: 0.5f // Å‘å+50%‚Ì¬’·
-            ) + _attackStatusEffects;
+            );
+
+        // ƒIƒvƒVƒ‡ƒ“@UŒ‚—ÍŒvZ
+        _currentAttack *= 1f + (_attackStatusEffects / 100);
     }
 
     /// <summary>
