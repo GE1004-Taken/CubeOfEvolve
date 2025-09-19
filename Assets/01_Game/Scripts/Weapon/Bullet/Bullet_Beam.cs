@@ -18,9 +18,6 @@ public class Bullet_Beam : BulletBase
     // ---------------------------- UnityMessage
     private void Start()
     {
-        // 自然消滅時間
-        Destroy(gameObject, _destroySecond);
-
         // 毎フレーム監視
         this.UpdateAsObservable()
             .Subscribe(_ =>
@@ -31,6 +28,9 @@ public class Bullet_Beam : BulletBase
                 {
                     return;
                 }
+
+                // 自然消滅処理
+                DestroySecondCount();
 
                 if (_currentInterval < _attackInterval)
                 {
