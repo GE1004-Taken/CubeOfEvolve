@@ -12,6 +12,7 @@ namespace Assets.IGC2025.Scripts.GameManagers
         TUTORIAL,
         GAMEOVER,
         GAMECLEAR,
-        SHOP
+        SHOP,
+        DROP
     }
 }

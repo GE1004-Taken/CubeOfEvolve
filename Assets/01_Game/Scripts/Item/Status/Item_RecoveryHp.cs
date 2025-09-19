@@ -1,3 +1,4 @@
+using Assets.AT;
 using UnityEngine;
 
 public class Item_RecoveryHp : ItemBase
@@ -7,5 +8,7 @@ public class Item_RecoveryHp : ItemBase
     public override void UseItem(PlayerCore playerCore)
     {
         playerCore.RecoveryHp(_value);
+        // ÉTÉEÉìÉhçƒê∂
+        GameSoundManager.Instance.PlaySE_ItemGet();
     }
 }

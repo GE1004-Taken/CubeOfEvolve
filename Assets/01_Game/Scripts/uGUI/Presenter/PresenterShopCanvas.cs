@@ -4,6 +4,7 @@ using Assets.AT;
 using Assets.IGC2025.Scripts.View;
 using Game.Utils;
 using R3;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -36,6 +37,14 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private TextMeshProUGUI _prc;
         [SerializeField] private Button _confirmPurchaseButton;
 
+        // -----購入演出
+        [Header("Purchase Feedback")]
+        [SerializeField] private string _purchaseSuccessSE = "Shop_buy_ok";
+        [SerializeField] private string _purchaseFailedSE = "Shop_buy_ng";
+        [SerializeField, Range(1f, 1.5f)] private float _buttonPulseScale = 1.08f;
+        [SerializeField, Range(0.03f, 0.3f)] private float _buttonPulseDuration = 0.08f;
+        [SerializeField] private GameObject _cannotAffordPanel;
+
         // -----Field
         private CompositeDisposable _disposables = new CompositeDisposable();
         private CompositeDisposable _moduleLevelAndQuantityChangeDisposables = new CompositeDisposable();
@@ -44,7 +53,6 @@ namespace Assets.IGC2025.Scripts.Presenter
         public bool IsInitialized { get; private set; } = false;
 
         // -----UnityMessage
-
         private void OnDestroy()
         {
             _disposables.Dispose();
@@ -59,7 +67,6 @@ namespace Assets.IGC2025.Scripts.Presenter
             if (_runtimeModuleManager == null)
                 _runtimeModuleManager = RuntimeModuleManager.Instance;
 
-            // 依存チェック（落とさないのが最優先）
             if (_shopView == null || _moduleDataStore == null || _playerCore == null || _runtimeModuleManager == null)
             {
                 Debug.LogError($"{nameof(PresenterShopCanvas)}: 依存が不足しています。", this);
@@ -67,7 +74,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 return;
             }
 
-            // ランタイムモジュールの変化を購読（レベル/所持数など）
             _runtimeModuleManager.OnAllRuntimeModuleDataChanged
                 .Subscribe(_ =>
                 {
@@ -78,11 +84,10 @@ namespace Assets.IGC2025.Scripts.Presenter
                             SubscribeToModuleChanges(rmd);
                     }
                     DisplayShopContent();
-                    UpdatePurchaseButtonsInteractability();
+                    // 所持金によるボタン無効化はやめる（選択は常に可能）
                 })
                 .AddTo(_disposables);
 
-            // ショップのUIイベント
             _shopView.OnModulePurchaseRequested
                 .Subscribe(moduleId => HandleModulePurchaseRequested(moduleId))
                 .AddTo(_disposables);
@@ -91,27 +96,23 @@ namespace Assets.IGC2025.Scripts.Presenter
                 .Subscribe(id => ShowModuleDetailPanel(id))
                 .AddTo(_disposables);
 
-            // 所持金変化：表示＆購入可能ボタンの更新
             _playerCore.Money
                 .Subscribe(x =>
                 {
                     if (_moneyTextScaleAnimation != null)
                         _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f);
-                    UpdatePurchaseButtonsInteractability();
+                    if (_currentSelectedModuleId >= 0)
+                        UpdateAffordUIFor(_currentSelectedModuleId);
                 })
                 .AddTo(_disposables);
 
-            // 初回描画
             PrepareAndShowShopUI();
 
             IsInitialized = true;
-#if UNITY_EDITOR
-            Debug.Log($"{nameof(PresenterShopCanvas)} initialized.", this);
-#endif
         }
 
-        // -----PrivateMethod
 
+        // -----PrivateMethod
         private void SubscribeToModuleChanges(RuntimeModuleData runtimeModuleData)
         {
             if (runtimeModuleData?.Level != null)
@@ -119,9 +120,7 @@ namespace Assets.IGC2025.Scripts.Presenter
                 runtimeModuleData.Level
                     .Subscribe(_ =>
                     {
-                        // レベル変化でUI反映／購入可否を更新
                         PrepareAndShowShopUI();
-                        UpdatePurchaseButtonsInteractability();
                     })
                     .AddTo(_moduleLevelAndQuantityChangeDisposables);
             }
@@ -142,22 +141,6 @@ namespace Assets.IGC2025.Scripts.Presenter
                 .ToList() ?? new List<RuntimeModuleData>();
 
             _shopView.DisplayShopModules(list, _moduleDataStore);
-        }
-
-        private void UpdatePurchaseButtonsInteractability()
-        {
-            if (_playerCore == null || _moduleDataStore?.DataBase?.ItemList == null || _runtimeModuleManager == null)
-                return;
-
-            foreach (var runtimeData in _runtimeModuleManager.AllRuntimeModuleData
-                         .Where(rmd => rmd != null && rmd.CurrentLevelValue > 0))
-            {
-                var masterData = _moduleDataStore.FindWithId(runtimeData.Id);
-                if (masterData == null) continue;
-
-                bool canAfford = _playerCore.Money.CurrentValue >= masterData.BasePrice;
-                _shopView.SetPurchaseButtonInteractable(runtimeData.Id, canAfford);
-            }
         }
 
         private void ShowModuleDetailPanel(int moduleId)
@@ -188,13 +171,14 @@ namespace Assets.IGC2025.Scripts.Presenter
 
             _currentSelectedModuleId = moduleId;
 
+            UpdateAffordUIFor(moduleId);
+
             if (_confirmPurchaseButton != null)
             {
                 _confirmPurchaseButton.onClick.RemoveAllListeners();
                 _confirmPurchaseButton.onClick.AddListener(() => HandleModulePurchaseRequested(moduleId));
             }
         }
-
 
         private void HandleModulePurchaseRequested(int moduleId)
         {
@@ -209,15 +193,77 @@ namespace Assets.IGC2025.Scripts.Presenter
                 currentLevel: runtimeModule.Level.CurrentValue,
                 maxLevel: 5, maxRate: 0.5f);
 
-            if (_playerCore.Money.CurrentValue >= payPrice)
+            bool canPay = _playerCore.Money.CurrentValue >= payPrice;
+
+            if (canPay)
             {
                 _playerCore.PayMoney((int)payPrice);
                 _runtimeModuleManager.ChangeModuleQuantity(moduleId, 1);
-                UpdatePurchaseButtonsInteractability();
+
+                // 成功演出
+                if (!string.IsNullOrEmpty(_purchaseSuccessSE))
+                    GameSoundManager.Instance.PlaySE(_purchaseSuccessSE, "System");
+                if (_confirmPurchaseButton != null)
+                    StartCoroutine(PulseButton(_confirmPurchaseButton.transform));
             }
+            else
+            {
+                // 失敗演出
+                if (!string.IsNullOrEmpty(_purchaseFailedSE))
+                    GameSoundManager.Instance.PlaySE(_purchaseFailedSE, "System");
+                if (_confirmPurchaseButton != null)
+                    StartCoroutine(PulseButton(_confirmPurchaseButton.transform));
+            }
+            UpdateAffordUIFor(moduleId);
         }
 
-        public void InShopSE() => GameSoundManager.Instance.PlaySE("Sys_menu_in", "System");
-        public void OutShopSE() => GameSoundManager.Instance.PlaySE("Sys_menu_out", "System");
+        // シンプルなパルスアニメ（外部依存なし）
+        private IEnumerator PulseButton(Transform t)
+        {
+            if (t == null) yield break;
+            var original = t.localScale;
+            var up = original * _buttonPulseScale;
+
+            float t1 = 0f;
+            while (t1 < _buttonPulseDuration)
+            {
+                t1 += Time.unscaledDeltaTime;
+                float r = Mathf.Clamp01(t1 / _buttonPulseDuration);
+                t.localScale = Vector3.Lerp(original, up, r);
+                yield return null;
+            }
+
+            float t2 = 0f;
+            while (t2 < _buttonPulseDuration)
+            {
+                t2 += Time.unscaledDeltaTime;
+                float r = Mathf.Clamp01(t2 / _buttonPulseDuration);
+                t.localScale = Vector3.Lerp(up, original, r);
+                yield return null;
+            }
+
+            t.localScale = original;
+        }
+
+        private void UpdateAffordUIFor(int moduleId)
+        {
+            if (moduleId < 0) return;
+            var module = _moduleDataStore.FindWithId(moduleId);
+            var runtime = _runtimeModuleManager.GetRuntimeModuleData(moduleId);
+            if (module == null || runtime == null) return;
+
+            int level = runtime.CurrentLevelValue;
+            float price = StateValueCalculator.CalcStateValue(
+                baseValue: module.BasePrice,
+                currentLevel: level, maxLevel: 5, maxRate: 0.5f);
+
+            int money = _playerCore.Money.CurrentValue;
+            bool canAfford = money >= price;
+
+            if (_cannotAffordPanel != null)
+                _cannotAffordPanel.SetActive(!canAfford);
+
+        }
+
     }
 }

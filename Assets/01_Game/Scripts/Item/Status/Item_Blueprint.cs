@@ -1,4 +1,5 @@
 using App.GameSystem.Modules;
+using Assets.AT;
 using UnityEngine;
 
 public class Item_Blueprint : ItemBase
@@ -12,5 +13,8 @@ public class Item_Blueprint : ItemBase
         {
             GuideManager.Instance.TryShowGuide("Blueprint");
         }
+
+        // ÉTÉEÉìÉhçƒê∂
+        GameSoundManager.Instance.PlaySE("Sys_ItemGet_2", "Hit_Item");
     }
 }

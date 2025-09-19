@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Collections.AllocatorManager;
 
 namespace Assets.IGC2025.Scripts.View
 {
@@ -56,6 +57,9 @@ namespace Assets.IGC2025.Scripts.View
         private readonly List<int> _currentDisplayedModuleIds = new();
         private readonly CompositeDisposable _disposables = new();
 
+        private static readonly ReactiveProperty<bool> isDropChoseEnabled = new(true);
+        public ReadOnlyReactiveProperty<bool> DropChoseEnabled => isDropChoseEnabled;
+
         // -----Field
         // Tween handles
         private Sequence _openSeq;
@@ -78,24 +82,53 @@ namespace Assets.IGC2025.Scripts.View
 
         // -----publicMethod
 
+        public void ToggleDropChoseEnabled()
+        {
+            isDropChoseEnabled.Value = !isDropChoseEnabled.Value;
+        }
+
         /// <summary>指定ID/ランダム補完でカードを生成して並べる。</summary>
         public void DisplayModulesByIdOrRandom(
-            List<int> moduleIds,
-            List<RuntimeModuleData> candidatePool,
-            ModuleDataStore dataStore)
+    List<int> moduleIds,
+    List<RuntimeModuleData> candidatePool,
+    ModuleDataStore dataStore)
         {
             ClearItems();
 
-            var randomPool = candidatePool.ToList();
-            ShuffleInPlace(randomPool); // 高速シャッフル
+            // 自動
+            if (!isDropChoseEnabled.Value)
+            {
+                var randomPool = candidatePool.ToList();
+                ShuffleInPlace(randomPool);
 
-            int randomIndex = 0;
-            int count = Mathf.Min(_maxOptions, moduleIds.Count);
+                int randomIndex = 0;
+                int count = Mathf.Min(_maxOptions, moduleIds.Count);
 
-            for (int i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
+                {
+                    int reqId = moduleIds[i];
+                    if (TryResolveModule(reqId, randomPool, ref randomIndex, candidatePool, dataStore,
+                                         out int id, out ModuleData master, out RuntimeModuleData runtime))
+                    {
+                        OnModuleSelected.OnNext(id);
+                        return;
+                    }
+                }
+
+                Debug.LogWarning($"{nameof(ViewDropCanvas)}: 自動選択できる候補が見つかりません。");
+                return;
+            }
+
+            var randomPoolNormal = candidatePool.ToList();
+            ShuffleInPlace(randomPoolNormal);
+
+            int randomIndexNormal = 0;
+            int countNormal = Mathf.Min(_maxOptions, moduleIds.Count);
+
+            for (int i = 0; i < countNormal; i++)
             {
                 int reqId = moduleIds[i];
-                if (TryResolveModule(reqId, randomPool, ref randomIndex, candidatePool, dataStore,
+                if (TryResolveModule(reqId, randomPoolNormal, ref randomIndexNormal, candidatePool, dataStore,
                                      out int id, out ModuleData master, out RuntimeModuleData runtime))
                 {
                     CreateItem(id, master, runtime);
@@ -103,21 +136,22 @@ namespace Assets.IGC2025.Scripts.View
             }
         }
 
+
         /// <summary>開アニメ前の状態へ初期化（Canvas/Banner/Card）。</summary>
         public void PrepareInitialStatesForOpen()
         {
+            if (!isDropChoseEnabled.Value) return;
+            KillTweens();
             InitCanvasClosed();
 
-            if (_banner)
+            if (_banner && !_bannerCached)
             {
-                if (!_bannerCached)
-                {
-                    _bannerInitialPos = _banner.anchoredPosition;
-                    _bannerCached = true;
-                }
-                _bannerOffscreenX = CalcBannerOffscreenX(_banner, _bannerExtraMargin);
-                _banner.anchoredPosition = new Vector2(_bannerOffscreenX, _bannerInitialPos.y);
+                _bannerInitialPos = _banner.anchoredPosition;
+                _bannerCached = true;
             }
+            _bannerOffscreenX = _banner ? CalcBannerOffscreenX(_banner, _bannerExtraMargin) : 0f;
+
+            InitBackgroundAndBannerClosed();
 
             foreach (var go in _instantiatedItems)
             {
@@ -130,8 +164,9 @@ namespace Assets.IGC2025.Scripts.View
         /// <summary>画面を開く（Canvas → 背景/バナー → カード）。</summary>
         public async UniTask PlayOpenAsync(CancellationToken ct = default)
         {
-            KillTweens();
+            if (!isDropChoseEnabled.Value) return; // 追加：自動モード時は開かない
 
+            KillTweens();
             if (!_canvasGroup) return;
             InitCanvasClosed();
 
@@ -146,6 +181,8 @@ namespace Assets.IGC2025.Scripts.View
         /// <summary>画面を閉じる（Canvas フェード + バナー退場）。</summary>
         public async UniTask PlayCloseAsync()
         {
+            if (!isDropChoseEnabled.Value) return; // 追加：自動モード時は閉じも不要
+
             _openSeq?.Kill();
             if (!_canvasGroup) return;
 
@@ -175,7 +212,7 @@ namespace Assets.IGC2025.Scripts.View
             {
                 block.Join(_background.DOScaleY(_bgOvershootY, _bgOpenDuration).SetEase(Ease.OutBack));
                 //if (_bgSettleDuration > 0f)
-                //    block.Append(_background.DOScaleY(1f, _bgSettleDuration).SetEase(Ease.OutCubic));
+                //    block.Append(_background.DOScaleY(1.5f, _bgSettleDuration).SetEase(Ease.OutCubic));
             }
             if (_banner)
             {
@@ -196,6 +233,13 @@ namespace Assets.IGC2025.Scripts.View
         {
             var close = DOTween.Sequence();
             close.Join(_canvasGroup.DOFade(0f, _closeDuration).SetEase(Ease.InSine));
+
+            if (_background)
+            {
+                close.Join(_background.DOScaleY(0f, _closeDuration).SetEase(Ease.OutBack));
+                //if (_bgSettleDuration > 0f)
+                //    block.Append(_background.DOScaleY(1.5f, _bgSettleDuration).SetEase(Ease.OutCubic));
+            }
 
             if (_banner)
             {
@@ -321,6 +365,12 @@ namespace Assets.IGC2025.Scripts.View
         }
 
         // Utilities
+
+        private void InitBackgroundAndBannerClosed()
+        {
+            if (_background) _background.localScale = new Vector3(1.5f, 0f, 1.5f);
+            if (_banner) _banner.anchoredPosition = new Vector2(_bannerOffscreenX, _bannerInitialPos.y);
+        }
 
         private void ClearItems()
         {
