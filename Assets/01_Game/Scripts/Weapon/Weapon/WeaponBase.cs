@@ -10,71 +10,102 @@ public abstract class WeaponBase : MonoBehaviour, IModuleID
 {
     // ---------------------------- SerializeField
     [Header("データ")]
-    [SerializeField, Tooltip("データ")] protected ModuleData _data;
+    [SerializeField, Tooltip("武器の基本データ")]
+    protected ModuleData _data;
 
     [Header("音")]
-    [SerializeField, Tooltip("SE")] protected string _fireSEName;
+    [SerializeField, Tooltip("発射時のSE名")]
+    protected string _fireSEName;
 
-    [Header("モデル")]
-    [SerializeField, Tooltip("モデル")] private GameObject _model;
+    [Header("追尾")]
+    [SerializeField, Tooltip("追尾速度")]
+    private float _rotationSpeed = 90f;
+
+    [SerializeField, Tooltip("横軸を追尾するか")]
+    protected bool _isHorizontalAxisTracking = true;
+    [SerializeField, Tooltip("武器モデル")]
+    protected GameObject _horizontalModel;
+
+    [SerializeField, Tooltip("縦軸を追尾するか")]
+    protected bool _isVerticalAxisTracking = true;
+    [SerializeField, Tooltip("武器モデル")]
+    protected GameObject _verticalModel;
 
     [Header("索敵")]
-    [SerializeField, Tooltip("対象検知用")] protected LayerSearch _layerSearch;
-    [SerializeField, Tooltip("攻撃対象のレイヤー")] protected LayerMask _targetLayerMask;
+    [SerializeField, Tooltip("索敵用コンポーネント")]
+    protected LayerSearch _layerSearch;
+    [SerializeField, Tooltip("攻撃対象レイヤーマスク")]
+    protected LayerMask _targetLayerMask;
 
     [Header("敵の場合")]
-    [SerializeField, Tooltip("攻撃力倍率")] private float _enemyRate = 1;
+    [SerializeField, Tooltip("敵が装備した場合の攻撃力倍率")]
+    private float _enemyRate = 1;
 
     // ---------------------------- Field
-    protected float _attackStatusEffects;
-    protected float _currentAttack;
-    protected float _currentInterval;
+    protected float _attackStatusEffects;   // ステータス効果による追加攻撃力
+    protected float _currentAttack;         // 実際の攻撃力
+    protected float _currentInterval;       // 攻撃間隔の経過時間
 
     // ---------------------------- Property
     /// <summary>
-    /// ID
+    /// 武器のモジュールID
     /// </summary>
     public int Id => _data.Id;
 
-    // ---------------------------- Unity Method
+    // ---------------------------- UnityMessage
     private void Start()
     {
+        // 初期化
         Initialize();
 
+        // レベルアップやステータス効果を監視
         ObserveLevel();
         ObserveStatusEffects();
 
+        // 毎フレーム監視
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
-                if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+                // ゲーム状態がバトル中でなければ処理しない
+                if (GameManager.Instance.CurrentGameState.CurrentValue
+                    != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
                 {
                     return;
                 }
 
+                ProcessingFaceEnemyOrientation();
+
+                // 攻撃間隔の経過時間を加算
                 if (_currentInterval < _data.ModuleState.Interval)
                 {
                     _currentInterval += Time.deltaTime;
                 }
+                else if (!_isHorizontalAxisTracking && !_isVerticalAxisTracking)
+                {
+                    // 攻撃処理（派生クラスで実装）
+                    Attack();
+
+                    _currentInterval = 0f;
+                }
+                // 攻撃可能状態になり、ターゲットが存在する場合
                 else if (_layerSearch.NearestTargetObj != null)
                 {
-                    if (_model != null)
-                    {
-                        ProcessingFaceEnemyOrientation();
-                    }
+                    // 攻撃処理（派生クラスで実装）
                     Attack();
+
+                    // インターバルをリセット
                     _currentInterval = 0f;
                 }
             })
             .AddTo(this);
 
-        // 攻撃力更新
+        // 初期攻撃力を計算
         UpdateAttackStatus();
     }
 
     // ---------------------------- Initialization
     /// <summary>
-    /// 初期化
+    /// 初期化処理
     /// </summary>
     protected virtual void Initialize()
     {
@@ -82,12 +113,13 @@ public abstract class WeaponBase : MonoBehaviour, IModuleID
     }
 
     /// <summary>
-    /// レベルを監視
+    /// レベルの監視処理
     /// </summary>
     private void ObserveLevel()
     {
         if (transform.root.CompareTag("Cube"))
         {
+            // Cubeの場合はランタイムのモジュールデータを監視
             RuntimeModuleManager.Instance.GetRuntimeModuleData(_data.Id).Level
                 .Subscribe(level =>
                 {
@@ -97,26 +129,28 @@ public abstract class WeaponBase : MonoBehaviour, IModuleID
         }
         else if (transform.root.CompareTag("Enemy"))
         {
+            // 敵の場合は倍率をかけた固定値を使用
             _currentAttack = _data.ModuleState.Attack * _enemyRate;
         }
     }
 
     /// <summary>
-    /// オプションを監視
+    /// ステータス効果の監視
     /// </summary>
     private void ObserveStatusEffects()
     {
         if (!transform.root.CompareTag("Cube")) return;
 
+        // 効果追加・削除の監視ストリーム
         var addStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
-        .ObserveAdd(destroyCancellationToken)
-        .Select(_ => Unit.Default);
+            .ObserveAdd(destroyCancellationToken)
+            .Select(_ => Unit.Default);
 
         var removeStream = RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList
             .ObserveRemove(destroyCancellationToken)
             .Select(_ => Unit.Default);
 
-        // どちらかのイベントが発生した時を監視
+        // どちらかが発生したら攻撃力を更新
         addStream.Merge(removeStream)
             .Subscribe(_ =>
             {
@@ -126,50 +160,96 @@ public abstract class WeaponBase : MonoBehaviour, IModuleID
     }
 
     /// <summary>
-    /// 攻撃力更新
+    /// 攻撃力を計算・更新  
+    /// レベル成長とステータス効果を考慮して計算する
     /// </summary>
     private void UpdateAttackStatus()
     {
         if (!transform.root.CompareTag("Cube")) return;
 
+        // ステータス効果による追加攻撃力をリセット
         _attackStatusEffects = 0;
 
+        // 現在の全ステータス効果を加算
         foreach (var effect in RuntimeModuleManager.Instance.CurrentCurrentStatusEffectList)
         {
             _attackStatusEffects += effect.Attack;
         }
 
+        // レベルを取得
         var level = RuntimeModuleManager.Instance.GetRuntimeModuleData(_data.Id).Level.CurrentValue;
 
-        // レベル　攻撃力計算
+        // 基本攻撃力をレベルに応じて計算（最大50%の成長）
         _currentAttack = StateValueCalculator.CalcStateValue(
-                baseValue: _data.ModuleState.Attack,
-                currentLevel: level,
-                maxLevel: 5,
-                maxRate: 0.5f // 最大+50%の成長
-            );
+            baseValue: _data.ModuleState.Attack,
+            currentLevel: level,
+            maxLevel: 5,
+            maxRate: 0.5f
+        );
 
-        // オプション　攻撃力計算
+        // ステータス効果を反映（%換算）
         _currentAttack *= 1f + (_attackStatusEffects / 100);
     }
 
     /// <summary>
-    /// 対象の方向を向く処理
+    /// ターゲットの方向にモデルを回転させる（水平・垂直別制御）
     /// </summary>
     private void ProcessingFaceEnemyOrientation()
     {
+        if (!_isHorizontalAxisTracking && !_isVerticalAxisTracking) return;
+        if (_layerSearch.NearestTargetObj == null) return;
+
         var target = _layerSearch.NearestTargetObj.transform;
 
-        // 砲台の回転はY軸のみ（高さを無視して水平方向に向ける）
-        Vector3 flatTargetPos = new Vector3(target.position.x, transform.position.y, target.position.z);
-        Vector3 turretDir = (flatTargetPos - transform.position).normalized;
-
-        if (turretDir != Vector3.zero)
+        // 水平方向
+        if (_isHorizontalAxisTracking && _horizontalModel != null)
         {
-            _model.transform.rotation = Quaternion.LookRotation(turretDir);
+            Vector3 lookDir = target.position - _horizontalModel.transform.position;
+            lookDir.y = 0f; // 高さは無視して水平ベクトルだけ
+
+            if (lookDir.sqrMagnitude > 0.0001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(lookDir, Vector3.up);
+                _horizontalModel.transform.rotation = Quaternion.RotateTowards(
+                    _horizontalModel.transform.rotation,
+                    targetRot,
+                    _rotationSpeed * Time.deltaTime
+                );
+            }
+        }
+
+        // 垂直方向
+        if (_isVerticalAxisTracking && _verticalModel != null)
+        {
+            Vector3 lookDir = target.position - _verticalModel.transform.position;
+
+            if (lookDir.sqrMagnitude > 0.0001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(lookDir, Vector3.up);
+
+                // 現在の回転
+                Quaternion current = _verticalModel.transform.rotation;
+
+                // Pitchだけ目標値に更新し、YawとRollは維持
+                Quaternion newRot = Quaternion.Euler(
+                    targetRot.eulerAngles.x, // Pitch
+                    current.eulerAngles.y,   // Yaw維持
+                    current.eulerAngles.z    // Roll維持
+                );
+
+                _verticalModel.transform.rotation = Quaternion.RotateTowards(
+                    current,
+                    newRot,
+                    _rotationSpeed * Time.deltaTime
+                );
+            }
         }
     }
 
+
     // ---------------------------- Abstract Method
+    /// <summary>
+    /// 攻撃処理
+    /// </summary>
     protected abstract void Attack();
 }

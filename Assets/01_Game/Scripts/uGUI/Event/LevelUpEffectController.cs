@@ -5,13 +5,12 @@ using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
-using Cysharp.Threading.Tasks;
 
 namespace Assets.AT
 {
     public class LevelUpEffectController : MonoBehaviour
     {
+        // -----SerializeField
         [Header("Models")]
         [SerializeField] private PlayerCore _playerCore;
 
@@ -21,13 +20,11 @@ namespace Assets.AT
         [SerializeField] private Image glowImage;
         [SerializeField] private ParticleSystem levelUpParticle;
 
-        //[Header("Audio")]
-        //[SerializeField] private AudioSource audioSource;
-        //[SerializeField] private AudioClip levelUpSE;
-
+        // -----Field
         private Tween _glowRotateTween;
         private CancellationTokenSource _cts;
 
+        // -----unityMessage
         private void Start()
         {
             _playerCore.Level
@@ -41,7 +38,7 @@ namespace Assets.AT
             PlayFancyLevelUpAsync().Forget();
         }
 
-
+        // -----PublicMethod
         public async UniTask PlayFancyLevelUpAsync()
         {
             _cts?.Cancel();
@@ -68,9 +65,9 @@ namespace Assets.AT
 
             // パネル：下からフェードイン＋上昇
             await UniTask.WhenAll(
-    rect.DOAnchorPosY(targetY, 0.5f).SetEase(Ease.OutCubic).ToUniTask(token),
-    panel.GetComponent<CanvasGroup>().DOFade(1f, 0.5f).ToUniTask(token)
-);
+                rect.DOAnchorPosY(targetY, 0.5f).SetEase(Ease.OutCubic).ToUniTask(token),
+                panel.GetComponent<CanvasGroup>().DOFade(1f, 0.5f).ToUniTask(token)
+            );
 
             // 各文字ポップ
             for (int i = 0; i < animator.textInfo.characterCount; i++)
@@ -87,15 +84,15 @@ namespace Assets.AT
 
             // パネル：上へ退場しながらフェードアウト
             await UniTask.WhenAll(
-     rect.DOAnchorPosY(targetY + 300f, 0.5f).SetEase(Ease.InCubic).ToUniTask(token),
-     panel.GetComponent<CanvasGroup>().DOFade(0f, 0.5f).ToUniTask(token)
- );
+                rect.DOAnchorPosY(targetY + 300f, 0.5f).SetEase(Ease.InCubic).ToUniTask(token),
+                panel.GetComponent<CanvasGroup>().DOFade(0f, 0.5f).ToUniTask(token)
+            );
 
             panel.SetActive(false);
             rect.anchoredPosition = originalPos;
         }
 
-
+        // -----PrivateMethod
         private void OnDestroy()
         {
             _cts?.Cancel();

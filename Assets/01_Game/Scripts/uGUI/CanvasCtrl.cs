@@ -1,6 +1,6 @@
 // 作成日： 250508
 // 更新日： 250508 機能完成
-//              250820 機能拡張 閉じるボタンを複数設定可能に。
+//         250820 機能拡張 閉じるボタンを複数設定可能に。
 // 作成者： 安中 健人
 
 // 概要説明(AIにより作成)：
@@ -31,7 +31,7 @@ namespace AT.uGUI
         {
             if (_canvas.enabled) return;
 
-            if (clickedButton == null) Debug.Log("nullなのでする―");
+            //if (clickedButton == null) Debug.Log("nullなのでする―");
             _canvas.enabled = true;
             if (_closeBtnList.Count != 0) _closeBtnList[0].Select();
             if (clickedButton != null) _saveBtn = clickedButton;

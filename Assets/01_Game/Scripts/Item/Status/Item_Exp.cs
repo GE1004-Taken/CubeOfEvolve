@@ -1,3 +1,4 @@
+using Assets.AT;
 using UnityEngine;
 
 public class Item_Exp : ItemBase
@@ -7,5 +8,7 @@ public class Item_Exp : ItemBase
     public override void UseItem(PlayerCore playerCore)
     {
         playerCore.ReceiveExp(_value);
+        // ƒTƒEƒ“ƒhÄ¶
+        GameSoundManager.Instance.PlaySE_ItemGet();
     }
 }

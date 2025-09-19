@@ -414,6 +414,7 @@ Transform:
   m_Children:
   - {fileID: 10065622485168574}
   - {fileID: 10065622485090842}
+  - {fileID: 9082974690149103503}
   m_Father: {fileID: 10065622485093256}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &10065622484321048
@@ -839,11 +840,11 @@ Transform:
   m_GameObject: {fileID: 2454496207801410552}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.05, z: 1.219}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.011999941, z: 1.7511201}
+  m_LocalScale: {x: 1.3333334, y: 1.3333334, z: 1.7024173}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4539066019330608290}
+  m_Father: {fileID: 10065622485140868}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3152658309307378843
 GameObject:
@@ -874,7 +875,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 9082974690149103503}
   - {fileID: 10065622485093256}
   m_Father: {fileID: 5802498300164406200}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1008,7 +1008,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: 8d0d3f7bd112c19498f88d2989b34c75, type: 2}
   _fireSEName: Fire
-  _model: {fileID: 3152658309307378843}
+  _rotationSpeed: 120
+  _isHorizontalAxisTracking: 1
+  _horizontalModel: {fileID: 3152658309307378843}
+  _isVerticalAxisTracking: 1
+  _verticalModel: {fileID: 10065622485398866}
   _layerSearch: {fileID: 8252070589722386805}
   _targetLayerMask:
     serializedVersion: 2

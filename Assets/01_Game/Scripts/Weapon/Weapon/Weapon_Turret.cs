@@ -11,10 +11,8 @@ public class Weapon_Turret : WeaponBase
     // ---------------------------- OverrideMethod
     protected override void Attack()
     {
-        var target = _layerSearch.NearestTargetObj.transform;
-
-        // 弾の方向は正確な3D方向（高さも含む）
-        Vector3 shootDir = (target.position - _bulletSpawnPos.position).normalized;
+        // 発射方向は SpawnPos の forward をそのまま使う
+        Vector3 shootDir = _bulletSpawnPos.forward;
         Quaternion shootRotation = Quaternion.LookRotation(shootDir);
 
         var bullet = Instantiate(

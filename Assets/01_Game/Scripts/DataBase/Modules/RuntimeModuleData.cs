@@ -1,7 +1,6 @@
 using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using R3;
 using System;
-using UnityEngine;
 
 namespace App.GameSystem.Modules
 {
@@ -12,10 +11,10 @@ namespace App.GameSystem.Modules
     [Serializable]
     public class RuntimeModuleData
     {
-        // ----- Property (公開プロパティ)
+        // -----Property
         public int Id { get; private set; } // モジュールの一意なID。
 
-        // ----- ReactiveProperty (リアクティブプロパティ)
+        // -----ReactiveProperty
         private ReactiveProperty<int> _currentLevel; // 現在のレベルを管理するReactiveProperty。
         public ReadOnlyReactiveProperty<int> Level => _currentLevel; // 外部公開用の読み取り専用レベルプロパティ。
         public int CurrentLevelValue => _currentLevel.Value; // 現在のレベルの直接値。
@@ -24,7 +23,7 @@ namespace App.GameSystem.Modules
         public ReadOnlyReactiveProperty<int> Quantity => _quantity;
         public int CurrentQuantityValue => _quantity.Value;
 
-        // ----- Constructor (コンストラクタ)
+        // -----Constructor
         /// <summary>
         /// ModuleDataマスターデータからRuntimeModuleDataのインスタンスを初期化します。
         /// </summary>
@@ -36,9 +35,9 @@ namespace App.GameSystem.Modules
             _quantity = new ReactiveProperty<int>(masterData.Quantity); // 初期数量はマスターデータから代入。
         }
 
-        // ----- Private
+        // -----Private
 
-        // ----- Public Methods (公開メソッド)
+        // -----PublicMethod
         /// <summary>
         /// モジュールのレベルを更新します。
         /// </summary>

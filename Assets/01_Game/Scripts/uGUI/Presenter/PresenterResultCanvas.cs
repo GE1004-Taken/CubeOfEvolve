@@ -8,9 +8,9 @@ using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
-    public class PresenterResultCanvas : MonoBehaviour
+    public sealed class PresenterResultCanvas : MonoBehaviour, IPresenter
     {
-        // ----- SerializedField
+        // -----SerializedField
         [Header("Models")]
 
         [Header("Views")]
@@ -18,39 +18,64 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private GameEndController _gameEndController;
         [SerializeField] private Button[] _endGameButton;
         [SerializeField] private TextMeshProUGUI _finishTimeTextUGUI;
-
         [SerializeField] private Canvas _canvas;
 
-        // ----- UnityMessage
+        // -----Field
+        public bool IsInitialized { get; private set; } = false;
+
+        private GameManager _gameManager;
+        private TimeManager _timeManager;
+
+        // -----UnityMessage
         private void Start()
         {
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.CurrentGameState
-                    .Where(x => x == GameState.GAMEOVER || x == GameState.GAMECLEAR)
-                    .Subscribe(x =>
-                    {
-                        _canvas.enabled = true;
-                        _gameEndController.PlayGameEndSequence(x).Forget();
-                        _finishTimeTextUGUI.text = $"{GameManager.Instance.GetComponent<TimeManager>().CurrentTimeSecond.CurrentValue.ToString("F1")}カウント";
-                    })
-                    .AddTo(this);
-            }
-
-            if (GameManager.Instance.SceneLoader != null)
-            {
-                if (_endGameButton.Length == 0) return;
-                for (int i = 0; i < _endGameButton.Length; i++)
-                {
-                    _endGameButton[i].onClick.AddListener(() => GameManager.Instance.SceneLoader.ReloadScene());
-
-                }
-            }
+            // 初期
+            if (_canvas != null) _canvas.enabled = false;
         }
 
-        // -----Private
+        // -----PublicMethod
 
+        public void Initialize()
+        {
+            if (IsInitialized) return;
 
+            _gameManager = GameManager.Instance;
+            if (_gameManager != null)
+                _gameManager.TryGetComponent(out _timeManager);
+
+            if (_gameManager == null || _gameEndController == null || _canvas == null || _finishTimeTextUGUI == null)
+            {
+                Debug.LogError($"{nameof(PresenterResultCanvas)}: 依存が不足しています。", this);
+                return;
+            }
+
+            // ゲーム終了/クリアで結果を表示
+            _gameManager.CurrentGameState
+                .Where(x => x == GameState.GAMEOVER || x == GameState.GAMECLEAR)
+                .Subscribe(x =>
+                {
+                    _canvas.enabled = true;
+                    _gameEndController.PlayGameEndSequence(x).Forget();
+
+                    var time = _timeManager != null ? _timeManager.CurrentTimeSecond.CurrentValue : 0f;
+                    _finishTimeTextUGUI.text = $"{time:F1}カウント";
+                })
+                .AddTo(this);
+
+            // ボタンのリスナー（二重登録防止のため毎回クリア）
+            if (_gameManager.SceneLoader != null && _endGameButton != null && _endGameButton.Length > 0)
+            {
+                foreach (var btn in _endGameButton)
+                {
+                    if (btn == null) continue;
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(() => _gameManager.SceneLoader.ReloadScene());
+                }
+            }
+
+            IsInitialized = true;
+
+        }
 
         #region ModelToView
 

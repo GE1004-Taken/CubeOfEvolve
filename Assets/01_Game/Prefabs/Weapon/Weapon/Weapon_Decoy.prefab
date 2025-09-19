@@ -915,7 +915,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data: {fileID: 11400000, guid: ee51ed3bd5a74874a8d3977a4c81c54b, type: 2}
   _fireSEName: Fire_Bom
-  _model: {fileID: 4606539937921710349}
+  _rotationSpeed: 120
+  _isHorizontalAxisTracking: 1
+  _horizontalModel: {fileID: 5573525834216578035}
+  _isVerticalAxisTracking: 0
+  _verticalModel: {fileID: 0}
   _layerSearch: {fileID: 711518834272932660}
   _targetLayerMask:
     serializedVersion: 2

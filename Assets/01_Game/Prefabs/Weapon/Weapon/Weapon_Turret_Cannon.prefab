@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6126617138082642079}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -135,7 +135,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 10065622485093256, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.8
+      value: 0.07993752
       objectReference: {fileID: 0}
     - target: {fileID: 10065622485168574, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_LocalScale.x
@@ -277,9 +277,21 @@ PrefabInstance:
       propertyPath: _fireSEName
       value: Fire_Cannon
       objectReference: {fileID: 0}
+    - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _isTracking
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _rotationSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7011947725296962691, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
+      propertyPath: _isHorizontalAxisTracking
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9082974690149103503, guid: 0a0ef973bbbd46b4585fae54e943585b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.811
+      value: 1.6909375
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

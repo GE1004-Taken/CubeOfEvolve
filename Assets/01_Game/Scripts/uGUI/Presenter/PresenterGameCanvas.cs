@@ -9,8 +9,9 @@ namespace Assets.IGC2025.Scripts.Presenter
     /// <summary>
     /// Player‚Ì‘Ì—Í‚ðView‚É”½‰f‚·‚éPresenter
     /// </summary>
-    public sealed class PresenterGameCanvas : MonoBehaviour
+    public sealed class PresenterGameCanvas : MonoBehaviour, IPresenter
     {
+        // -----SerializeField
         [Header("Models")]
         [SerializeField] private PlayerCore _models;
 
@@ -22,17 +23,23 @@ namespace Assets.IGC2025.Scripts.Presenter
         [SerializeField] private TextScaleAnimation _maxCubeCountTextScaleAnimation;
         [SerializeField] private TextScaleAnimation _moneyTextScaleAnimation;
 
+        // -----Field
         private Slider _hpSlider;
-
         private TimeManager _timeManager;
-
         private const float BOSS_CREATE_TIME = 300;
 
-        private void Start()
-        {
-            _hpSlider = _hpSliderAnimation.GetComponent<Slider>();
+        public bool IsInitialized { get; private set; } = false;
 
+        // -----UnityMessage
+
+        // -----PublicMethod
+        public void Initialize()
+        {
+            if (IsInitialized) return;
+
+            _hpSlider = _hpSliderAnimation.GetComponent<Slider>();
             _timeManager = GameManager.Instance.GetComponent<TimeManager>();
+
             _timeManager.CurrentTimeSecond
                 .Subscribe(x =>
                 {
@@ -42,52 +49,35 @@ namespace Assets.IGC2025.Scripts.Presenter
                 })
                 .AddTo(this);
 
-            // Player‚ÌHealth‚ðŠÄŽ‹
+            _models.MaxHp
+                .Subscribe(max => { _hpSlider.maxValue = max; })
+                .AddTo(this);
+
             _models.Hp
-                .Subscribe(x =>
-                {
-                    // View‚É”½‰f
-                    _hpSliderAnimation.SliderAnime(x);
-                }).AddTo(this);
+                .Subscribe(x => _hpSliderAnimation.SliderAnime(x))
+                .AddTo(this);
 
             _models.RequireExp
-                .Subscribe(x =>
-                {
-                    _expSliderAnimation.GetComponent<Slider>().maxValue = x;
-                }).AddTo(this);
+                .Subscribe(x => _expSliderAnimation.GetComponent<Slider>().maxValue = x)
+                .AddTo(this);
 
-            // Player‚ÌŒoŒ±’l‚ðŠÄŽ‹
             _models.Exp
-                .Subscribe(x =>
-                {
-                    // View‚É”½‰f
-                    _expSliderAnimation.SliderAnime((float)x);
-                }).AddTo(this);
+                .Subscribe(x => _expSliderAnimation.SliderAnime((float)x))
+                .AddTo(this);
 
-            // Player‚ÌŠŽƒLƒ…[ƒu”‚ðŠÄŽ‹
             _models.CubeCount
-                .Subscribe(x =>
-                {
-                    // View‚É”½‰f
-                    _cubeCountTextScaleAnimation.AnimateFloatAndText(x, 1f);
-                    _hpSlider.maxValue = _models.MaxHp.CurrentValue;
-                }).AddTo(this);
+                .Subscribe(x => _cubeCountTextScaleAnimation.AnimateFloatAndText(x, 1f))
+                .AddTo(this);
 
-            // Player‚ÌŠŽƒLƒ…[ƒu”‚ðŠÄŽ‹
             _models.MaxCubeCount
-                .Subscribe(x =>
-                {
-                    // View‚É”½‰f
-                    _maxCubeCountTextScaleAnimation.AnimateFloatAndText(x, 1f);
-                }).AddTo(this);
+                .Subscribe(x => _maxCubeCountTextScaleAnimation.AnimateFloatAndText(x, 1f))
+                .AddTo(this);
 
-            // Player‚ÌŠŽ‹à‚ðŠÄŽ‹
             _models.Money
-                .Subscribe(x =>
-                {
-                    // View‚É”½‰f
-                    _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f);
-                }).AddTo(this);
+                .Subscribe(x => _moneyTextScaleAnimation.AnimateFloatAndText(x, 1f))
+                .AddTo(this);
+
+            IsInitialized = true;
         }
     }
 }

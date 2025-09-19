@@ -2,92 +2,109 @@ using App.BaseSystem.DataStores.ScriptableObjects.Modules;
 using App.GameSystem.Modules;
 using Assets.IGC2025.Scripts.View;
 using AT.uGUI;
+using Cysharp.Threading.Tasks;
 using Game.Utils;
 using R3;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
-    public class PresenterDropCanvas : MonoBehaviour
+    public sealed class PresenterDropCanvas : MonoBehaviour, IPresenter
     {
-        // ----- SerializedField
+        // -----SerializedField
         [Header("Models")]
-        [SerializeField] private RuntimeModuleManager _runtimeModuleManager; // ランタイムモジュールデータを管理するマネージャー。
-        [SerializeField] private ModuleDataStore _moduleDataStore; // モジュールマスターデータを管理するデータストア。
-        [Header("Views")]
-        [SerializeField] private ViewDropCanvas _dropView; // ドロップUIを表示するViewコンポーネント。
-        [Header("Views_Hovered")]
-        [SerializeField] private TextMeshProUGUI _infoText; // 説明文
-        [SerializeField] private TextMeshProUGUI _level; // 
-        [SerializeField] private TextMeshProUGUI _levelNext; // 
-        [SerializeField] private TextMeshProUGUI _ATK; // 
-        [SerializeField] private TextMeshProUGUI _ATKNext; // 
-        [SerializeField] private TextMeshProUGUI _Price; // 
-        [SerializeField] private TextMeshProUGUI _PriceNext; // 
+        [SerializeField] private RuntimeModuleManager _runtimeModuleManager;
+        [SerializeField] private ModuleDataStore _moduleDataStore;
 
-        // ----- Private Members (内部データ)
-        private const int NUMBER_OF_OPTIONS = 3; // 提示するモジュールの数。
+        [Header("Views")]
+        [SerializeField] private ViewDropCanvas _dropView;
+
+        [Header("Views_Hovered")]
+        [SerializeField] private TextMeshProUGUI _infoText;
+        [SerializeField] private TextMeshProUGUI _level;
+        [SerializeField] private TextMeshProUGUI _levelNext;
+        [SerializeField] private TextMeshProUGUI _ATK;
+        [SerializeField] private TextMeshProUGUI _ATKNext;
+        [SerializeField] private TextMeshProUGUI _Price;
+        [SerializeField] private TextMeshProUGUI _PriceNext;
+
+        // -----Field
+        public bool IsInitialized { get; private set; } = false;
+        private const int NUMBER_OF_OPTIONS = 3;
         private List<int> _candidateModuleIds = new List<int>();
 
         // ----- UnityMessage
-        private void Start()
-        {
-            if (_dropView != null)
-            {
-                _dropView.OnModuleSelected
-                    .Subscribe(x => HandleModuleSelected(x))
-                    .AddTo(this); // R3 の AddTo(CompositeDisposable) を使用。
-                _dropView.OnModuleHovered
-                    .Subscribe(x => HandleModuleHovered(x))
-                    .AddTo(this);
-            }
-        }
+
         private void Awake()
         {
-            // 依存関係が未設定の場合、シーンから取得を試みる
             if (_runtimeModuleManager == null) _runtimeModuleManager = RuntimeModuleManager.Instance;
+        }
 
-            // 必須の依存関係が揃っているかチェック
+        // -----PublicMethod
+        public void Initialize()
+        {
+            if (IsInitialized) return;
+
             if (_runtimeModuleManager == null || _moduleDataStore == null || _dropView == null)
             {
-                Debug.LogError("Drop_Presenter: RuntimeModuleManager, ModuleDataStore, またはDrop_Viewが設定されていません。このコンポーネントを無効にします。", this);
+                Debug.LogError($"{nameof(PresenterDropCanvas)}: 依存が不足しています。", this);
                 enabled = false;
+                return;
             }
+
+            _dropView.OnModuleSelected
+                .Subscribe(HandleModuleSelected)
+                .AddTo(this);
+
+            _dropView.OnModuleHovered
+                .Subscribe(HandleModuleHovered)
+                .AddTo(this);
+
+            IsInitialized = true;
+
         }
+
 
         #region ModelToView
 
         /// <summary>
         /// ドロップ選択UIを表示する準備をし、Viewに表示を依頼します。
         /// </summary>
-        public void PrepareAndShowDropUI()
+        public async void PrepareAndShowDropUI()
         {
             if (_runtimeModuleManager == null || _moduleDataStore == null || _dropView == null)
             {
-                Debug.LogError("依存関係が満たされていません！");
+                Debug.LogError("依存関係が満たされていません！", this);
                 return;
             }
 
-            var gameState = GameManager.Instance.CurrentGameState.CurrentValue;
-            var displayIds = _runtimeModuleManager.GetDisplayModuleIds(NUMBER_OF_OPTIONS, gameState);
-            var candidatePool = _runtimeModuleManager.AllRuntimeModuleData
-                                  .Where(m => m.CurrentLevelValue < 5).ToList();
+            var gm = GameManager.Instance;
+            var gameState = gm != null ? gm.CurrentGameState.CurrentValue : default;
 
-            if (displayIds.Count == 0)
+            var displayIds = _runtimeModuleManager.GetDisplayModuleIds(NUMBER_OF_OPTIONS, gameState);
+            var candidatePool = _runtimeModuleManager.AllRuntimeModuleData?
+                                   .Where(m => m != null && m.CurrentLevelValue < 5).ToList()
+                                   ?? new List<RuntimeModuleData>();
+
+            if (displayIds == null || displayIds.Count == 0)
             {
-                //debug.log("全モジュールが最大レベル。選択肢なし。");
-                var Player = FindFirstObjectByType(typeof(PlayerCore));
-                //Player.GetComponent<PlayerCore>().ReceirveMoney(500); // 500金追加
-                Player.GetComponent<PlayerCore>().ReceiveExp(30); // 30Exp追加
+                var player = FindFirstObjectByType<PlayerCore>();
+                if (player != null) player.ReceiveExp(30);
+                else Debug.LogWarning($"{nameof(PresenterDropCanvas)}: PlayerCore が見つからず、代替報酬を付与できませんでした。", this);
                 return;
             }
 
             _dropView.DisplayModulesByIdOrRandom(displayIds, candidatePool, _moduleDataStore);
-            _dropView.GetComponent<CanvasCtrl>().OnOpenCanvas();
+
+            var canvasCtrl = _dropView.GetComponent<CanvasCtrl>();
+            if (canvasCtrl != null) canvasCtrl.OnOpenCanvas();
+
+            // 開アニメ開始
+            _dropView.PrepareInitialStatesForOpen();
+            await _dropView.PlayOpenAsync();
         }
 
         #endregion
@@ -100,18 +117,18 @@ namespace Assets.IGC2025.Scripts.Presenter
         /// Viewからのイベント（R3で購読）によって呼び出されます。
         /// </summary>
         /// <param name="selectedModuleId">選択されたモジュールのID。</param>
-        private void HandleModuleSelected(int selectedModuleId)
+        private async void HandleModuleSelected(int selectedModuleId)
         {
-            if (selectedModuleId == -1) // 何でもないものを選択した場合
-            {
-            }
-            else
-            {
-                // RuntimeModuleManager を介してモジュールのレベルアップ処理を実行
-                _runtimeModuleManager.LevelUpModule(selectedModuleId);
-            }
+            if (_dropView == null) return;
 
-            _dropView.gameObject.GetComponent<CanvasCtrl>().OnCloseCanvas();
+            if (selectedModuleId != -1 && _runtimeModuleManager != null)
+                _runtimeModuleManager.LevelUpModule(selectedModuleId);
+
+            // ★ 追加：閉アニメ → 閉じる
+            await _dropView.PlayCloseAsync();
+
+            var canvasCtrl = _dropView.gameObject.GetComponent<CanvasCtrl>();
+            if (canvasCtrl != null) canvasCtrl.OnCloseCanvas(); // 既存の閉処理:contentReference[oaicite:7]{index=7}
         }
 
         /// <summary>
@@ -119,28 +136,25 @@ namespace Assets.IGC2025.Scripts.Presenter
         /// 説明文を更新します。
         /// </summary>
         /// <param name="EnterModuleId"></param>
-        private void HandleModuleHovered(int EnterModuleId)
+        private void HandleModuleHovered(int enterModuleId)
         {
-            var module = _moduleDataStore.FindWithId(EnterModuleId);
-            var Rruntime = RuntimeModuleManager.Instance.GetRuntimeModuleData(EnterModuleId);
+            if (_moduleDataStore == null || _runtimeModuleManager == null) return;
 
-            var Level = Rruntime.CurrentLevelValue;
-            var ATK = module?.ModuleState?.Attack ?? 0;
-            var Price = module.BasePrice;
+            var module = _moduleDataStore.FindWithId(enterModuleId);
+            var runtime = _runtimeModuleManager.GetRuntimeModuleData(enterModuleId);
+            if (module == null || runtime == null) return;
 
-            //_unitName.text = module.ViewName;
-            _infoText.text = module.Description;
-            _level.text = $"{Level}";
-            _levelNext.text = $"{Level + 1}";
-            _ATK.text = $"{StateValueCalculator.CalcStateValue(ATK, Level, 5, 0.5f).ToString("F1")}";
-            _ATKNext.text = $"{StateValueCalculator.CalcStateValue(ATK, Level + 1, 5, 0.5f).ToString("F1")}";
-            _Price.text = $"{StateValueCalculator.CalcStateValue(Price, Level, 5, 0.5f).ToString("F1")}";
-            _PriceNext.text = $"{StateValueCalculator.CalcStateValue(Price, Level + 1, 5, 0.5f).ToString("F1")}";
-            //_image.sprite = module.MainSprite;
-            //_icon.sprite = module.BlockSprite;
-            //_atk.text = $"{module.ModuleState?.Attack ?? 0}";
-            //_rpd.text = $"{module.ModuleState?.Interval ?? 0}";
-            //_prc.text = $"{module.BasePrice}";
+            int level = runtime.CurrentLevelValue;
+            float atkBase = module.ModuleState?.Attack ?? 0f;
+            float priceBase = module.BasePrice;
+
+            if (_infoText != null) _infoText.text = module.Description;
+            if (_level != null) _level.text = $"{level}";
+            if (_levelNext != null) _levelNext.text = $"{level + 1}";
+            if (_ATK != null) _ATK.text = $"{StateValueCalculator.CalcStateValue(atkBase, level, 5, 0.5f):F1}";
+            if (_ATKNext != null) _ATKNext.text = $"{StateValueCalculator.CalcStateValue(atkBase, level + 1, 5, 0.5f):F1}";
+            if (_Price != null) _Price.text = $"{StateValueCalculator.CalcStateValue(priceBase, level, 5, 0.5f):F1}";
+            if (_PriceNext != null) _PriceNext.text = $"{StateValueCalculator.CalcStateValue(priceBase, level + 1, 5, 0.5f):F1}";
         }
 
 

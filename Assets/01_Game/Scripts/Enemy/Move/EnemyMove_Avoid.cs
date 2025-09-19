@@ -8,7 +8,7 @@ using UnityEngine;
 public class EnemyMove_Avoid : EnemyMoveBase
 {
     // ---------------------------- SerializeField
-    [SerializeField, Tooltip("対象検知用")] private SphereCollider _sphereCollider;
+    [SerializeField, Tooltip("追いかける距離")] private float _minDistance;
     [SerializeField, Tooltip("回避距離")] private float _avoidanceDistance;
     [SerializeField, Tooltip("回避間隔")] private float _interval;
 
@@ -62,6 +62,10 @@ public class EnemyMove_Avoid : EnemyMoveBase
     /// </summary>
     public override void Move()
     {
-        LinearMovement();
+        if (Vector3.Distance(_targetObj.transform.position, transform.position) >= _minDistance)
+        {
+            // 回避付き移動を使う
+            LinearMovementWithAvoidance();
+        }
     }
 }

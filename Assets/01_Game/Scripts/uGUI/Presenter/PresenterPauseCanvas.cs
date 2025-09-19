@@ -1,63 +1,77 @@
-// AT
-// ポーズ画面での処理を実行する。
-
 using Assets.IGC2025.Scripts.GameManagers;
+using Assets.IGC2025.Scripts.View;
 using AT.uGUI;
+using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.IGC2025.Scripts.Presenter
 {
-    public class PresenterPauseCanvas : MonoBehaviour
+    public class PresenterPauseCanvas : MonoBehaviour, IPresenter
     {
-        // -----
-        // -----SerializeField
         [Header("Models")]
         [SerializeField] private GameManager gameManager;
 
         [Header("Views")]
         [SerializeField] private Canvas canvas;
+        [SerializeField] private ViewPauseCanvas pauseView;
 
-        // -----UnityMessage
+        public bool IsInitialized { get; private set; } = false;
+
+        private CanvasCtrl _canvasCtrl;
+
         private void Start()
         {
-            if (!Initialize()) enabled = false;
+            if (canvas != null) canvas.enabled = false; // 初期は閉
         }
 
-        // -----private
-        private bool Initialize()
+        public void Initialize()
         {
-            // 参照確認
-            if (gameManager == null)
+            if (IsInitialized) return;
+
+            if (gameManager == null) gameManager = GameManager.Instance;
+
+            if (gameManager == null || canvas == null || pauseView == null)
             {
-                Debug.LogWarning($"PresenterPauseCanvas: 参照切れのため代入");
-                gameManager = GameManager.Instance;
+                Debug.LogWarning($"{nameof(PresenterPauseCanvas)}: 依存が不足のため初期化を中止します。", this);
+                return;
             }
 
-            // 依存チェック
-            if (gameManager == null || canvas == null)
+            _canvasCtrl = canvas.GetComponent<CanvasCtrl>();
+            if (_canvasCtrl == null)
             {
-                Debug.LogWarning($"PresenterPauseCanvas: 依存が不足のため処理中止");
-                return false;
+                Debug.LogWarning($"{nameof(PresenterPauseCanvas)}: CanvasCtrl が見つかりません。", this);
+                return;
             }
 
-            var canvasCtrl = canvas.GetComponent<CanvasCtrl>();
-
+            // GameState 変化に合わせて Pause を開閉
             gameManager.CurrentGameState
                 .Skip(1)
-                .Subscribe(
-                x =>
+                .Subscribe(state =>
                 {
-                    if (x == GameState.PAUSE)
-                        canvasCtrl.OnOpenCanvas();
+                    if (state == GameState.PAUSE)
+                    {
+                        // 開く：Canvas を開→View 準備→Open アニメ
+                        _canvasCtrl.OnOpenCanvas();
+                        pauseView.PrepareInitialStatesForOpen();
+                        UniTask.Void(async () =>
+                        {
+                            await pauseView.PlayOpenAsync();
+                        });
+                    }
                     else
-                        canvasCtrl.OnCloseCanvas();
+                    {
+                        // 閉じる：View Close アニメ→Canvas を閉
+                        UniTask.Void(async () =>
+                        {
+                            await pauseView.PlayCloseAsync();
+                            _canvasCtrl.OnCloseCanvas();
+                        });
+                    }
                 })
                 .AddTo(this);
 
-            return true;
+            IsInitialized = true;
         }
-
     }
 }

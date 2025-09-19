@@ -58,15 +58,12 @@ public class BubbleToggleAnimator : MonoBehaviour
 
         await bubbleRect.DOAnchorPos(targetPos, moveDuration)
             .SetEase(Ease.InOutQuad)
-            .SetUpdate(true) // Å© Ç±ÇÍÇ™èdóvÅI
-            .WithCancellation(cancelTokenSource.Token);
+            .SetUpdate(true)
+            .ToUniTask(cancellationToken: cancelTokenSource.Token);
+
 
         UpdateButtonVisual();
     }
-
-
-
-
 
     private void UpdateButtonVisual()
     {

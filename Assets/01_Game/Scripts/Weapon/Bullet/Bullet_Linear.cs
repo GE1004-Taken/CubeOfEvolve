@@ -15,9 +15,6 @@ public class Bullet_Linear : BulletBase
     // ---------------------------- UnityMessage
     private void Start()
     {
-        // ©‘RÁ–ÅŠÔ
-        Destroy(gameObject, _destroySecond);
-
         // ˆÚ“®
         this.UpdateAsObservable()
             .Subscribe(_ =>
@@ -26,6 +23,9 @@ public class Bullet_Linear : BulletBase
                 {
                     return;
                 }
+
+                // ©‘RÁ–Åˆ—
+                DestroySecondCount();
 
                 if (_direction != Vector3.zero)
                 {

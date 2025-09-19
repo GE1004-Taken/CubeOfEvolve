@@ -16,103 +16,100 @@ namespace Assets.AT
         // -----Singleton
         public static CameraCtrlManager Instance { get; private set; }
 
-        // -----’è”
-        private const int BASE_PRIORITY = 10; // ƒJƒƒ‰‚ÌŠî–{ƒvƒ‰ƒCƒIƒŠƒeƒB
-        private const int ACTIVE_CAMERA_PRIORITY_OFFSET = 100; // ƒAƒNƒeƒBƒuƒJƒƒ‰‚É‰ÁZ‚·‚éƒvƒ‰ƒCƒIƒŠƒeƒB
+        // -----å®šæ•°
+        private const int BASE_PRIORITY = 10; // ã‚«ãƒ¡ãƒ©ã®åŸºæœ¬ãƒ—ãƒ©ã‚¤ã‚ªãƒªãƒ†ã‚£
+        private const int ACTIVE_CAMERA_PRIORITY_OFFSET = 100; // ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚«ãƒ¡ãƒ©ã«åŠ ç®—ã™ã‚‹ãƒ—ãƒ©ã‚¤ã‚ªãƒªãƒ†ã‚£
 
         // -----Inspector
         [System.Serializable]
         private class CameraEntry
         {
             public string key;
-            public CinemachineCamera Camera; // Unity.Cinemachine‚Å‚Í‚È‚­CinemachineCamera
+            public CinemachineCamera Camera; // Unity.Cinemachineã§ã¯ãªãCinemachineCamera
 
             public CameraEntry(CinemachineCamera cam)
             {
-                key = cam.name; // ƒJƒƒ‰‚ÌGameObject–¼‚ğƒL[‚Æ‚·‚é
+                key = cam.name; // ã‚«ãƒ¡ãƒ©ã®GameObjectåã‚’ã‚­ãƒ¼ã¨ã™ã‚‹
                 this.Camera = cam;
             }
         }
 
-        // --- SerializeField
-        [SerializeField] private List<CameraEntry> _cameraEntries = new List<CameraEntry>(); // ƒJƒƒ‰ƒGƒ“ƒgƒŠ‚ÌƒŠƒXƒg
+        // -----SerializeField
+        [SerializeField] private List<CameraEntry> _cameraEntries = new List<CameraEntry>(); // ã‚«ãƒ¡ãƒ©ã‚¨ãƒ³ãƒˆãƒªã®ãƒªã‚¹ãƒˆ
 
-        [Header("‰Šúİ’è")]
-        [SerializeField] private string _initialActiveCameraKey = ""; // ‰Šú•\¦‚·‚éƒJƒƒ‰‚ÌƒL[
+        [Header("åˆæœŸè¨­å®š")]
+        [SerializeField] private string _initialActiveCameraKey = ""; // åˆæœŸè¡¨ç¤ºã™ã‚‹ã‚«ãƒ¡ãƒ©ã®ã‚­ãƒ¼
 
-        // --- Field
+        // -----Field
         private CinemachineBrain _cinemachineBrain;
-        private float _cameraBlendTime; // CinemachineBrain‚©‚çæ“¾‚µ‚½ƒuƒŒƒ“ƒhŠÔ
-        private string _currentActiveCameraKey = null; // Œ»İƒAƒNƒeƒBƒu‚ÈƒJƒƒ‰‚ÌƒL[
+        private float _cameraBlendTime; // CinemachineBrainã‹ã‚‰å–å¾—ã—ãŸãƒ–ãƒ¬ãƒ³ãƒ‰æ™‚é–“
+        private string _currentActiveCameraKey = null; // ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚«ãƒ¡ãƒ©ã®ã‚­ãƒ¼
 
 
 
-        // ƒJƒƒ‰Ø‚è‘Ö‚¦‚Ì‘Ò‹@ŠÔiƒuƒŒƒ“ƒhŠÔj‚ğŠO•”‚©‚çæ“¾‚·‚é‚½‚ß‚ÌƒvƒƒpƒeƒB
+        // ã‚«ãƒ¡ãƒ©åˆ‡ã‚Šæ›¿ãˆã®å¾…æ©Ÿæ™‚é–“ï¼ˆãƒ–ãƒ¬ãƒ³ãƒ‰æ™‚é–“ï¼‰ã‚’å¤–éƒ¨ã‹ã‚‰å–å¾—ã™ã‚‹ãŸã‚ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
         public float CameraBlendTime => _cameraBlendTime;
 
-        // --- UnityMessage
+        // -----UnityMessage
         private void Awake()
         {
-            // Singleton‚ÌƒCƒ“ƒXƒ^ƒ“ƒXİ’è
+            // Singletonã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®š
             if (Instance != null && Instance != this)
             {
-                Debug.LogWarning("CameraCtrl: Šù‚É•Ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ª‘¶İ‚µ‚Ü‚·B‚±‚ÌƒIƒuƒWƒFƒNƒg‚Í”jŠü‚³‚ê‚Ü‚·B", this);
+                Debug.LogWarning("CameraCtrl: æ—¢ã«åˆ¥ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒå­˜åœ¨ã—ã¾ã™ã€‚ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯ç ´æ£„ã•ã‚Œã¾ã™ã€‚", this);
                 Destroy(gameObject);
                 return;
             }
             Instance = this;
 
-            // CinemachineBrain‚Ìæ“¾‚ÆƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
+            // CinemachineBrainã®å–å¾—ã¨ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
             _cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
             if (_cinemachineBrain == null)
             {
-                Debug.LogError("ƒƒCƒ“ƒJƒƒ‰‚ÉCinemachineBrain‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBƒJƒƒ‰§Œä‚ª³‚µ‚­‹@”\‚µ‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·B", this);
+                Debug.LogError("ãƒ¡ã‚¤ãƒ³ã‚«ãƒ¡ãƒ©ã«CinemachineBrainãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚ã‚«ãƒ¡ãƒ©åˆ¶å¾¡ãŒæ­£ã—ãæ©Ÿèƒ½ã—ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚", this);
                 return;
             }
 
-            // CinemachineBrain‚©‚çƒuƒŒƒ“ƒhŠÔ‚ğæ“¾
+            // CinemachineBrainã‹ã‚‰ãƒ–ãƒ¬ãƒ³ãƒ‰æ™‚é–“ã‚’å–å¾—
             _cameraBlendTime = _cinemachineBrain.DefaultBlend.BlendTime;
 
-            // Optional: Inspector‚Åİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡AƒGƒfƒBƒ^‚Å©“®“I‚ÉSetup‚ğ‘–‚ç‚¹‚é
+            // Optional: Inspectorã§è¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã€ã‚¨ãƒ‡ã‚£ã‚¿ã§è‡ªå‹•çš„ã«Setupã‚’èµ°ã‚‰ã›ã‚‹
             if (_cameraEntries == null || _cameraEntries.Count == 0)
             {
                 SetupCameras();
             }
             else
             {
-                // ƒ‰ƒ“ƒ^ƒCƒ€ƒ`ƒFƒbƒNFnull‚É‚È‚Á‚Ä‚¢‚éƒGƒ“ƒgƒŠ‚ğƒtƒBƒ‹ƒ^ƒŠƒ“ƒO
+                // ãƒ©ãƒ³ã‚¿ã‚¤ãƒ ãƒã‚§ãƒƒã‚¯ï¼šnullã«ãªã£ã¦ã„ã‚‹ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°
                 _cameraEntries = _cameraEntries.Where(entry => entry.Camera != null).ToList();
             }
         }
-
         private void Start()
         {
             InitializeCameras();
         }
-
-        // ƒV[ƒ“‚ªƒAƒ“ƒ[ƒh‚³‚ê‚éÛ‚ÉŒÄ‚Ño‚³‚ê‚é
         private void OnDestroy()
         {
-            // ‚à‚µ”jŠü‚³‚ê‚éƒCƒ“ƒXƒ^ƒ“ƒX‚ªŒ»İ‚ÌƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚ ‚ê‚ÎAnull‚Éİ’è‚µ‚ÄQÆ‚ğ‰ğ•ú‚·‚é
+            // ã‚‚ã—ç ´æ£„ã•ã‚Œã‚‹ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒç¾åœ¨ã®ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã‚ã‚Œã°ã€nullã«è¨­å®šã—ã¦å‚ç…§ã‚’è§£æ”¾ã™ã‚‹
             if (Instance == this)
             {
                 Instance = null;
-                Debug.Log("CameraCtrl: Instance‚ÌQÆ‚ğ”jŠü‚µ‚Ü‚·");
+                //Debug.Log("CameraCtrl: Instanceã®å‚ç…§ã‚’ç ´æ£„ã—ã¾ã™");
             }
         }
 
-        // --- Private Methods
+        // -----PrivateMethod
 
         /// <summary>
-        /// ƒV[ƒ“ã‚ÌCinemachineCameraƒRƒ“ƒ|[ƒlƒ“ƒg‚ğŒŸo‚µAŠÇ—ƒŠƒXƒg‚É“o˜^‚µ‚Ü‚·B
-        /// Šù‘¶‚ÌƒŠƒXƒgƒGƒ“ƒgƒŠ‚ğXV‚µA–³Œø‚ÈQÆ‚ğíœ‚µ‚Ü‚·B
-        /// å‚ÉƒGƒfƒBƒ^‚ÌuSetup Camerasvƒ{ƒ^ƒ“‚©‚çŒÄ‚Ño‚³‚ê‚Ü‚·B
+        /// ã‚·ãƒ¼ãƒ³ä¸Šã®CinemachineCameraã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’æ¤œå‡ºã—ã€ç®¡ç†ãƒªã‚¹ãƒˆã«ç™»éŒ²ã—ã¾ã™ã€‚
+        /// æ—¢å­˜ã®ãƒªã‚¹ãƒˆã‚¨ãƒ³ãƒˆãƒªã‚’æ›´æ–°ã—ã€ç„¡åŠ¹ãªå‚ç…§ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
+        /// ä¸»ã«ã‚¨ãƒ‡ã‚£ã‚¿ã®ã€ŒSetup Camerasã€ãƒœã‚¿ãƒ³ã‹ã‚‰å‘¼ã³å‡ºã•ã‚Œã¾ã™ã€‚
         /// </summary>
         private void SetupCameras()
         {
-            // CinemachineCamera ‚ğæ“¾
-            // Unity.Cinemachine.CinemachineCamera ‚Í CinemachineCamera ‚ÌŠî’êƒNƒ‰ƒX‚¾‚ªA
-            // ‚æ‚è‹ï‘Ì“I‚È CinemachineCamera ‚ğ’¼Úˆµ‚¤•û‚ªˆê”Ê“I
+            // CinemachineCamera ã‚’å–å¾—
+            // Unity.Cinemachine.CinemachineCamera ã¯ CinemachineCamera ã®åŸºåº•ã‚¯ãƒ©ã‚¹ã ãŒã€
+            // ã‚ˆã‚Šå…·ä½“çš„ãª CinemachineCamera ã‚’ç›´æ¥æ‰±ã†æ–¹ãŒä¸€èˆ¬çš„
             CinemachineCamera[] sceneVirtualCameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
 
             if (_cameraEntries == null)
@@ -120,97 +117,97 @@ namespace Assets.AT
                 _cameraEntries = new List<CameraEntry>();
             }
 
-            // V‚µ‚¢VirtualCamera‚ğ’Ç‰Á
+            // æ–°ã—ã„VirtualCameraã‚’è¿½åŠ 
             foreach (CinemachineCamera cam in sceneVirtualCameras)
             {
-                // Šù‚ÉƒŠƒXƒg‚É‘¶İ‚µ‚È‚¢VirtualCamera‚Ì‚İ‚ğ’Ç‰Á
+                // æ—¢ã«ãƒªã‚¹ãƒˆã«å­˜åœ¨ã—ãªã„VirtualCameraã®ã¿ã‚’è¿½åŠ 
                 if (_cameraEntries.FindIndex(x => x.Camera == cam) < 0)
                 {
                     _cameraEntries.Add(new CameraEntry(cam));
                 }
             }
 
-            // ƒV[ƒ“‚©‚ç–³‚­‚È‚Á‚Ä‚¢‚½VirtualCamera‚ğƒŠƒXƒg‚©‚çíœ
+            // ã‚·ãƒ¼ãƒ³ã‹ã‚‰ç„¡ããªã£ã¦ã„ãŸVirtualCameraã‚’ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤
             for (int i = _cameraEntries.Count - 1; i >= 0; i--)
             {
                 if (_cameraEntries[i].Camera == null)
                 {
                     _cameraEntries.RemoveAt(i);
                 }
-                // ƒL[‚ğƒIƒuƒWƒFƒNƒg–¼‚ÉXV‚·‚éi–¼‘O•ÏX‚É‘Î‰‚·‚é‚½‚ßj
+                // ã‚­ãƒ¼ã‚’ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã«æ›´æ–°ã™ã‚‹ï¼ˆåå‰å¤‰æ›´ã«å¯¾å¿œã™ã‚‹ãŸã‚ï¼‰
                 else
                 {
                     _cameraEntries[i].key = _cameraEntries[i].Camera.name;
                 }
             }
 
-            // ƒL[‚É‚æ‚éƒAƒNƒZƒX‚ğ—eˆÕ‚É‚·‚é‚½‚ßAƒL[‚Åƒ\[ƒg‚·‚éi”CˆÓj
+            // ã‚­ãƒ¼ã«ã‚ˆã‚‹ã‚¢ã‚¯ã‚»ã‚¹ã‚’å®¹æ˜“ã«ã™ã‚‹ãŸã‚ã€ã‚­ãƒ¼ã§ã‚½ãƒ¼ãƒˆã™ã‚‹ï¼ˆä»»æ„ï¼‰
             _cameraEntries = _cameraEntries.OrderBy(entry => entry.key).ToList();
 
-            Debug.Log($"CameraCtrl: SetupŠ®—¹BŠÇ—‘ÎÛ‚ÌCinemachineCamera”: {_cameraEntries.Count}");
+            Debug.Log($"CameraCtrl: Setupå®Œäº†ã€‚ç®¡ç†å¯¾è±¡ã®CinemachineCameraæ•°: {_cameraEntries.Count}");
 #if UNITY_EDITOR
-            EditorUtility.SetDirty(this); // ƒGƒfƒBƒ^ã‚Å•ÏX‚ğ•Û‘¶
+            EditorUtility.SetDirty(this); // ã‚¨ãƒ‡ã‚£ã‚¿ä¸Šã§å¤‰æ›´ã‚’ä¿å­˜
 #endif
         }
 
         /// <summary>
-        /// ƒJƒƒ‰‚Ì‰Šúİ’è‚ğs‚¢‚Ü‚·B
-        /// Še‰¼‘zƒJƒƒ‰‚Ìƒvƒ‰ƒCƒIƒŠƒeƒB‚ğİ’è‚µA‰ŠúƒJƒƒ‰‚ğƒAƒNƒeƒBƒu‚É‚µ‚Ü‚·B
+        /// ã‚«ãƒ¡ãƒ©ã®åˆæœŸè¨­å®šã‚’è¡Œã„ã¾ã™ã€‚
+        /// å„ä»®æƒ³ã‚«ãƒ¡ãƒ©ã®ãƒ—ãƒ©ã‚¤ã‚ªãƒªãƒ†ã‚£ã‚’è¨­å®šã—ã€åˆæœŸã‚«ãƒ¡ãƒ©ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã—ã¾ã™ã€‚
         /// </summary>
         private void InitializeCameras()
         {
-            // ‰¼‘zƒJƒƒ‰ƒŠƒXƒg‚ÌƒoƒŠƒf[ƒVƒ‡ƒ“
+            // ä»®æƒ³ã‚«ãƒ¡ãƒ©ãƒªã‚¹ãƒˆã®ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³
             if (_cameraEntries == null || _cameraEntries.Count == 0)
             {
-                Debug.LogWarning("‰¼‘zƒJƒƒ‰‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñBCameraCtrl‚Í‹@”\‚µ‚Ü‚¹‚ñB", this);
+                Debug.LogWarning("ä»®æƒ³ã‚«ãƒ¡ãƒ©ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚CameraCtrlã¯æ©Ÿèƒ½ã—ã¾ã›ã‚“ã€‚", this);
                 return;
             }
 
-            // ‘S‚Ä‚ÌƒJƒƒ‰‚ğ”ñƒAƒNƒeƒBƒu‚Èó‘Ôi’á‚¢ƒvƒ‰ƒCƒIƒŠƒeƒBj‚É‚·‚é
+            // å…¨ã¦ã®ã‚«ãƒ¡ãƒ©ã‚’éã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªçŠ¶æ…‹ï¼ˆä½ã„ãƒ—ãƒ©ã‚¤ã‚ªãƒªãƒ†ã‚£ï¼‰ã«ã™ã‚‹
             foreach (var entry in _cameraEntries)
             {
                 if (entry.Camera != null)
                 {
-                    // ŠeƒJƒƒ‰‚ÌŠî–{ƒvƒ‰ƒCƒIƒŠƒeƒB‚ğİ’èBŒã‚©‚ç•ÏX‚Å‚«‚é‚æ‚¤BASE_PRIORITY‚ÉƒIƒtƒZƒbƒg‚ğ‰ÁZ‚µ‚È‚¢
+                    // å„ã‚«ãƒ¡ãƒ©ã®åŸºæœ¬ãƒ—ãƒ©ã‚¤ã‚ªãƒªãƒ†ã‚£ã‚’è¨­å®šã€‚å¾Œã‹ã‚‰å¤‰æ›´ã§ãã‚‹ã‚ˆã†BASE_PRIORITYã«ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’åŠ ç®—ã—ãªã„
                     entry.Camera.Priority = BASE_PRIORITY;
                 }
                 else
                 {
-                    Debug.LogWarning($"_cameraEntriesƒŠƒXƒg‚Énull‚Ì—v‘f‚ª‚ ‚è‚Ü‚·B", this);
+                    Debug.LogWarning($"_cameraEntriesãƒªã‚¹ãƒˆã«nullã®è¦ç´ ãŒã‚ã‚Šã¾ã™ã€‚", this);
                 }
             }
 
-            // ‰ŠúƒJƒƒ‰‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+            // åˆæœŸã‚«ãƒ¡ãƒ©ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
             if (!string.IsNullOrEmpty(_initialActiveCameraKey))
             {
                 SetActiveCamera(_initialActiveCameraKey);
             }
             else
             {
-                Debug.LogWarning("‰ŠúƒAƒNƒeƒBƒuƒJƒƒ‰‚ÌƒL[‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñBÅ‰‚ÌƒJƒƒ‰‚ğƒfƒtƒHƒ‹ƒg‚ÅƒAƒNƒeƒBƒu‚É‚µ‚Ü‚·B", this);
-                // ƒL[‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚ÍAƒŠƒXƒg‚ÌÅ‰‚Ì—LŒø‚ÈƒJƒƒ‰‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+                Debug.LogWarning("åˆæœŸã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚«ãƒ¡ãƒ©ã®ã‚­ãƒ¼ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚æœ€åˆã®ã‚«ãƒ¡ãƒ©ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã—ã¾ã™ã€‚", this);
+                // ã‚­ãƒ¼ãŒè¨­å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã€ãƒªã‚¹ãƒˆã®æœ€åˆã®æœ‰åŠ¹ãªã‚«ãƒ¡ãƒ©ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
                 if (_cameraEntries.Count > 0 && _cameraEntries[0].Camera != null)
                 {
                     SetActiveCamera(_cameraEntries[0].key);
                 }
                 else
                 {
-                    Debug.LogError("ƒAƒNƒeƒBƒu‚É‚Å‚«‚éƒJƒƒ‰‚ª‚ ‚è‚Ü‚¹‚ñB", this);
+                    Debug.LogError("ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã§ãã‚‹ã‚«ãƒ¡ãƒ©ãŒã‚ã‚Šã¾ã›ã‚“ã€‚", this);
                 }
             }
         }
 
         /// <summary>
-        /// w’è‚³‚ê‚½ƒL[‚ÌƒJƒƒ‰‚ğƒAƒNƒeƒBƒu‚É‚µA_currentActiveCameraKey‚ğXV‚µ‚Ü‚·B
+        /// æŒ‡å®šã•ã‚ŒãŸã‚­ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã—ã€_currentActiveCameraKeyã‚’æ›´æ–°ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="key">ƒAƒNƒeƒBƒu‚É‚·‚éƒJƒƒ‰‚ÌƒL[B</param>
+        /// <param name="key">ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹ã‚«ãƒ¡ãƒ©ã®ã‚­ãƒ¼ã€‚</param>
         private void SetActiveCamera(string key)
         {
             CinemachineCamera targetCam = GetCamera(key);
 
             if (targetCam != null)
             {
-                // Œ»İƒAƒNƒeƒBƒu‚ÈƒJƒƒ‰‚ª‚ ‚ê‚Îƒvƒ‰ƒCƒIƒŠƒeƒB‚ğŒ³‚É–ß‚·
+                // ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚«ãƒ¡ãƒ©ãŒã‚ã‚Œã°ãƒ—ãƒ©ã‚¤ã‚ªãƒªãƒ†ã‚£ã‚’å…ƒã«æˆ»ã™
                 if (!string.IsNullOrEmpty(_currentActiveCameraKey))
                 {
                     CinemachineCamera prevCam = GetCamera(_currentActiveCameraKey);
@@ -220,49 +217,49 @@ namespace Assets.AT
                     }
                 }
 
-                // V‚µ‚¢ƒJƒƒ‰‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+                // æ–°ã—ã„ã‚«ãƒ¡ãƒ©ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
                 targetCam.Priority = BASE_PRIORITY + ACTIVE_CAMERA_PRIORITY_OFFSET;
                 _currentActiveCameraKey = key;
-                Debug.Log($"ƒJƒƒ‰ '{key}' ‚ªƒAƒNƒeƒBƒu‚É‚È‚è‚Ü‚µ‚½B");
+                //Debug.Log($"ã‚«ãƒ¡ãƒ© '{key}' ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ãªã‚Šã¾ã—ãŸã€‚");
             }
             else
             {
-                Debug.LogError($"–³Œø‚ÈƒJƒƒ‰ƒL[‚ªw’è‚³‚ê‚Ü‚µ‚½: '{key}'B‚Ü‚½‚ÍƒJƒƒ‰‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB", this);
+                Debug.LogError($"ç„¡åŠ¹ãªã‚«ãƒ¡ãƒ©ã‚­ãƒ¼ãŒæŒ‡å®šã•ã‚Œã¾ã—ãŸ: '{key}'ã€‚ã¾ãŸã¯ã‚«ãƒ¡ãƒ©ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚", this);
             }
         }
 
-        // --- Public Methods
+        // -----PublicMethod
 
         /// <summary>
-        /// ƒL[‚ÉŠî‚Ã‚¢‚ÄCinemachineCamera‚ğæ“¾‚µ‚Ü‚·B
+        /// ã‚­ãƒ¼ã«åŸºã¥ã„ã¦CinemachineCameraã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="key">æ“¾‚·‚éCinemachineCamera‚ÌƒL[B</param>
-        /// <returns>‘Î‰‚·‚éCinemachineCameraƒCƒ“ƒXƒ^ƒ“ƒXA‚Ü‚½‚ÍŒ©‚Â‚©‚ç‚È‚¢ê‡‚ÍnullB</returns>
+        /// <param name="key">å–å¾—ã™ã‚‹CinemachineCameraã®ã‚­ãƒ¼ã€‚</param>
+        /// <returns>å¯¾å¿œã™ã‚‹CinemachineCameraã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã€ã¾ãŸã¯è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯nullã€‚</returns>
         public CinemachineCamera GetCamera(string key)
         {
             if (_cameraEntries == null)
             {
-                Debug.LogError("CameraCtrl: _cameraEntries‚ªnull‚Å‚·BSetupCameras‚ªÀs‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ‚©H", this);
+                Debug.LogError("CameraCtrl: _cameraEntriesãŒnullã§ã™ã€‚SetupCamerasãŒå®Ÿè¡Œã•ã‚Œã¦ã„ã¾ã›ã‚“ã‹ï¼Ÿ", this);
                 return null;
             }
 
             CameraEntry entry = _cameraEntries.Find(x => x.key == key);
             if (entry == null || entry.Camera == null)
             {
-                Debug.LogWarning($"CameraCtrl: ƒL[ '{key}' ‚É‘Î‰‚·‚éCinemachineCamera‚ªŒ©‚Â‚©‚ç‚È‚¢‚©AQÆ‚ªØ‚ê‚Ä‚¢‚Ü‚·B", this);
+                Debug.LogWarning($"CameraCtrl: ã‚­ãƒ¼ '{key}' ã«å¯¾å¿œã™ã‚‹CinemachineCameraãŒè¦‹ã¤ã‹ã‚‰ãªã„ã‹ã€å‚ç…§ãŒåˆ‡ã‚Œã¦ã„ã¾ã™ã€‚", this);
                 return null;
             }
             return entry.Camera;
         }
 
         /// <summary>
-        /// w’è‚³‚ê‚½ƒL[‚ÌƒJƒƒ‰‚ÉØ‚è‘Ö‚¦‚Ü‚·B
-        /// R3 (UniRx.Async) ‚ğg—p‚µ‚ÄAƒJƒƒ‰Ø‚è‘Ö‚¦‚Æ‘Ò‹@‚ğ”ñ“¯Šú‚Éˆ—‚µ‚Ü‚·B
+        /// æŒ‡å®šã•ã‚ŒãŸã‚­ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã«åˆ‡ã‚Šæ›¿ãˆã¾ã™ã€‚
+        /// R3 (UniRx.Async) ã‚’ä½¿ç”¨ã—ã¦ã€ã‚«ãƒ¡ãƒ©åˆ‡ã‚Šæ›¿ãˆã¨å¾…æ©Ÿã‚’éåŒæœŸã«å‡¦ç†ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="targetCameraKey">Ø‚è‘Ö‚¦‘ÎÛ‚ÌƒJƒƒ‰ƒL[B</param>
+        /// <param name="targetCameraKey">åˆ‡ã‚Šæ›¿ãˆå¯¾è±¡ã®ã‚«ãƒ¡ãƒ©ã‚­ãƒ¼ã€‚</param>
         public void ChangeCamera(string targetCameraKey)
         {
-            // –³Œø‚ÈƒL[‚Ü‚½‚ÍŒ»İ‚ÌƒJƒƒ‰‚Æ“¯‚¶ê‡‚Í‰½‚à‚µ‚È‚¢
+            // ç„¡åŠ¹ãªã‚­ãƒ¼ã¾ãŸã¯ç¾åœ¨ã®ã‚«ãƒ¡ãƒ©ã¨åŒã˜å ´åˆã¯ä½•ã‚‚ã—ãªã„
             if (targetCameraKey == _currentActiveCameraKey || string.IsNullOrEmpty(targetCameraKey))
             {
                 return;
@@ -271,25 +268,25 @@ namespace Assets.AT
             CinemachineCamera targetCam = GetCamera(targetCameraKey);
             if (targetCam == null)
             {
-                Debug.LogWarning($"CameraCtrl: Ø‚è‘Ö‚¦‘ÎÛ‚ÌƒJƒƒ‰ '{targetCameraKey}' ‚ªŒ©‚Â‚©‚ç‚È‚¢‚½‚ßAØ‚è‘Ö‚¦‚ğ’†~‚µ‚Ü‚·B", this);
+                Debug.LogWarning($"CameraCtrl: åˆ‡ã‚Šæ›¿ãˆå¯¾è±¡ã®ã‚«ãƒ¡ãƒ© '{targetCameraKey}' ãŒè¦‹ã¤ã‹ã‚‰ãªã„ãŸã‚ã€åˆ‡ã‚Šæ›¿ãˆã‚’ä¸­æ­¢ã—ã¾ã™ã€‚", this);
                 return;
             }
 
-            // V‚µ‚¢ƒJƒƒ‰‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+            // æ–°ã—ã„ã‚«ãƒ¡ãƒ©ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«ã™ã‚‹
             SetActiveCamera(targetCameraKey);
 
-            // ƒJƒƒ‰‚ÌƒuƒŒƒ“ƒhŠÔ‚¾‚¯‘Ò‹@
+            // ã‚«ãƒ¡ãƒ©ã®ãƒ–ãƒ¬ãƒ³ãƒ‰æ™‚é–“ã ã‘å¾…æ©Ÿ
             Observable.Timer(System.TimeSpan.FromSeconds(_cameraBlendTime))
                 .Subscribe(_ =>
                 {
-                    // ƒJƒƒ‰Ø‚è‘Ö‚¦Š®—¹Œã‚Ìˆ—‚ª•K—v‚Å‚ ‚ê‚Î‚±‚±‚É‹Lq
-                    // —á: Debug.Log($"ƒJƒƒ‰‚ªƒL[: '{targetCameraKey}' ‚ÉØ‚è‘Ö‚í‚è‚Ü‚µ‚½B");
+                    // ã‚«ãƒ¡ãƒ©åˆ‡ã‚Šæ›¿ãˆå®Œäº†å¾Œã®å‡¦ç†ãŒå¿…è¦ã§ã‚ã‚Œã°ã“ã“ã«è¨˜è¿°
+                    // ä¾‹: Debug.Log($"ã‚«ãƒ¡ãƒ©ãŒã‚­ãƒ¼: '{targetCameraKey}' ã«åˆ‡ã‚Šæ›¿ã‚ã‚Šã¾ã—ãŸã€‚");
                 })
-                .AddTo(this); // GameObject‚ª”jŠü‚³‚ê‚½‚Æ‚«‚Éw“Ç‚ğ‰ğœ
+                .AddTo(this); // GameObjectãŒç ´æ£„ã•ã‚ŒãŸã¨ãã«è³¼èª­ã‚’è§£é™¤
         }
 
         /// <summary>
-        /// Œ»İƒAƒNƒeƒBƒu‚ÈƒJƒƒ‰‚ÌƒL[‚ğæ“¾‚µ‚Ü‚·B
+        /// ç¾åœ¨ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚«ãƒ¡ãƒ©ã®ã‚­ãƒ¼ã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
         public string GetCurrentActiveCameraKey()
         {
@@ -306,14 +303,14 @@ namespace Assets.AT
             _cinemachineBrain.ManualUpdate();
         }
 
-        // --- Editor Integration
+        // -----EditorIntegration
 #if UNITY_EDITOR
         [CustomEditor(typeof(CameraCtrlManager))]
         public class CameraCtrlEditor : Editor
         {
             public override void OnInspectorGUI()
             {
-                // ƒfƒtƒHƒ‹ƒg‚ÌInspector‚ğ•\¦
+                // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®Inspectorã‚’è¡¨ç¤º
                 DrawDefaultInspector();
 
                 CameraCtrlManager cameraCtrl = (CameraCtrlManager)target;
@@ -326,9 +323,9 @@ namespace Assets.AT
                 }
 
                 EditorGUILayout.HelpBox(
-                    "uSetup Camerasvƒ{ƒ^ƒ“‚ğ‰Ÿ‚·‚ÆAƒV[ƒ“ã‚Ì‘S‚Ä‚ÌCinemachineCamera‚ğ©“®ŒŸo‚µ‚ÄƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚·B\n" +
-                    "ƒL[‚Í©“®“I‚ÉGameObject–¼‚ªİ’è‚³‚ê‚Ü‚·BGameObject–¼‚ª•ÏX‚³‚ê‚½ê‡‚à©“®‚ÅXV‚³‚ê‚Ü‚·B\n" +
-                    "QÆ‚ªØ‚ê‚½ƒJƒƒ‰‚Í©“®“I‚ÉƒŠƒXƒg‚©‚çíœ‚³‚ê‚Ü‚·B",
+                    "ã€ŒSetup Camerasã€ãƒœã‚¿ãƒ³ã‚’æŠ¼ã™ã¨ã€ã‚·ãƒ¼ãƒ³ä¸Šã®å…¨ã¦ã®CinemachineCameraã‚’è‡ªå‹•æ¤œå‡ºã—ã¦ãƒªã‚¹ãƒˆã«è¿½åŠ ã—ã¾ã™ã€‚\n" +
+                    "ã‚­ãƒ¼ã¯è‡ªå‹•çš„ã«GameObjectåãŒè¨­å®šã•ã‚Œã¾ã™ã€‚GameObjectåãŒå¤‰æ›´ã•ã‚ŒãŸå ´åˆã‚‚è‡ªå‹•ã§æ›´æ–°ã•ã‚Œã¾ã™ã€‚\n" +
+                    "å‚ç…§ãŒåˆ‡ã‚ŒãŸã‚«ãƒ¡ãƒ©ã¯è‡ªå‹•çš„ã«ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤ã•ã‚Œã¾ã™ã€‚",
                     MessageType.Info
                 );
             }

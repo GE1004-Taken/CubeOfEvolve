@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -38,25 +36,23 @@ namespace AT.uGUI
             }
         }
 
-        // --- Field
+        // -----Field
         [SerializeField]
         private List<CanvasEntry> _canvasEntries;
 
-
-
-        // --- UnityMessage
+        // -----UnityMessage
         private void Awake()
         {
             // すでに別のインスタンスが存在する場合、それを破棄
             if (Instance != null && Instance != this)
             {
-                Debug.Log("[CanvasCtrlManager] 古いインスタンスを破棄し、最新のインスタンスに差し替えます", this);
+                Debug.Log("[CanvasCtrlManager] 古いインスタンスを破棄", this);
                 Destroy(Instance.gameObject);
             }
 
             // このインスタンスを最新として登録
             Instance = this;
-            Debug.Log("[CanvasCtrlManager] 新しいインスタンスが設定されました", this);
+            //Debug.Log("[CanvasCtrlManager] 新しいインスタンスが設定されました", this);
 
             // Setup 実行
             if (_canvasEntries == null || _canvasEntries.Count == 0)
@@ -71,9 +67,7 @@ namespace AT.uGUI
             Initialize();
         }
 
-        // -----Private
-
-
+        // -----PrivateMethod
 
         /// <summary>
         /// シーン上のCanvasCtrlコンポーネントを検出し、管理リストに登録します。
@@ -134,10 +128,10 @@ namespace AT.uGUI
                     entry.canvasCtrl.GetComponent<Canvas>().enabled = false;
                 }
             }
-            Debug.Log("CanvasCtrlManager:初期化完了");
+            //Debug.Log("[CanvasCtrlManager] 初期化完了");
         }
 
-        // --- Public Methods
+        // -----PublicMethods
 
         /// <summary>
         /// キーに基づいてCanvasCtrlを取得します。
@@ -221,7 +215,7 @@ namespace AT.uGUI
         }
 
 
-        // --- Editor Integration
+        // -----Editor Integration
 #if UNITY_EDITOR
         [CustomEditor(typeof(CanvasCtrlManager))]
         public class CanvasCtrlListEditor : Editor
