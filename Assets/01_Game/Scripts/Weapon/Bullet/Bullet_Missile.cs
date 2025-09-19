@@ -21,9 +21,6 @@ public class Bullet_Missile : BulletBase
     // ---------------------------- UnityMessage
     private void Start()
     {
-        // 自然消滅時間
-        Destroy(gameObject, _destroySecond);
-
         _position = transform.position;
 
         // 移動
@@ -34,6 +31,9 @@ public class Bullet_Missile : BulletBase
                 {
                     return;
                 }
+
+                // 自然消滅処理
+                DestroySecondCount();
 
                 // 進行方向へ回転
                 if (_velocity != Vector3.zero)
