@@ -12,6 +12,7 @@ public class ItemMoveAnimation : MonoBehaviour
 
     [SerializeField, Tooltip("吸われるまでの待機時間")] private float _delaySecond;
     [SerializeField, Tooltip("移動速度")] private float _moveSpeed;
+    [SerializeField, Tooltip("回収距離")] private float _collectionRange;
     [SerializeField, Tooltip("Collider")] private Collider _collider;
     [SerializeField, Tooltip("RigidBody")] private Rigidbody _rb;
 
@@ -46,22 +47,18 @@ public class ItemMoveAnimation : MonoBehaviour
         this.UpdateAsObservable()
             .Subscribe(_ =>
             {
-                if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
-                {
-                    _rb.linearVelocity = Vector3.zero;
-                    return;
-                }
+                var dis = Vector3.Distance(transform.position, PlayerMonitoring.Instance.PlayerObj.transform.position);
 
-                SuctionProcess();
-            })
-            .AddTo(this);
-
-        this.OnTriggerEnterAsObservable()
-            .Subscribe(other =>
-            {
-                if (other.CompareTag("Player"))
+                if (dis <= _collectionRange)
                 {
-                    Destroy(gameObject);
+                    if (GameManager.Instance.CurrentGameState.CurrentValue != Assets.IGC2025.Scripts.GameManagers.GameState.BATTLE)
+                    {
+                        _rb.linearVelocity = Vector3.zero;
+                        return;
+                    }
+
+                    // プレイヤーに吸い込まれる処理
+                    SuctionProcess();
                 }
             })
             .AddTo(this);
